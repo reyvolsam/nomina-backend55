@@ -4,10 +4,14 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use HasApiTokens, Notifiable, SoftDeletes;
+
+    protected $dates = ['deleted_at'];
 
     /**
      * The attributes that are mass assignable.
@@ -26,4 +30,18 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function Group()
+    {
+        return $this->belongsTo('App\Group');
+    }//Group()
+
+    public function Company(){
+        return $this->hasMany('App\CompanyUser');
+    }
+
+    public function CompanyUser(){
+        return $this->belongsToMany('App\Company', 'company_users');
+    }
+
 }
