@@ -37,11 +37,11 @@ class PaymentMethodsController extends Controller
 
             if(count($payment_methods_list) > 0){
                 foreach ($payment_methods_list as $kc => $vc) $vc->loader = false;
-                $this->res['message'] = 'Lista de Tipos de Pagos obtenida correctamente.';
+                $this->res['message'] = 'Lista de Metodos de Pagos obtenida correctamente.';
                 $this->res['data'] = $payment_methods_list;
                 $this->status_code = 200;
             } else {
-                $this->res['message'] = 'No hay Tipos de Pagos registrados hasta el momento.';
+                $this->res['message'] = 'No hay Metodos de Pagos registrados hasta el momento.';
                 $this->status_code = 201;
             }
         } catch(\Exception $e){
