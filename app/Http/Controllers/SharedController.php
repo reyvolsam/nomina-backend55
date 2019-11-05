@@ -94,6 +94,8 @@ class SharedController extends Controller
                 $res['status'] = true;
             }
 
+            foreach ($companies as $kul => $vul) $vul->default_company = false;
+
             $res['companies'] = $companies;
 
         } catch(\Exception $e) {

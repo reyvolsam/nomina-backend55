@@ -36,7 +36,7 @@ class UserController extends Controller
         try{
             $user_list = [];
 
-            $user_list = User::with('Group', 'Company')->select('id', 'name', 'email', 'group_id', 'default_company_id', 'active')->jsonPaginate();
+            $user_list = User::with('Group', 'assigned_companies')->select('id', 'name', 'email', 'group_id', 'default_company_id', 'active')->jsonPaginate();
 
             if(count($user_list) > 0){
 
@@ -107,8 +107,7 @@ class UserController extends Controller
             $validator = Validator::make($this->request->all(), [
                 'name'              => 'required|max:255',
                 'email'             => 'required|max:255|email',
-                'group_id'          => 'required',
-                'default_company_id' => 'required'
+                'group_id'          => 'required'
             ]);
 
             $id                     = $this->request->input('id');
@@ -142,23 +141,27 @@ class UserController extends Controller
 
                             $user->password         = bcrypt(self::$generic_password);
 
-                            $user->avatar           = 'avatar.png';
-                            $user->group_id         = $data['group_id'];
-                            $user->active           = $data['active'];
+                            $user->avatar               = 'avatar.png';
+                            $user->group_id             = $data['group_id'];
+                            $user->default_company_id   = $data['default_company_id'];
+                            $user->active               = $data['active'];
                             $user->save();
 
-                            $CompanyUser_exist = CompanyUser::withTrashed()
-                                                        //->where('company_id', '=', $data['company_id'])
-                                                        ->where('user_id', '=', $user->id)
-                                                        ->get();
-                            $CompanyUser_exist->forceDelete();
+                            //SI EL USUARIO A CREAR ES ROOT NO SE COMPANY USER
+                            if($data['group_id'] != 4){
+                                $CompanyUser_exist = CompanyUser::withTrashed()
+                                                            //->where('company_id', '=', $data['company_id'])
+                                                            ->where('user_id', '=', $user->id)
+                                                            ->get();
+                                $CompanyUser_exist->forceDelete();
 
-                            if(count($CompanyUser_exist) > 0){
-                                foreach ($data['assigned_companies'] as $kac => $vav) {
-                                    $CompanyUser = new CompanyUser();
-                                    $CompanyUser->user_id = $user->id;
-                                    $CompanyUser->company_id = $vav->id;
-                                    $CompanyUser->save();   
+                                if(count($CompanyUser_exist) > 0){
+                                    foreach ($data['assigned_companies'] as $kac => $vav) {
+                                        $CompanyUser = new CompanyUser();
+                                        $CompanyUser->user_id = $user->id;
+                                        $CompanyUser->company_id = $vav->id;
+                                        $CompanyUser->save();   
+                                    }
                                 }
                             }
 
@@ -166,20 +169,24 @@ class UserController extends Controller
                             $this->status_code = 200;
                         } else {
                             $user = new User;
-                            $user->name             = $data['name'];
-                            $user->email            = $data['email'];
-                            $user->password         = bcrypt(self::$generic_password);
-                            $user->avatar           = 'avatar.png';
-                            $user->group_id         = $data['group_id'];
-                            $user->active           = $data['active'];
+                            $user->name                 = $data['name'];
+                            $user->email                = $data['email'];
+                            $user->password             = bcrypt(self::$generic_password);
+                            $user->avatar               = 'avatar.png';
+                            $user->group_id             = $data['group_id'];
+                            $user->default_company_id   = $data['default_company_id'];
+                            $user->active               = $data['active'];
                             $user->save();
 
-                            if(count($data['assigned_companies']) > 0){
-                                foreach ($data['assigned_companies'] as $kac => $vav) {
-                                    $CompanyUser = new CompanyUser();
-                                    $CompanyUser->user_id = $user->id;
-                                    $CompanyUser->company_id = $vav['id'];
-                                    $CompanyUser->save();   
+                            //SI EL USUARIO A CREAR ES ROOT NO SE COMPANY USER
+                            if($data['group_id'] != 4){
+                                if(count($data['assigned_companies']) > 0){
+                                    foreach ($data['assigned_companies'] as $kac => $vav) {
+                                        $CompanyUser = new CompanyUser();
+                                        $CompanyUser->user_id = $user->id;
+                                        $CompanyUser->company_id = $vav['id'];
+                                        $CompanyUser->save();   
+                                    }
                                 }
                             }
 
@@ -247,6 +254,7 @@ class UserController extends Controller
                 $data['name']           = $this->request->input('name');
                 $data['email']          = $this->request->input('email');
                 $data['group_id']       = $this->request->input('group_id');
+                $data['default_company_id'] = $this->request->input('default_company_id');
                 $data['active']         = $this->request->input('active');
 
                 if(!$validator->fails()) {
@@ -255,10 +263,11 @@ class UserController extends Controller
                     if($user_exist == 0){
                         $user = User::find($id);
                         if($user){
-                            $user->name             = $data['name'];
-                            $user->email            = $data['email'];
-                            $user->group_id         = $data['group_id'];
-                            $user->active           = $data['active'];
+                            $user->name                 = $data['name'];
+                            $user->email                = $data['email'];
+                            $user->group_id             = $data['group_id'];
+                            $user->default_company_id   = $data['default_company_id'];
+                            $user->active               = $data['active'];
                             $user->save();
 
                             $this->res['message'] = 'Usuario actualizado correctamente.';

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Department;
 use App\Company;
 use App\CompanyUser;
+use App\User;
 use Validator;
 
 class CompanyController extends Controller
@@ -32,8 +33,17 @@ class CompanyController extends Controller
     {
         try{
             $companies_list = [];
-            $companies_list = Company::all();
 
+            //ADMINISTRADOR
+            if($this->request->user()->group_id == 1){
+                $user = User::find($this->request->user()->id);
+                $companies_list = $user->CompanyUser()->get();
+            }
+
+            //ROOT
+            if($this->request->user()->group_id == 4){
+                $companies_list = Company::all();
+            }
 
             if(count($companies_list) > 0){
                 foreach ($companies_list as $kc => $vc) $vc->loader = false;
@@ -83,10 +93,21 @@ class CompanyController extends Controller
                 $company_repeated = Company::where('name', $name)->count();
                 if($company_repeated == 0){
                     $company_trash = Company::withTrashed()->where('name', $name)->count();
+                    $company_id = null;
 
                     if($company_trash == 0){
                         $company = new Company;
-                        $company->create($this->request->all());
+                        $company_id = $company->create($this->request->all())->id;
+
+                        //ADMINISTRADOR
+                        if($this->request->user()->group_id == 1){
+                            if($company_id != null){
+                                $CompanyUser = new CompanyUser();
+                                $CompanyUser->user_id = $this->request->user()->id;
+                                $CompanyUser->company_id = $company_id;
+                                $CompanyUser->save();   
+                            }
+                        }
 
                         $this->res['message'] = 'Empresa creada correctamente.';
                         $this->status_code = 200;
