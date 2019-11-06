@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Catalogs\JobsController;
 use Illuminate\Http\Request;
 
 /*
@@ -38,6 +39,7 @@ Route::group(['middleware' => ['cors', 'auth:api']], function (){
     Route::resource('jobs', 'Catalogs\JobsController');
     Route::resource('work', 'WorkController');
 
+    Route::post('getDepartmentFromCompany', 'Catalogs\JobsController@getDepartmentFromCompany');
     Route::post('getMenus', 'SharedController@BuildSystemMenu');
     Route::get('catalogCompanies', 'SharedController@getCompanyCatalogFromUser');
     Route::get('catalogCompaniesDepartments', 'SharedController@getCompanyCatalogFromUserDepartments');
