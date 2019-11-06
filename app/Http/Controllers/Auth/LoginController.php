@@ -81,6 +81,7 @@ class LoginController extends Controller
                             $this->res['name'] = $this->request->user()->name;
                             $this->res['email'] = $this->request->user()->email;
                             $this->res['avatar'] = $this->request->user()->avatar;
+                            $this->res['default_company_id'] = $this->request->user()->default_company_id;
 
                             $user = $this->request->user();
                             $tokenResult = $user->createToken('Personal Access Token');

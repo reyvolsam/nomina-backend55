@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Catalogs;
 
+use App\Department;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Work;
@@ -46,11 +47,33 @@ class JobsController extends Controller
                 $this->status_code = 201;
             }
         } catch(\Exception $e){
-            $this->res['msg'] = 'Error en el sistema.'.$e;
+            $this->res['message'] = 'Error en el sistema.'.$e;
             $this->status_code = 500;
         }
         return response()->json($this->res, $this->status_code);
     }
+
+    public function getDepartmentFromCompany()
+    {
+        try {
+            $company_id = $this->request->input('company_id');
+            $departments_list = [];
+
+            $departments_list = Department::where('company_id', $company_id)->get();
+
+            if(count($departments_list) > 0){
+                $this->res['data'] = $departments_list;
+                $this->status_code = 200;
+            } else {
+                $this->res['message'] = 'No hay Departamentos en esta empresa.';
+                $this->status_code = 201;
+            }
+        } catch(\Exception $e) {
+            $this->res['message'] = 'Error en el sistema.'.$e;
+            $this->status_code = 500;
+        }
+        return response()->json($this->res, $this->status_code);
+    }//getDepartmentFromCompany()
 
     /**
      * Show the form for creating a new resource.

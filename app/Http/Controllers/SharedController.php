@@ -41,20 +41,16 @@ class SharedController extends Controller
         try{
             $user = $this->request->user();
 
-            if($user->default_company_id != null){
-                $resCatalog = $this->getCompanyCatalog($user);
-                if($resCatalog['status']){
-                    $res['data'] = $resCatalog['companies'];
-                    $res['status'] = true;
-                    $res['status_code'] = 200;
-                } else {
-                    $res['message'] = $resCatalog['message'];
-                    $res['status_code'] = 201;
-                }
+            $resCatalog = $this->getCompanyCatalog($user);
+            if($resCatalog['status']){
+                $res['data'] = $resCatalog['companies'];
+                $res['status'] = true;
+                $res['status_code'] = 200;
             } else {
-                $res['message'] = 'No tiene asignado ninguna empresa';
+                $res['message'] = $resCatalog['message'];
                 $res['status_code'] = 201;
             }
+
         } catch(\Exception $e) {
             $res['message'] = 'Error en el sistema.'.$e;
             $res['status_code'] = 500;
@@ -79,8 +75,10 @@ class SharedController extends Controller
 
             //ADMINISTRATOR
             if($user->group_id == 1){
-                $companies = User::whereHas('Company')->where('id', $user->id)->get();
-                if(count($companies)){
+                $user = User::find($this->request->user()->id);
+                $companies = $user->CompanyUser()->get();
+                //$companies = User::whereHas('Company')->where('id', $user->id)->get();
+                if(count($companies) > 0){
                     $res['status'] = true;
                     $this->res['datas'] = $companies;
                 } else {
@@ -88,14 +86,8 @@ class SharedController extends Controller
                 }
             }
 
-            //OTROS
-            if($user->group_id == 1){
-                $companies = Company::where('id', $user->default_company_id)->get();
-                $res['status'] = true;
-            }
-
             foreach ($companies as $kul => $vul) $vul->default_company = false;
-
+            
             $res['companies'] = $companies;
 
         } catch(\Exception $e) {
