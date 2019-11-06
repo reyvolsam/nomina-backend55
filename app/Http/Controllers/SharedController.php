@@ -134,4 +134,111 @@ class SharedController extends Controller
         return response()->json($this->res, $this->status_code);
     }//
 
+    public function BuildSystemMenu()
+    {
+        try{
+
+            $menu = [];
+
+            //MENU GENERAL
+            $add = [
+                "name"      => "Escritorio",
+                "active"    => false,
+                "icon"      => "apps",
+                "url"       => "/",
+                "submenu"   => []
+            ];
+
+            array_push($menu, $add);
+
+            //ROOT O ADMINISTRADOR
+            if($this->request->user()->group_id == 4 || $this->request->user()->group_id == 1){
+                $add = [
+                    "name" => 'Usuarios',
+                    "icon" => 'how_to_reg',
+                    "active" => false,
+                    "url" => '/user',
+                    "submenu" => []
+                ];
+
+                array_push($menu, $add);
+
+                $add =  [
+                    "name" => 'Catalogos',
+                    "url" => null,
+                    "icon" => 'list',
+                    "active" => false,
+                    "submenu" => [
+                        [
+                            "name"  => 'Empresas',
+                            "url"   => '/catalog/company',
+                            "icon"  => 'list'
+                        ],
+                        [
+                            "name"  => 'Departamentos',
+                            "url"   => '/catalog/departments',
+                            "icon"  => 'list'
+                        ],
+                        [
+                            "name"  => 'Puestos',
+                            "url"   => '/catalog/jobs',
+                            "icon"  => 'list'
+                        ],
+                        [
+                            "name"  => 'Tipos de Contrato',
+                            "url"   => '/catalog/contractTypes',
+                            "icon"  => 'list'
+                        ],
+                        [
+                            "name"  => "Base de Cotizacón",
+                            "url"   => "/catalog/contributionBases", 
+                            "icon"  => "list"
+                        ],
+                        
+                        [
+                            "name"  => "Tipos de Empleado",
+                            "url"   => "/catalog/employeeTypes", 
+                            "icon"  => "list"
+                        ],
+                        [
+                            "name"  => "Turno de Trabajo",
+                            "url"   => "/catalog/workShifts", 
+                            "icon"  => "list"
+                        ],
+                        [
+                            "name"  => "Metodo de Pago",
+                            "url"   => "/catalog/paymentMethods", 
+                            "icon"  => "list"
+                        ],
+                        [
+                            "name"  => "Tipos de Descuento",
+                            "url"   => "/catalog/discountTypes", 
+                            "icon"  => "list"
+                        ],
+                        [
+                            "name"  => "Tipos de Periodo",
+                            "url"   => "/catalog/periodTypes", 
+                            "icon"  => "list"
+                        ]
+                    ]
+                ];
+
+            }
+
+            array_push($menu, $add);
+
+            $this->res['data'] = $menu;
+            
+            if(count($menu) == 0) $this->res['message'] = "No se pudo identificar al usuario.";
+
+            $this->status_code = 200;
+        } catch (\Exception $e) {
+            $this->res['message'] = 'Error en el sistema.'.$e;
+            $this->status_code = 500;
+        }
+
+        return response()->json($this->res, $this->status_code);
+    }//BuildSystemMenu()
+
+
 }////
