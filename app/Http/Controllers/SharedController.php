@@ -188,7 +188,6 @@ class SharedController extends Controller
                             "url"   => "/catalog/contributionBases", 
                             "icon"  => "list"
                         ],
-                        
                         [
                             "name"  => "Tipos de Empleado",
                             "url"   => "/catalog/employeeTypes", 
@@ -216,8 +215,23 @@ class SharedController extends Controller
                         ]
                     ]
                 ];
-
             }
+
+            array_push($menu, $add);
+
+            $add = [
+                "name"      => "Empleados",
+                "url"       => null,
+                "icon"      => "contacts",
+                "active"    => false,
+                "submenu"   => [
+                    [
+                        "name"  => "Crear",
+                        "url"   => "employee/create",
+                        "icon"  => "list"
+                    ]
+                ]
+            ];
 
             array_push($menu, $add);
 
