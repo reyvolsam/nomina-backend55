@@ -8,6 +8,8 @@ use App\Work;
 use App\WorkShifts;
 use App\User;
 
+use Validator;
+
 class WorkShiftsController extends Controller
 {
     private $res = [];

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WorkShifts extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = ['name', 'company_id','created_at', 'updated_at'];
     protected $guarded = ['id'];
     protected $dates = ['deleted_at'];

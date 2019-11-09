@@ -8,6 +8,13 @@ use App\Company;
 use App\CompanyUser;
 use App\Department;
 use App\ContractTypes;
+use App\PeriodTypes;
+use App\ContributionBases;
+use App\Job;
+use App\EmployeeTypes;
+use App\PaymentMethods;
+use App\WorkShifts;
+use App\DiscountTypes;
 
 class SharedController extends Controller
 {
@@ -106,8 +113,28 @@ class SharedController extends Controller
             
             if($company_id != null){
                 $contract_types_list = ContractTypes::where('company_id', $company_id)->get();
-
                 $data['contract_types_list'] = $contract_types_list;
+
+                $period_types_list = PeriodTypes::where('company_id', $company_id)->get();
+                $data['period_types_list'] = $period_types_list;
+
+                $conribution_bases_list = ContributionBases::where('company_id', $company_id)->get();
+                $data['conribution_bases_list'] = $conribution_bases_list;
+
+                $departments_list = Department::where('company_id', $company_id)->get();
+                $data['departments_list'] = $departments_list;
+
+                $employee_types_list = EmployeeTypes::where('company_id', $company_id)->get();
+                $data['employee_types_list'] = $employee_types_list;
+
+                $payment_methods_list = PaymentMethods::where('company_id', $company_id)->get();
+                $data['payment_methods_list'] = $payment_methods_list;
+
+                $work_shifts_list = WorkShifts::where('company_id', $company_id)->get();
+                $data['work_shifts_list'] = $work_shifts_list;
+                
+                $discount_types_list = DiscountTypes::where('company_id', $company_id)->get();
+                $data['discount_types_list'] = $discount_types_list;
             }
 
             $this->res['data'] = $data;
@@ -118,6 +145,24 @@ class SharedController extends Controller
         }
         return response()->json($this->res, $this->status_code);
     }//getCatalogsFromCompany()
+
+    public function getJobsFromDepartment()
+    {
+        try{
+            $company_id = $this->request->input('company_id');
+            $department_id = $this->request->input('department_id');
+            $jobs_list = [];
+
+            $jobs_list = Job::where('company_id', $company_id)->where('department_id', $department_id)->get();
+
+            $this->res['data'] = $jobs_list;
+            $this->status_code = 200;
+        } catch (\Exception $e){
+            $this->res['message'] = 'Error en el sistema.'.$e;
+            $this->status_code = 500;
+        }
+        return response()->json($this->res, $this->status_code);
+    }
 
     public function getCompanyCatalogFromUserDepartments()
     {
