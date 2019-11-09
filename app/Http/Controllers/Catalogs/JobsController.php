@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Work;
 use App\Job;
+use App\User;
 
 use Validator;
 
@@ -35,7 +36,19 @@ class JobsController extends Controller
     {
         try{
             $job_list = [];
-            $job_list = Job::with('Department', 'Company')->get();
+
+            //ADMINISTRADOR
+            if($this->request->user()->group_id == 1){
+                $user = User::find($this->request->user()->id);
+                $companies = $user->CompanyUser()->get();
+                
+                $job_list = Job::with('Department', 'Company')->whereIn('company_id', $companies)->get();
+            }
+
+            //ROOT
+            if($this->request->user()->group_id == 4){
+                $job_list = Job::with('Department', 'Company')->get();
+            }
 
             if(count($job_list) > 0){
                 foreach ($job_list as $kc => $vc) $vc->loader = false;

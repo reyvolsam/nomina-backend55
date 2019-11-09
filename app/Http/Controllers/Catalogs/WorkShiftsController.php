@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Work;
 use App\WorkShifts;
+use App\User;
 
 class WorkShiftsController extends Controller
 {
@@ -31,7 +32,20 @@ class WorkShiftsController extends Controller
     {
         try{
             $work_shifts_list = [];
-            $work_shifts_list = WorkShifts::with('Company')->get();
+
+            //ADMINISTRADOR
+            if($this->request->user()->group_id == 1){
+
+                $user = User::find($this->request->user()->id);
+                $companies = $user->CompanyUser()->get();
+
+                $work_shifts_list = WorkShifts::with('Company')->whereIn('company_id', $companies)->get();
+            }
+
+            //ROOT
+            if($this->request->user()->group_id == 4){
+                $work_shifts_list = WorkShifts::with('Company')->get();
+            }
 
             if(count($work_shifts_list) > 0){
                 foreach ($work_shifts_list as $kc => $vc) $vc->loader = false;

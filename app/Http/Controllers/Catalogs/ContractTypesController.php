@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 
 use App\ContractTypes;
 use App\Worker;
+use App\User;
 
 use Validator;
 
@@ -34,7 +35,19 @@ class ContractTypesController extends Controller
     {
         try{
             $contract_type_list = [];
-            $contract_type_list = ContractTypes::with('Company')->get();
+
+            //ADMINISTRADOR
+            if($this->request->user()->group_id == 1){
+                $user = User::find($this->request->user()->id);
+                $companies = $user->CompanyUser()->get();
+
+                $contract_type_list = ContractTypes::with('Company')->whereIn('company_id', $companies)->get();
+            }
+
+            //ROOT
+            if($this->request->user()->group_id == 4){
+                $contract_type_list = ContractTypes::with('Company')->get();
+            }
 
             if(count($contract_type_list) > 0){
                 foreach ($contract_type_list as $kc => $vc) $vc->loader = false;

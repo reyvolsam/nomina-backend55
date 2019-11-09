@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\PaymentMethods;
 use App\Work;
+use App\User;
 use Faker\Provider\de_DE\Payment;
 use Validator;
 
@@ -33,7 +34,21 @@ class PaymentMethodsController extends Controller
     {
         try{
             $payment_methods_list = [];
-            $payment_methods_list = PaymentMethods::with('Company')->get();
+
+            //ADMINISTRADOR
+            if($this->request->user()->group_id == 1){
+
+                $user = User::find($this->request->user()->id);
+                $companies = $user->CompanyUser()->get();
+
+                $payment_methods_list = PaymentMethods::with('Company')->whereIn('company_id', $companies)->get();
+            }
+
+            //ROOT
+            if($this->request->user()->group_id == 4){
+                $payment_methods_list = PaymentMethods::with('Company')->get();
+            }
+            
 
             if(count($payment_methods_list) > 0){
                 foreach ($payment_methods_list as $kc => $vc) $vc->loader = false;

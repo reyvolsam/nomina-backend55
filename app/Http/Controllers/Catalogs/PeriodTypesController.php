@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\PeriodTypes;
 use App\Worker;
+use App\User;
 use Validator;
 
 class PeriodTypesController extends Controller
@@ -32,7 +33,22 @@ class PeriodTypesController extends Controller
     {
         try{
             $period_types_list = [];
-            $period_types_list = PeriodTypes::with('Company')->get();
+
+            //ADMINISTRADOR
+            if($this->request->user()->group_id == 1){
+
+                $user = User::find($this->request->user()->id);
+                $companies = $user->CompanyUser()->get();
+
+                $period_types_list = PeriodTypes::with('Company')->whereIn('company_id', $companies)->get();
+
+            }
+
+            //ROOT
+            if($this->request->user()->group_id == 4){
+                $period_types_list = PeriodTypes::with('Company')->get();
+            }
+            
 
             if(count($period_types_list) > 0){
                 foreach ($period_types_list as $kc => $vc) $vc->loader = false;

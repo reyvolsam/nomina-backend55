@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Catalogs;
 
 use App\Work;
 use App\EmployeeTypes;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -33,8 +34,21 @@ class EmployeeTypesController extends Controller
     {
         try{
             $employee_types_list = [];
-            $employee_types_list = EmployeeTypes::with('Company')->get();
 
+            //ADMINISTRADOR
+            if($this->request->user()->group_id == 1){
+
+                $user = User::find($this->request->user()->id);
+                $companies = $user->CompanyUser()->get();
+
+                $employee_types_list = EmployeeTypes::with('Company')->whereIn('company_id', $companies)->get();
+            }
+
+            //ROOT
+            if($this->request->user()->group_id == 4){
+                $employee_types_list = EmployeeTypes::with('Company')->get();
+            }
+            
             if(count($employee_types_list) > 0){
                 foreach ($employee_types_list as $kc => $vc) $vc->loader = false;
                 $this->res['message'] = 'Lista de Tipos de Empleados obtenida correctamente.';

@@ -7,6 +7,7 @@ use App\User;
 use App\Company;
 use App\CompanyUser;
 use App\Department;
+use App\ContractTypes;
 
 class SharedController extends Controller
 {
@@ -77,7 +78,6 @@ class SharedController extends Controller
             if($user->group_id == 1){
                 $user = User::find($this->request->user()->id);
                 $companies = $user->CompanyUser()->get();
-                //$companies = User::whereHas('Company')->where('id', $user->id)->get();
                 if(count($companies) > 0){
                     $res['status'] = true;
                     $this->res['datas'] = $companies;
@@ -96,6 +96,28 @@ class SharedController extends Controller
 
         return $res;
     }
+
+    public function getCatalogsFromCompany()
+    {
+        try {
+            $company_id = $this->request->input('company_id');
+            $data = [];
+            $contract_types_list = [];
+            
+            if($company_id != null){
+                $contract_types_list = ContractTypes::where('company_id', $company_id)->get();
+
+                $data['contract_types_list'] = $contract_types_list;
+            }
+
+            $this->res['data'] = $data;
+            $this->status_code = 200;
+        } catch (\Exception $e){
+            $this->res['message'] = 'Error en el sistema.'.$e;
+            $this->status_code = 500;
+        }
+        return response()->json($this->res, $this->status_code);
+    }//getCatalogsFromCompany()
 
     public function getCompanyCatalogFromUserDepartments()
     {
@@ -227,7 +249,7 @@ class SharedController extends Controller
                 "submenu"   => [
                     [
                         "name"  => "Crear",
-                        "url"   => "employee/create",
+                        "url"   => "/employee/create",
                         "icon"  => "list"
                     ]
                 ]

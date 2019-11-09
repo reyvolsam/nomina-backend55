@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Catalogs;
 
 use App\Work;
 use App\Department;
+use App\User;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -34,7 +36,20 @@ class DepartmentController extends Controller
     {
         try{
             $departments_list = [];
-            $departments_list = Department::with('Company')->get();
+
+            //ADMINISTRADOR
+            if($this->request->user()->group_id == 1){
+
+                $user = User::find($this->request->user()->id);
+                $companies = $user->CompanyUser()->get();
+
+                $departments_list = Department::with('Company')->whereIn('company_id', $companies)->get();
+            }
+           
+            //ROOT
+            if($this->request->user()->group_id == 4){
+                $departments_list = Department::with('Company')->get();
+            }
 
             if(count($departments_list) > 0){
                 foreach ($departments_list as $kc => $vc) $vc->loader = false;

@@ -6,6 +6,7 @@ use App\DiscountTypes;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Worker;
+use App\User;
 use Validator;
 
 class DiscountTypesController extends Controller
@@ -32,7 +33,20 @@ class DiscountTypesController extends Controller
     {
         try{
             $discount_types_list = [];
-            $discount_types_list = DiscountTypes::with('Company')->get();
+
+            //ADMINISTRADOR
+            if($this->request->user()->group_id == 1){
+
+                $user = User::find($this->request->user()->id);
+                $companies = $user->CompanyUser()->get();
+
+                $discount_types_list = DiscountTypes::with('Company')->whereIn('company_id', $companies)->get();
+            }
+
+            //ROOT
+            if($this->request->user()->group_id == 4){
+                $discount_types_list = DiscountTypes::with('Company')->get();
+            }
 
             if(count($discount_types_list) > 0){
                 foreach ($discount_types_list as $kc => $vc) $vc->loader = false;
