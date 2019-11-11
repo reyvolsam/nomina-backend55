@@ -71,6 +71,7 @@ class WorkController extends Controller
     {
         try{
             $validator = Validator::make($this->request->all(), [
+                'company_id'                => 'required',
                 'code'                      => 'required|max:45',
                 'discharge_date'            => 'required|max:45',
                 'name'                      => 'required|max:100',
