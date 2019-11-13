@@ -301,6 +301,26 @@ class SharedController extends Controller
                         "name"  => "En Proceso de Alta",
                         "url"   => "/employee/procesoAlta",
                         "icon"  => "list"
+                    ],
+                    [
+                        "name"  => "Activos",
+                        "url"   => "/employee/procesoActivo",
+                        "icon"  => "list"
+                    ],
+                    [
+                        "name"  => "En Proceso de Reingreso",
+                        "url"   => "/employee/procesoReingreso",
+                        "icon"  => "list"
+                    ],
+                    [
+                        "name"  => "En Proceso de Baja",
+                        "url"   => "/employee/procesoBaja",
+                        "icon"  => "list"
+                    ],
+                    [
+                        "name"  => "Dado de Baja",
+                        "url"   => "/employee/baja",
+                        "icon"  => "list"
                     ]
                 ]
             ];

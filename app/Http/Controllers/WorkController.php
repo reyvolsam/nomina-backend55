@@ -17,6 +17,7 @@ class WorkController extends Controller
     {
         $this->request = $request;
         $this->res['message'] = '';
+        $this->res['data'] = [];
         $this->status_code = 204;
 
         date_default_timezone_set('America/Mexico_City');
@@ -27,23 +28,51 @@ class WorkController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(){}
+
+    public function convert()
+    {
+        try {
+            $new_work_status_id = $this->request->input('work_status_id');
+            $employee_id = $this->request->input('employee_id');
+
+            $employee = Work::find($employee_id);
+
+            if($employee){
+                $employee->work_status_id = $new_work_status_id;
+                $employee->save();
+            } else {
+                $this->res['message'] = 'El Empleado no existe.';    
+            }
+            $this->status_code = 200;
+        } catch(\Exception $e) {
+            $this->res['message'] = 'Error en el sistema.'.$e;
+            $this->status_code = 500;
+        }
+        return response()->json($this->res, $this->status_code);
+    }//convertEmployee()
+
+    public function workByStatus()
     {
         try{
+            $work_status_id = $this->request->input('work_status_id');
             $work_list = [];
 
-            $work_list = Work::with('ContractType', 'PeriodType', 'ContributionBase', 'Department', 'EmployeeType', 'PaymentMethod', 'WorkShift', 'Sex', 'DiscountType')->jsonPaginate();
+            $work_list = Work::with('Company', 'ContractType', 'PeriodType', 'ContributionBase', 'Department', 'EmployeeType', 'PaymentMethod', 'WorkShift', 'Sex', 'DiscountType')
+                                ->where('work_status_id', $work_status_id)
+                                ->jsonPaginate();
 
             if(count($work_list) > 0){
-
                 foreach ($work_list as $kul => $vul) $vul->loader = false;
                 $this->res['data'] = $work_list;
-                $this->status_code = 200;
             } else {
-                $this->res['message'] = 'No hay Trabajadores hasta el momento.';
-                $this->status_code = 422;
-
+                if($work_status_id == 1) $this->res['message'] = 'No hay Trabajadores en Proceso de Alta hasta el momento.';
+                if($work_status_id == 2) $this->res['message'] = 'No hay Trabajadores en Proceso de Reingreso hasta el momento.';
+                if($work_status_id == 3) $this->res['message'] = 'No hay Trabajadores Activos hasta el momento.';
+                if($work_status_id == 4) $this->res['message'] = 'No hay Trabajadores en Proceso de Baja hasta el momento.';
+                if($work_status_id == 5) $this->res['message'] = 'No hay Trabajadores Dado de Baja hasta el momento.';
             }
+            $this->status_code = 200;
         } catch(\Exception $e) {
             $this->res['message'] = 'Error en la Base de Datos.'.$e;
             $this->status_code = 500;
@@ -100,12 +129,19 @@ class WorkController extends Controller
                 $first_name = $this->request->input('first_name');
                 $last_name = $this->request->input('last_name');
 
+                $this->request->merge(['work_status_id' => 1] );
+
                 $last_repeated = Work::where('name', $name)
                                         ->where('first_name', $first_name)
                                         ->where('last_name', $last_name)
                                         ->count();
                 if($last_repeated == 0){
-                    if($last_repeated == 0){
+                    $work_trashed = Work::withTrashed()->where('name', $name)
+                                            ->where('first_name', $first_name)
+                                            ->where('last_name', $last_name)
+                                            ->count();
+
+                    if($work_trashed == 0){
                         $work = new Work;
                         $work->create($this->request->all());
 
@@ -117,7 +153,7 @@ class WorkController extends Controller
                                         ->where('last_name', $last_name)
                                         ->restore();
 
-                        $work = Company::where('name', $name)
+                        $work = Work::where('name', $name)
                                             ->where('first_name', $first_name)
                                             ->where('last_name', $last_name)
                                             ->first();
@@ -125,7 +161,7 @@ class WorkController extends Controller
                         $work->updateOrCreate(['id' => $work->id], $this->request->all());
 
                         $this->res['message'] = 'Trabajador restaurado correctamente.';
-                        $this->status_code = 422;
+                        $this->status_code = 200;
                     }
                 } else {
                     $this->res['message'] = 'El trabajador ya existe.';
