@@ -321,6 +321,11 @@ class SharedController extends Controller
                         "name"  => "Dado de Baja",
                         "url"   => "/employee/baja",
                         "icon"  => "list"
+                    ],
+                    [
+                        "name"  => "Importar",
+                        "url"   => "/employee/import",
+                        "icon"  => "list"
                     ]
                 ]
             ];
