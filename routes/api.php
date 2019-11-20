@@ -37,9 +37,10 @@ Route::group(['middleware' => ['cors', 'auth:api']], function (){
     Route::resource('periodTypes', 'Catalogs\PeriodTypesController');
     Route::resource('departments', 'Catalogs\DepartmentController');
     Route::resource('jobs', 'Catalogs\JobsController');
-    Route::post('work/convert', 'WorkController@convert');
+    
     Route::resource('work', 'WorkController');
-
+    Route::post('work/convert', 'WorkController@convert');
+    Route::post('work/loadData', 'WorkController@loadWorkData');
     Route::post('work/import', 'WorkImportController@import');
 
     Route::post('workByStatus', 'WorkController@workByStatus');

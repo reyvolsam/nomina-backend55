@@ -2,19 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\ContractTypes;
+use App\ContributionBases;
+use App\Department;
+use App\DiscountTypes;
+use App\EmployeeTypes;
 use Illuminate\Http\Request;
 
 use App\WorkDocumentations;
 use App\Work;
 use Validator;
+use App\Http\Controllers\SharedController as sharedController;
+use App\Job;
+use App\PaymentMethods;
+use App\PeriodTypes;
+use App\Sex;
+use App\WorkShifts;
 
 class WorkController extends Controller
 {
     private $res = [];
     private $request;
+    private $sharedController;
 
     function __construct(Request $request)
     {
+        $this->sharedController = new SharedController($request);
         $this->request = $request;
         $this->res['message'] = '';
         $this->res['data'] = [];
@@ -199,6 +212,65 @@ class WorkController extends Controller
     {
         //
     }
+
+    public function loadWorkData()
+    {
+        try {
+            $work_id = $this->request->input('work_id');
+            $work_data = null;
+            $user = $this->request->user();
+
+            $companies_catalog = [];
+            $contract_type_catalog = [];
+            $period_type_catalog = [];
+            $contribution_base_catalog = [];
+            $department_catalog = [];
+            $job_catalog = [];
+            $employee_type_catalog = [];
+            $payment_method_catalog = [];
+            $work_shift_catalog = [];
+            $sex_catalog = [];
+            $discount_type_catalog = [];
+
+            $work_data = Work::find($work_id);
+
+            $companies_catalog          = $this->sharedController->getCompanyCatalog($user);
+            $contract_type_catalog      = ContractTypes::where('company_id', $work_data->company_id)->get();
+            $period_type_catalog        = PeriodTypes::where('company_id', $work_data->company_id)->get();
+            $contribution_base_catalog  = ContributionBases::where('company_id', $work_data->company_id)->get();
+            $department_catalog         = Department::where('company_id', $work_data->company_id)->get();
+            $job_catalog                = Job::where('company_id', $work_data->company_id)->where('department_id', $work_data->department_id)->get();
+            $employee_type_catalog      = EmployeeTypes::where('company_id', $work_data->company_id)->get();
+            $payment_method_catalog     = PaymentMethods::where('company_id', $work_data->company_id)->get();
+            $work_shift_catalog         = WorkShifts::where('company_id', $work_data->company_id)->get();
+            $sex_catalog                = Sex::all();
+            $discount_type_catalog      = DiscountTypes::where('company_id', $work_data->company_id)->get();
+
+            $this->res = [
+                'data'      => $work_data,
+                'catalogs'  => [
+                    'companies_catalog'     => $companies_catalog,
+                    'contract_type_catalog' => $contract_type_catalog,
+                    'period_type_catalog'   => $period_type_catalog,
+                    'contribution_base_catalog' => $contribution_base_catalog,
+                    'department_catalog'    => $department_catalog,
+                    'job_catalog'           => $job_catalog,
+                    'employee_type_catalog' => $employee_type_catalog,
+                    'payment_method_catalog'    => $payment_method_catalog,
+                    'work_shift_catalog'    => $work_shift_catalog,
+                    'sex_catalog'           => $sex_catalog,
+                    'discount_type_catalog' => $discount_type_catalog
+                ]
+                
+            ];
+            $this->status_code = 200;
+        } catch(\Excpetion $e) {
+            $this->res['message'] = 'Error en el sistema.'.$e;
+            $this->status_code = 500;
+        }
+        return response()->json($this->res, $this->status_code);
+    }//LoadWorkData(){
+
 
     /**
      * Update the specified resource in storage.
