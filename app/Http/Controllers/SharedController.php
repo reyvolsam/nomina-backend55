@@ -298,6 +298,11 @@ class SharedController extends Controller
                         "icon"  => "list"
                     ],
                     [
+                        "name"  => "Todos los empleados",
+                        "url"   => "/employee/all",
+                        "icon"  => "list"
+                    ],
+                    [
                         "name"  => "En Proceso de Alta",
                         "url"   => "/employee/procesoAlta",
                         "icon"  => "list"

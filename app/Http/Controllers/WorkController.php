@@ -71,9 +71,13 @@ class WorkController extends Controller
             $work_status_id = $this->request->input('work_status_id');
             $work_list = [];
 
-            $work_list = Work::with('Company', 'ContractType', 'PeriodType', 'ContributionBase', 'Department', 'EmployeeType', 'PaymentMethod', 'WorkShift', 'Sex', 'DiscountType')
-                                ->where('work_status_id', $work_status_id)
-                                ->jsonPaginate();
+            $work_list = Work::with('Company', 'ContractType', 'PeriodType', 'ContributionBase', 'Department', 'EmployeeType', 'PaymentMethod', 'WorkShift', 'Sex', 'DiscountType');
+
+            if($work_status_id != null){
+                $work_list = $work_list->where('work_status_id', $work_status_id);
+            }
+
+            $work_list = $work_list->jsonPaginate();
 
             if(count($work_list) > 0){
                 foreach ($work_list as $kul => $vul) $vul->loader = false;
