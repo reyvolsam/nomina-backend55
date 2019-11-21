@@ -216,7 +216,7 @@ class WorkController extends Controller
     public function loadWorkData()
     {
         try {
-            $work_id = $this->request->input('work_id');
+            $work_id = $this->request->input('employee_id');
             $work_data = null;
             $user = $this->request->user();
 
@@ -249,7 +249,7 @@ class WorkController extends Controller
             $this->res = [
                 'data'      => $work_data,
                 'catalogs'  => [
-                    'companies_catalog'     => $companies_catalog,
+                    'companies_catalog'     => $companies_catalog['companies'],
                     'contract_type_catalog' => $contract_type_catalog,
                     'period_type_catalog'   => $period_type_catalog,
                     'contribution_base_catalog' => $contribution_base_catalog,
@@ -284,6 +284,7 @@ class WorkController extends Controller
         try{
             if(is_numeric($id)){
                 $validator = Validator::make($this->request->all(), [
+                    'company_id'                => 'required',
                     'code'                      => 'required|max:45',
                     'discharge_date'            => 'required|max:45',
                     'name'                      => 'required|max:100',
@@ -311,7 +312,7 @@ class WorkController extends Controller
                     $work_exist = Work::find($id);
                     if($work_exist){
                         Work::updateOrCreate(['id' => $id], $this->request->all());
-                        $this->res['message'] = 'Trabajadpor actualizado correctamente.';
+                        $this->res['message'] = 'Trabajador actualizado correctamente.';
                         $this->status_code = 200;
                     } else {
                         $this->res['message'] = 'El Trabajador no existe.';
