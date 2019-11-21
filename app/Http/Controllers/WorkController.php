@@ -132,7 +132,7 @@ class WorkController extends Controller
                 'employee_type_id'          => 'required',
                 'payment_method_id'         => 'required',
                 'work_shift_id'             => 'required',
-                'number_afore'              => 'required|max:100',
+                'number_afore'              => 'max:100',
                 'social_security_number'    => 'required|max:100',
                 'rfc'                       => 'required|max:13',
                 'curp'                      => 'required|max:22',
