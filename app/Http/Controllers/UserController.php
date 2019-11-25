@@ -11,7 +11,6 @@ use Illuminate\Database\Query\Builder;
 
 class UserController extends Controller
 {
-
     private $res = [];
     private $request;
     private static $generic_password = "Nomina2019";

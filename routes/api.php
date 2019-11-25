@@ -50,4 +50,6 @@ Route::group(['middleware' => ['cors', 'auth:api']], function (){
     Route::post('getCatalogsFromCompany', 'SharedController@getCatalogsFromCompany');
     Route::get('catalogCompanies', 'SharedController@getCompanyCatalogFromUser');
     Route::get('catalogCompaniesDepartments', 'SharedController@getCompanyCatalogFromUserDepartments');
+
+    Route::resource('nomina', 'NominaController');
 });

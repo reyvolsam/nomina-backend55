@@ -337,6 +337,16 @@ class SharedController extends Controller
 
             array_push($menu, $add);
 
+            $add = [
+                "name" => 'Importar Nomina',
+                "icon" => 'how_to_reg',
+                "active" => false,
+                "url" => '/nomina',
+                "submenu" => []
+            ];
+
+            array_push($menu, $add);
+
             $this->res['data'] = $menu;
             
             if(count($menu) == 0) $this->res['message'] = "No se pudo identificar al usuario.";
