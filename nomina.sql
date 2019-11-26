@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.17, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.17, for macos10.14 (x86_64)
 --
--- Host: localhost    Database: nomina
+-- Host: 127.0.0.1    Database: nomina
 -- ------------------------------------------------------
--- Server version	5.7.26
+-- Server version	8.0.17
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -24,10 +24,10 @@ DROP TABLE IF EXISTS `companies`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `companies` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_spanish2_ci NOT NULL,
-  `contact` varchar(255) COLLATE utf8_spanish2_ci NOT NULL,
-  `rfc` varchar(13) COLLATE utf8_spanish2_ci NOT NULL,
-  `telephone` varchar(20) COLLATE utf8_spanish2_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `contact` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `rfc` varchar(13) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `telephone` varchar(20) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE `company_users` (
   KEY `company_user_company_id_idx` (`company_id`),
   KEY `company_users_user_id_fk_idx` (`user_id`),
   CONSTRAINT `company_user_company_id` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`),
-  CONSTRAINT `company_users_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `company_users_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -88,7 +88,7 @@ DROP TABLE IF EXISTS `contract_types`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `contract_types` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_spanish2_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
   `company_id` int(10) unsigned NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -119,7 +119,7 @@ DROP TABLE IF EXISTS `contribution_bases`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `contribution_bases` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_spanish2_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
   `company_id` int(10) unsigned NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -150,7 +150,7 @@ DROP TABLE IF EXISTS `departments`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `departments` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_spanish2_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
   `company_id` int(10) unsigned NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -168,7 +168,7 @@ CREATE TABLE `departments` (
 
 LOCK TABLES `departments` WRITE;
 /*!40000 ALTER TABLE `departments` DISABLE KEYS */;
-INSERT INTO `departments` VALUES (1,'Departamento 1 old',1,'2019-10-07 23:11:43','2019-10-07 23:14:39',NULL),(2,'Departamento 2',1,'2019-10-07 23:12:04','2019-10-07 23:12:04',NULL),(3,'departamento',1,'2019-10-07 23:12:04',NULL,NULL),(4,'DIRECCION',2,'2019-10-07 23:12:04','2019-10-19 23:02:27',NULL),(5,'VENTAS',2,'2019-10-07 23:12:04',NULL,NULL),(6,'CONTABILIDAD',2,'2019-10-07 23:12:04',NULL,NULL);
+INSERT INTO `departments` VALUES (1,'DIRECCION',1,'2019-10-07 23:11:43','2019-10-07 23:14:39',NULL),(2,'VENTAS',1,'2019-10-07 23:12:04','2019-10-07 23:12:04',NULL),(3,'CONTABILIDAD',1,NULL,NULL,NULL),(4,'VENTAS',2,NULL,'2019-10-19 23:02:27',NULL),(5,'CONTABILIDAD',2,NULL,NULL,NULL),(6,'DIRECCION',2,'2019-10-07 23:11:43','2019-10-07 23:14:39',NULL),(7,'VENTAS',2,'2019-10-07 23:12:04','2019-10-07 23:12:04',NULL),(8,'CONTABILIDAD',2,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `departments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -181,7 +181,7 @@ DROP TABLE IF EXISTS `discount_types`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `discount_types` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) COLLATE utf8_spanish2_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
   `company_id` int(10) unsigned NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -212,7 +212,7 @@ DROP TABLE IF EXISTS `documentations`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `documentations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) COLLATE utf8_spanish2_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
@@ -240,7 +240,7 @@ DROP TABLE IF EXISTS `employee_types`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `employee_types` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_spanish2_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
   `company_id` int(10) unsigned NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -271,8 +271,8 @@ DROP TABLE IF EXISTS `groups`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `groups` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `alias` varchar(255) COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
@@ -300,7 +300,7 @@ DROP TABLE IF EXISTS `jobs`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `jobs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_spanish2_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
   `department_id` int(10) unsigned NOT NULL,
   `company_id` int(10) unsigned NOT NULL,
   `created_at` datetime DEFAULT NULL,
@@ -321,7 +321,7 @@ CREATE TABLE `jobs` (
 
 LOCK TABLES `jobs` WRITE;
 /*!40000 ALTER TABLE `jobs` DISABLE KEYS */;
-INSERT INTO `jobs` VALUES (5,'DIRECTOR GENERAL',4,2,NULL,NULL,NULL),(6,'GERENTE DE VENTAS',5,2,NULL,NULL,NULL),(7,'CONTADOR GENERAL',6,2,NULL,NULL,NULL),(8,'DIRECTOR COMERCIAL',5,2,NULL,NULL,NULL),(9,'DIRECTOR DE FINANZAS',6,2,NULL,NULL,NULL);
+INSERT INTO `jobs` VALUES (5,'DIRECTOR GENERAL',6,2,NULL,NULL,NULL),(6,'GERENTE DE VENTAS',7,2,NULL,NULL,NULL),(7,'CONTADOR GENERAL',8,2,NULL,NULL,NULL),(8,'DIRECTOR COMERCIAL',6,2,NULL,NULL,NULL),(9,'DIRECTOR DE FINANZAS',6,2,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `jobs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -334,7 +334,7 @@ DROP TABLE IF EXISTS `migrations`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `migrations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -351,6 +351,98 @@ INSERT INTO `migrations` VALUES (1,'2014_10_12_000000_create_users_table',1),(2,
 UNLOCK TABLES;
 
 --
+-- Table structure for table `nomina`
+--
+
+DROP TABLE IF EXISTS `nomina`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `nomina` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `period` date NOT NULL,
+  `obra` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `nomina`
+--
+
+LOCK TABLES `nomina` WRITE;
+/*!40000 ALTER TABLE `nomina` DISABLE KEYS */;
+INSERT INTO `nomina` VALUES (11,'2019-11-07','2019-11-30','xdvsdvsdvd','2019-11-26 04:47:05','2019-11-26 04:47:05',NULL);
+/*!40000 ALTER TABLE `nomina` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `nomina_dispersion`
+--
+
+DROP TABLE IF EXISTS `nomina_dispersion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `nomina_dispersion` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `nomina_id` int(10) unsigned NOT NULL,
+  `file_url` varchar(100) COLLATE utf8_spanish2_ci NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `nomina_dispersion_idx` (`nomina_id`),
+  CONSTRAINT `nomina_dispersion` FOREIGN KEY (`nomina_id`) REFERENCES `nomina` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `nomina_dispersion`
+--
+
+LOCK TABLES `nomina_dispersion` WRITE;
+/*!40000 ALTER TABLE `nomina_dispersion` DISABLE KEYS */;
+INSERT INTO `nomina_dispersion` VALUES (5,11,'47_1574743625.pdf','2019-11-26 04:47:05','2019-11-26 04:47:05',NULL),(6,11,'72_1574743625.pdf','2019-11-26 04:47:05','2019-11-26 04:47:05',NULL);
+/*!40000 ALTER TABLE `nomina_dispersion` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `nomina_excel`
+--
+
+DROP TABLE IF EXISTS `nomina_excel`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `nomina_excel` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `nomina_id` int(10) unsigned NOT NULL,
+  `file_url` varchar(100) COLLATE utf8_spanish2_ci NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `nomina_excel_nomina_id_idx` (`nomina_id`),
+  CONSTRAINT `nomina_excel_nomina_id` FOREIGN KEY (`nomina_id`) REFERENCES `nomina` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `nomina_excel`
+--
+
+LOCK TABLES `nomina_excel` WRITE;
+/*!40000 ALTER TABLE `nomina_excel` DISABLE KEYS */;
+INSERT INTO `nomina_excel` VALUES (2,11,'136_1574743625.xlsx','2019-11-26 04:47:05','2019-11-26 04:47:05',NULL),(3,11,'394_1574743625.xlsx','2019-11-26 04:47:05','2019-11-26 04:47:05',NULL);
+/*!40000 ALTER TABLE `nomina_excel` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `oauth_access_tokens`
 --
 
@@ -358,11 +450,11 @@ DROP TABLE IF EXISTS `oauth_access_tokens`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `oauth_access_tokens` (
-  `id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `user_id` bigint(20) DEFAULT NULL,
   `client_id` int(10) unsigned NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `scopes` text COLLATE utf8mb4_unicode_ci,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `scopes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `revoked` tinyint(1) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -378,7 +470,7 @@ CREATE TABLE `oauth_access_tokens` (
 
 LOCK TABLES `oauth_access_tokens` WRITE;
 /*!40000 ALTER TABLE `oauth_access_tokens` DISABLE KEYS */;
-INSERT INTO `oauth_access_tokens` VALUES ('0210c0a25c0859d7c648ede6b28e5ec61614f9e0dcbd348146415c16685070edf112b3508bf0af4c',1,1,'Personal Access Token','[]',0,'2019-10-17 02:27:47','2019-10-17 02:27:47','2020-10-16 21:27:47'),('042d5b0027378061f5f654f70805888542005937e8ca0a6ea8c86aa4400dcf81edd2dd472a100b05',1,1,'Personal Access Token','[]',0,'2019-11-19 15:04:26','2019-11-19 15:04:26','2020-11-19 09:04:26'),('04c0cc8ebcf90403db3c698c1553b003c359bb7b50538a7c0d257d047dac92ba67ffb06c49acd188',1,1,'Personal Access Token','[]',0,'2019-10-19 22:10:58','2019-10-19 22:10:58','2020-10-19 17:10:58'),('04fc201d08a0be21e6e1386a2fd6a79011e4b4845cc7510b8bdf8ef5fa6764ce1a1c70507d2c5ebd',1,1,'Personal Access Token','[]',0,'2019-11-05 17:48:35','2019-11-05 17:48:35','2020-11-05 11:48:35'),('084bf432c0c4c7562ecb006e44a316d0f47de10f007c192f9c449277a2fac63c075e1ebcd5ba678f',1,1,'Personal Access Token','[]',0,'2019-10-01 04:15:33','2019-10-01 04:15:33','2020-09-30 23:15:33'),('092346046f299046c392ca50749c5dd8fd8c76143c0af50c81a8c55c75fc74f224b322bbf993cdcc',1,1,'Personal Access Token','[]',0,'2019-10-19 22:09:28','2019-10-19 22:09:28','2020-10-19 17:09:28'),('1397eac3bf874b89a56d917ad93e465186d9b3638fbe590c9d13e6e8e4622f5f8cb4dc5b301e68b7',1,1,'Personal Access Token','[]',0,'2019-11-20 20:46:52','2019-11-20 20:46:52','2020-11-20 14:46:52'),('18d0a186f30aac118e3575217fcacb63427c3f5520dd2abb3e1726297fd3f3d517f89a6dfee708a0',1,1,'Personal Access Token','[]',0,'2019-10-19 21:58:03','2019-10-19 21:58:03','2020-10-19 16:58:03'),('2c52340407246d6b4d383e91907d91e00a07252a8b79215d6b1ab8ff19534b4c7f62a71382181f9e',1,1,'Personal Access Token','[]',0,'2019-10-19 22:05:39','2019-10-19 22:05:39','2020-10-19 17:05:39'),('363e84527072ca6351d0755fdf64bfcb483bf68666b174ac2f3ca3c3b61fa53012415721b286a6cc',1,1,'Personal Access Token','[]',0,'2019-10-12 21:33:14','2019-10-12 21:33:14','2020-10-12 16:33:14'),('444541f2c2dd5e4d83ad248780ecdbf0679743117d76e607551968b85126ca164c85b48794297286',1,1,'Personal Access Token','[]',0,'2019-10-19 21:58:29','2019-10-19 21:58:29','2020-10-19 16:58:29'),('4448fd631e8bc280c6b1666aa5fb5fbba45babe16fcd4362b72eba1c6a1c8228a3139d97cba1121e',10,1,'Personal Access Token','[]',0,'2019-11-05 22:51:08','2019-11-05 22:51:08','2020-11-05 16:51:08'),('4b48290b1ba4fe14a91b3c79244ee55df679b422c702d223dd628e012973bed2d712f0e340cfa6ba',1,1,'Personal Access Token','[]',0,'2019-10-19 22:09:04','2019-10-19 22:09:04','2020-10-19 17:09:04'),('50c24c2748c51f5c4cb0d69df7b9bad939b4ca4145020b4bdd9b2bda5e5ebf68dd3568b1ae6a5586',1,1,'Personal Access Token','[]',0,'2019-10-16 04:23:11','2019-10-16 04:23:11','2020-10-15 23:23:11'),('545092440429b682cc5875eff548a85b6e4a081f29fca9009c6bfc0f084e30f4f1a75b9111a8d60c',1,1,'Personal Access Token','[]',0,'2019-10-19 22:10:14','2019-10-19 22:10:14','2020-10-19 17:10:14'),('556d93ca1935186ba3cbfb3ad53654dbf75da33ed7b6d7a1db1d52280a8b5bba92171ffcfc122fa4',1,1,'Personal Access Token','[]',0,'2019-10-19 23:25:51','2019-10-19 23:25:51','2020-10-19 18:25:51'),('587a7021f4a1799080be1afd7a2d350d60ef8c0231a6c6c455f0a04760a363e346500a6bd1eb1984',1,1,'Personal Access Token','[]',0,'2019-10-19 22:06:13','2019-10-19 22:06:13','2020-10-19 17:06:13'),('5cad29189559635f140dcddedf64fdb42b3f075bfc62fde4c7a8abc5346d42f596f3a68536f32de5',1,1,'Personal Access Token','[]',0,'2019-10-19 20:25:45','2019-10-19 20:25:45','2020-10-19 15:25:45'),('6b541840866dd1b32b5e3d8b07d193fda3d50462e7911a4b9109077ceb26d6d01a16ba9401336f1a',1,1,'Personal Access Token','[]',0,'2019-11-19 16:22:51','2019-11-19 16:22:51','2020-11-19 10:22:51'),('866af9b515f3fce3c373b4b14f47feff59c74b9afd6c600a004c7ec2b47b8bf3c5dad56196ec6011',1,1,'Personal Access Token','[]',0,'2019-10-20 15:28:10','2019-10-20 15:28:10','2020-10-20 10:28:10'),('8c577b3b3006b91b27e410881bdd9b4ada9f434edef45fc3676acc87f411d5e6029d084e4534a875',1,1,'Personal Access Token','[]',0,'2019-11-21 15:00:53','2019-11-21 15:00:53','2020-11-21 09:00:53'),('8e736948ffe348235190d605221d38d0266a2ab5bb0ed78b44a4d2da028e976278ba98e607771b4a',1,1,'Personal Access Token','[]',0,'2019-10-19 22:10:26','2019-10-19 22:10:26','2020-10-19 17:10:26'),('9094b5dcbedaeb6a9d9ffdfe8aa57d2671d69b3041403ba1bdee28dbdfe7ada3fd5ace2a9dc228f9',1,1,'Personal Access Token','[]',0,'2019-10-19 21:53:42','2019-10-19 21:53:42','2020-10-19 16:53:42'),('966a28159485b8e11672e19ab45e201cb58974f66ccaa4c1f303f2d2c190452dbfd80e9e9bc806ed',1,1,'Personal Access Token','[]',0,'2019-10-19 21:53:14','2019-10-19 21:53:14','2020-10-19 16:53:14'),('990b1e901660e77d972a1c00b05bb7fd4ace86cc0e76ffa68e2d1cc0a913b28de14a06bcab2f5911',1,1,'Personal Access Token','[]',0,'2019-10-03 02:24:03','2019-10-03 02:24:03','2020-10-02 21:24:03'),('9be0058a0c2b368d8d59bd1eeae138708b8c528be3e6ab323685c964f1fda41bec0dbc2b77a2a029',1,1,'Personal Access Token','[]',0,'2019-10-19 21:52:29','2019-10-19 21:52:29','2020-10-19 16:52:29'),('9cd724f606a64b2414dd4cfe9c71804f829518d804da1f8baf203a95ce030f9d5a2d0ed607cb8ea5',1,1,'Personal Access Token','[]',0,'2019-11-11 15:30:29','2019-11-11 15:30:29','2020-11-11 09:30:29'),('a4dfb0e12b156fa92a7be7becbdf9fbd4349c031cbe57835ecea2c065e3195c35ad08eb87f57fe3f',1,1,'Personal Access Token','[]',0,'2019-10-20 18:58:05','2019-10-20 18:58:05','2020-10-20 13:58:05'),('a8454c104eecc203e00b47aaa24f60432ae5785e950b07b1b3f76f055ee65994f478ee1c763fd884',1,1,'Personal Access Token','[]',0,'2019-10-20 04:19:21','2019-10-20 04:19:21','2020-10-19 23:19:21'),('aaf587cba603894c4908cea9643a9f83dc33c89591d9e1627c169baa9d19f2a0dc14ab2291867eb5',1,1,'Personal Access Token','[]',0,'2019-11-20 20:01:43','2019-11-20 20:01:43','2020-11-20 14:01:43'),('b0ba372056e71bffe9a4648386c5fa00e1a22c6b9cdff38eff0a3286d9339cb0e0e53aad2cd3e2bd',1,1,'Personal Access Token','[]',0,'2019-10-19 23:23:41','2019-10-19 23:23:41','2020-10-19 18:23:41'),('c272d91b9821635826c85da13206b0235ea7c2f734360e233a65d3574631e203edfc403cef9551c1',1,1,'Personal Access Token','[]',0,'2019-10-19 21:56:41','2019-10-19 21:56:41','2020-10-19 16:56:41'),('cda5b2edba7a2f5ee0213fdec566b40c897f68f1414da7cc399a8e6e25954d25fcebb996b23ec78e',1,1,'Personal Access Token','[]',0,'2019-11-20 23:22:03','2019-11-20 23:22:03','2020-11-20 17:22:03'),('ce7b79990ced2ea13f976b816b3ca8cacc9d36f3c4173d167c58dad93bdcbad1d2f5fad46b8c0f96',1,1,'Personal Access Token','[]',0,'2019-10-19 22:08:29','2019-10-19 22:08:29','2020-10-19 17:08:29'),('dea4841e34b24ad6156b616ef838c9b91ea55afda7193b9b5463390369c15d2945e76e7952863b93',1,1,'Personal Access Token','[]',0,'2019-10-16 02:32:07','2019-10-16 02:32:07','2020-10-15 21:32:07'),('ec5179ede1c7de0759321dda2de5557639446b410c7141f2756f84e7b517fabdc5260585bc4aa936',1,1,'Personal Access Token','[]',0,'2019-10-19 01:17:59','2019-10-19 01:17:59','2020-10-18 20:17:59'),('f219631518e88aab1c44e49e3566ab24b66aee23a59b158d95df22ee3842f70cdc6028388dfac5a8',1,1,'Personal Access Token','[]',0,'2019-10-19 21:58:49','2019-10-19 21:58:49','2020-10-19 16:58:49');
+INSERT INTO `oauth_access_tokens` VALUES ('0210c0a25c0859d7c648ede6b28e5ec61614f9e0dcbd348146415c16685070edf112b3508bf0af4c',1,1,'Personal Access Token','[]',0,'2019-10-17 02:27:47','2019-10-17 02:27:47','2020-10-16 21:27:47'),('042d5b0027378061f5f654f70805888542005937e8ca0a6ea8c86aa4400dcf81edd2dd472a100b05',1,1,'Personal Access Token','[]',0,'2019-11-19 15:04:26','2019-11-19 15:04:26','2020-11-19 09:04:26'),('04c0cc8ebcf90403db3c698c1553b003c359bb7b50538a7c0d257d047dac92ba67ffb06c49acd188',1,1,'Personal Access Token','[]',0,'2019-10-19 22:10:58','2019-10-19 22:10:58','2020-10-19 17:10:58'),('04fc201d08a0be21e6e1386a2fd6a79011e4b4845cc7510b8bdf8ef5fa6764ce1a1c70507d2c5ebd',1,1,'Personal Access Token','[]',0,'2019-11-05 17:48:35','2019-11-05 17:48:35','2020-11-05 11:48:35'),('084bf432c0c4c7562ecb006e44a316d0f47de10f007c192f9c449277a2fac63c075e1ebcd5ba678f',1,1,'Personal Access Token','[]',0,'2019-10-01 04:15:33','2019-10-01 04:15:33','2020-09-30 23:15:33'),('092346046f299046c392ca50749c5dd8fd8c76143c0af50c81a8c55c75fc74f224b322bbf993cdcc',1,1,'Personal Access Token','[]',0,'2019-10-19 22:09:28','2019-10-19 22:09:28','2020-10-19 17:09:28'),('18d0a186f30aac118e3575217fcacb63427c3f5520dd2abb3e1726297fd3f3d517f89a6dfee708a0',1,1,'Personal Access Token','[]',0,'2019-10-19 21:58:03','2019-10-19 21:58:03','2020-10-19 16:58:03'),('2c52340407246d6b4d383e91907d91e00a07252a8b79215d6b1ab8ff19534b4c7f62a71382181f9e',1,1,'Personal Access Token','[]',0,'2019-10-19 22:05:39','2019-10-19 22:05:39','2020-10-19 17:05:39'),('363e84527072ca6351d0755fdf64bfcb483bf68666b174ac2f3ca3c3b61fa53012415721b286a6cc',1,1,'Personal Access Token','[]',0,'2019-10-12 21:33:14','2019-10-12 21:33:14','2020-10-12 16:33:14'),('444541f2c2dd5e4d83ad248780ecdbf0679743117d76e607551968b85126ca164c85b48794297286',1,1,'Personal Access Token','[]',0,'2019-10-19 21:58:29','2019-10-19 21:58:29','2020-10-19 16:58:29'),('4448fd631e8bc280c6b1666aa5fb5fbba45babe16fcd4362b72eba1c6a1c8228a3139d97cba1121e',10,1,'Personal Access Token','[]',0,'2019-11-05 22:51:08','2019-11-05 22:51:08','2020-11-05 16:51:08'),('4b48290b1ba4fe14a91b3c79244ee55df679b422c702d223dd628e012973bed2d712f0e340cfa6ba',1,1,'Personal Access Token','[]',0,'2019-10-19 22:09:04','2019-10-19 22:09:04','2020-10-19 17:09:04'),('50c24c2748c51f5c4cb0d69df7b9bad939b4ca4145020b4bdd9b2bda5e5ebf68dd3568b1ae6a5586',1,1,'Personal Access Token','[]',0,'2019-10-16 04:23:11','2019-10-16 04:23:11','2020-10-15 23:23:11'),('545092440429b682cc5875eff548a85b6e4a081f29fca9009c6bfc0f084e30f4f1a75b9111a8d60c',1,1,'Personal Access Token','[]',0,'2019-10-19 22:10:14','2019-10-19 22:10:14','2020-10-19 17:10:14'),('556d93ca1935186ba3cbfb3ad53654dbf75da33ed7b6d7a1db1d52280a8b5bba92171ffcfc122fa4',1,1,'Personal Access Token','[]',0,'2019-10-19 23:25:51','2019-10-19 23:25:51','2020-10-19 18:25:51'),('587a7021f4a1799080be1afd7a2d350d60ef8c0231a6c6c455f0a04760a363e346500a6bd1eb1984',1,1,'Personal Access Token','[]',0,'2019-10-19 22:06:13','2019-10-19 22:06:13','2020-10-19 17:06:13'),('5cad29189559635f140dcddedf64fdb42b3f075bfc62fde4c7a8abc5346d42f596f3a68536f32de5',1,1,'Personal Access Token','[]',0,'2019-10-19 20:25:45','2019-10-19 20:25:45','2020-10-19 15:25:45'),('6b541840866dd1b32b5e3d8b07d193fda3d50462e7911a4b9109077ceb26d6d01a16ba9401336f1a',1,1,'Personal Access Token','[]',0,'2019-11-19 16:22:51','2019-11-19 16:22:51','2020-11-19 10:22:51'),('750047fceb50ad1b4ef6179d3636739e953be07ad69ceaca23ff7016a9721fe00de57f6ff98a5a67',1,1,'Personal Access Token','[]',0,'2019-11-26 02:21:16','2019-11-26 02:21:16','2020-11-25 20:21:16'),('866af9b515f3fce3c373b4b14f47feff59c74b9afd6c600a004c7ec2b47b8bf3c5dad56196ec6011',1,1,'Personal Access Token','[]',0,'2019-10-20 15:28:10','2019-10-20 15:28:10','2020-10-20 10:28:10'),('8e736948ffe348235190d605221d38d0266a2ab5bb0ed78b44a4d2da028e976278ba98e607771b4a',1,1,'Personal Access Token','[]',0,'2019-10-19 22:10:26','2019-10-19 22:10:26','2020-10-19 17:10:26'),('9094b5dcbedaeb6a9d9ffdfe8aa57d2671d69b3041403ba1bdee28dbdfe7ada3fd5ace2a9dc228f9',1,1,'Personal Access Token','[]',0,'2019-10-19 21:53:42','2019-10-19 21:53:42','2020-10-19 16:53:42'),('9329ea21d34e37377e3c63914b32d5f5dae8a4f6d38739e3855b22a58250167fe1d709d3939494d2',1,1,'Personal Access Token','[]',0,'2019-11-21 01:53:41','2019-11-21 01:53:41','2020-11-20 19:53:41'),('966a28159485b8e11672e19ab45e201cb58974f66ccaa4c1f303f2d2c190452dbfd80e9e9bc806ed',1,1,'Personal Access Token','[]',0,'2019-10-19 21:53:14','2019-10-19 21:53:14','2020-10-19 16:53:14'),('990b1e901660e77d972a1c00b05bb7fd4ace86cc0e76ffa68e2d1cc0a913b28de14a06bcab2f5911',1,1,'Personal Access Token','[]',0,'2019-10-03 02:24:03','2019-10-03 02:24:03','2020-10-02 21:24:03'),('9be0058a0c2b368d8d59bd1eeae138708b8c528be3e6ab323685c964f1fda41bec0dbc2b77a2a029',1,1,'Personal Access Token','[]',0,'2019-10-19 21:52:29','2019-10-19 21:52:29','2020-10-19 16:52:29'),('9cd724f606a64b2414dd4cfe9c71804f829518d804da1f8baf203a95ce030f9d5a2d0ed607cb8ea5',1,1,'Personal Access Token','[]',0,'2019-11-11 15:30:29','2019-11-11 15:30:29','2020-11-11 09:30:29'),('a4dfb0e12b156fa92a7be7becbdf9fbd4349c031cbe57835ecea2c065e3195c35ad08eb87f57fe3f',1,1,'Personal Access Token','[]',0,'2019-10-20 18:58:05','2019-10-20 18:58:05','2020-10-20 13:58:05'),('a8454c104eecc203e00b47aaa24f60432ae5785e950b07b1b3f76f055ee65994f478ee1c763fd884',1,1,'Personal Access Token','[]',0,'2019-10-20 04:19:21','2019-10-20 04:19:21','2020-10-19 23:19:21'),('b0ba372056e71bffe9a4648386c5fa00e1a22c6b9cdff38eff0a3286d9339cb0e0e53aad2cd3e2bd',1,1,'Personal Access Token','[]',0,'2019-10-19 23:23:41','2019-10-19 23:23:41','2020-10-19 18:23:41'),('bb99e4a54209cb3a26952af43a9bdebb1d7c90efc560959dd78170f40c735752a64affb5818ca1a8',1,1,'Personal Access Token','[]',0,'2019-11-23 15:03:29','2019-11-23 15:03:29','2020-11-23 09:03:29'),('c272d91b9821635826c85da13206b0235ea7c2f734360e233a65d3574631e203edfc403cef9551c1',1,1,'Personal Access Token','[]',0,'2019-10-19 21:56:41','2019-10-19 21:56:41','2020-10-19 16:56:41'),('ce7b79990ced2ea13f976b816b3ca8cacc9d36f3c4173d167c58dad93bdcbad1d2f5fad46b8c0f96',1,1,'Personal Access Token','[]',0,'2019-10-19 22:08:29','2019-10-19 22:08:29','2020-10-19 17:08:29'),('ddc0d3b7fcd63140d6e24b63c87cd5ab0cb5818e7f2426c0dde8e56540858f3a68e5998773c314c9',1,1,'Personal Access Token','[]',0,'2019-11-20 02:56:29','2019-11-20 02:56:29','2020-11-19 20:56:29'),('dea4841e34b24ad6156b616ef838c9b91ea55afda7193b9b5463390369c15d2945e76e7952863b93',1,1,'Personal Access Token','[]',0,'2019-10-16 02:32:07','2019-10-16 02:32:07','2020-10-15 21:32:07'),('e8ada755b859e66ef3f917acd3fc357d09c447363b48b5159d70132862e0461e82ead8005fb03776',1,1,'Personal Access Token','[]',0,'2019-11-22 14:08:26','2019-11-22 14:08:26','2020-11-22 08:08:26'),('ec5179ede1c7de0759321dda2de5557639446b410c7141f2756f84e7b517fabdc5260585bc4aa936',1,1,'Personal Access Token','[]',0,'2019-10-19 01:17:59','2019-10-19 01:17:59','2020-10-18 20:17:59'),('f219631518e88aab1c44e49e3566ab24b66aee23a59b158d95df22ee3842f70cdc6028388dfac5a8',1,1,'Personal Access Token','[]',0,'2019-10-19 21:58:49','2019-10-19 21:58:49','2020-10-19 16:58:49'),('fc2591d52f52f5f0fc5cef62ec4303863cdac34eac699148b1ae68307e4d3c29a819b06b355c05ab',1,1,'Personal Access Token','[]',0,'2019-11-20 02:55:22','2019-11-20 02:55:22','2020-11-19 20:55:22');
 /*!40000 ALTER TABLE `oauth_access_tokens` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -390,10 +482,10 @@ DROP TABLE IF EXISTS `oauth_auth_codes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `oauth_auth_codes` (
-  `id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `user_id` bigint(20) NOT NULL,
   `client_id` int(10) unsigned NOT NULL,
-  `scopes` text COLLATE utf8mb4_unicode_ci,
+  `scopes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `revoked` tinyint(1) NOT NULL,
   `expires_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -419,9 +511,9 @@ DROP TABLE IF EXISTS `oauth_clients`;
 CREATE TABLE `oauth_clients` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `secret` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `redirect` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `secret` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `redirect` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `personal_access_client` tinyint(1) NOT NULL,
   `password_client` tinyint(1) NOT NULL,
   `revoked` tinyint(1) NOT NULL,
@@ -477,8 +569,8 @@ DROP TABLE IF EXISTS `oauth_refresh_tokens`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `oauth_refresh_tokens` (
-  `id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `access_token_id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `access_token_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `revoked` tinyint(1) NOT NULL,
   `expires_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -503,8 +595,8 @@ DROP TABLE IF EXISTS `password_resets`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `password_resets` (
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   KEY `password_resets_email_index` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -528,7 +620,7 @@ DROP TABLE IF EXISTS `payment_methods`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `payment_methods` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_spanish2_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
   `company_id` int(10) unsigned NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -559,7 +651,7 @@ DROP TABLE IF EXISTS `period_types`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `period_types` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) COLLATE utf8_spanish2_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
   `company_id` int(10) unsigned NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -590,7 +682,7 @@ DROP TABLE IF EXISTS `sexs`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sexs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) COLLATE utf8_spanish2_ci NOT NULL,
+  `name` varchar(45) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
@@ -660,7 +752,7 @@ CREATE TABLE `work_documentations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `work_id` int(11) unsigned NOT NULL,
   `document_id` int(11) unsigned NOT NULL,
-  `other_name` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `other_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -690,7 +782,7 @@ DROP TABLE IF EXISTS `work_shifts`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `work_shifts` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_spanish2_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
   `company_id` int(10) unsigned NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -721,8 +813,8 @@ DROP TABLE IF EXISTS `work_states`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `work_states` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) COLLATE utf8_spanish2_ci NOT NULL,
-  `description` varchar(45) COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `description` varchar(45) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
@@ -752,13 +844,13 @@ CREATE TABLE `works` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `work_status_id` int(11) unsigned DEFAULT NULL,
   `company_id` int(10) unsigned DEFAULT NULL,
-  `code` varchar(45) COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `code` varchar(45) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
   `discharge_date` date DEFAULT NULL,
   `termination_date` date DEFAULT NULL,
   `reentry_date` date DEFAULT NULL,
-  `name` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `first_name` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `last_name` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `first_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `last_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
   `contract_type_id` int(10) unsigned DEFAULT NULL,
   `period_type_id` int(10) unsigned DEFAULT NULL,
   `real_daily_salary` decimal(20,2) DEFAULT NULL,
@@ -770,31 +862,31 @@ CREATE TABLE `works` (
   `employee_type_id` int(10) unsigned DEFAULT NULL,
   `payment_method_id` int(10) unsigned DEFAULT NULL,
   `work_shift_id` int(10) unsigned DEFAULT NULL,
-  `number_afore` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `social_security_number` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `rfc` varchar(13) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `curp` varchar(22) COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `number_afore` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `social_security_number` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `rfc` varchar(13) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `curp` varchar(22) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
   `sex_id` int(11) unsigned DEFAULT NULL,
-  `birth_city` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `birth_city` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
   `birth_date` date DEFAULT NULL,
-  `umf` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `fathers_name` varchar(255) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `mothers_name` varchar(255) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `current_address` varchar(255) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `current_population` varchar(255) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `current_state` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `cp` varchar(10) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `telephone` varchar(20) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `back_electronic_payment` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `acount_number` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `branch_office` varchar(50) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `fonacot_number` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `email` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `key_account` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `state` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `infonavit_credit_number` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `umf` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `fathers_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `mothers_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `current_address` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `current_population` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `current_state` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `cp` varchar(10) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `telephone` varchar(20) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `back_electronic_payment` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `acount_number` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `branch_office` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `fonacot_number` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `email` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `key_account` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `state` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `infonavit_credit_number` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
   `discount_type_id` int(10) unsigned DEFAULT NULL,
-  `monthly_factor` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `monthly_factor` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
@@ -823,8 +915,8 @@ CREATE TABLE `works` (
   CONSTRAINT `workers_sex_id_fk` FOREIGN KEY (`sex_id`) REFERENCES `sexs` (`id`),
   CONSTRAINT `workers_work_shift_id_fk` FOREIGN KEY (`work_shift_id`) REFERENCES `work_shifts` (`id`),
   CONSTRAINT `works_company_id_fk` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`),
-  CONSTRAINT `works_work_status_id_fk` FOREIGN KEY (`work_status_id`) REFERENCES `work_states` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+  CONSTRAINT `works_work_status_id_fk` FOREIGN KEY (`work_status_id`) REFERENCES `work_states` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -833,7 +925,7 @@ CREATE TABLE `works` (
 
 LOCK TABLES `works` WRITE;
 /*!40000 ALTER TABLE `works` DISABLE KEYS */;
-INSERT INTO `works` VALUES (6,1,2,'807579','2019-11-13',NULL,NULL,'SAMUEL','SAMUEL','PLACIDO',11,2,23.42,122.23,121.22,5,5,8,4,18,5,'32234234','32123423423','SCC3WCE4WEC34','REPS890903HVZGLM06',1,'COATZACOALCOS','2019-11-21','2323r23','ascacs','ascacs','REPUBLICA DEL SALVADOR, TIERRA Y LIBERTAD',NULL,'VERACRUZ','96580','232323','we232323','232323','232323','232323','samuel43_7@hotmail.com','2323','2323','2323',6,'23232323','2019-11-11 11:55:09','2019-11-11 11:55:09',NULL),(87,3,2,'11','2011-01-03','1969-12-31','1969-12-31','Rodolfo Guzman','Hernandez','Lucas',12,2,NULL,NULL,630.75,5,4,5,NULL,18,5,NULL,'00000000001','GXXX5712289X7','GXXX571228HDFMND09',2,'MERIDA','1969-12-31','0',NULL,NULL,'DOMICILIO No. 001','LA HUERTA','JAL','40001',NULL,NULL,NULL,NULL,NULL,'correox@email.com.mx','012345678910111213',NULL,NULL,NULL,NULL,'2019-11-21 11:28:52','2019-11-21 11:28:52',NULL),(88,3,2,'12','1969-12-31','1969-12-31','1969-12-31','Hector','Arredondo','Toro',12,2,NULL,NULL,333.00,6,5,6,NULL,18,5,NULL,'00000000002','AXXX652309TQ1','AXXX650309HJCSPR08',2,'MERIDA','1965-09-03','0','JUAN M','MARTHA N','DOMICILIO No. 002','TONALA','JAL','40002','3#########',NULL,NULL,NULL,NULL,'correox@email.com.mx','012345678910111213',NULL,NULL,NULL,NULL,'2019-11-21 11:28:52','2019-11-21 11:28:52',NULL),(89,5,2,'13','2013-01-03','1969-12-31','1969-12-31','Jose Luis','Farias','Mezcua',12,2,NULL,NULL,203.51,5,6,7,NULL,18,5,NULL,'00000000003','JXXX8009307H0','JXXX650330HJCMNS01',2,'MONTERREY','1969-12-31','0','RAUL M','LUISA N','DOMICILIO No. 003','LA HUERTA','JAL','40003','3#########',NULL,NULL,NULL,NULL,'correox@email.com.mx','012345678910111213',NULL,NULL,NULL,NULL,'2019-11-21 11:28:52','2019-11-21 11:28:52',NULL),(90,5,2,'14','2013-01-01','1969-12-31','1969-12-31','Juan Alberto','Lumbreras','Lorenzo',12,2,NULL,NULL,2522.16,5,5,8,NULL,18,5,NULL,'00000000004','LXXX5810024U1','LXXX581002HGTZZN07',2,'LEON','1958-02-10','0','PEDRO M','KAREN M','DOMICILIO No. 004','LA HUERTA','JAL','40004',NULL,NULL,NULL,NULL,NULL,'correox@email.com.mx','012345678910111213',NULL,NULL,NULL,NULL,'2019-11-21 11:28:52','2019-11-21 11:28:52',NULL),(91,3,2,'15','2011-01-02','1969-12-31','1969-12-31','Jose Luis','Lizarraga','Malandez',12,2,NULL,NULL,2103.13,5,6,9,NULL,18,5,NULL,'00000000005','MXXX600629QS4','MXXX600629HJCXRN09',2,'VERACRUZ','1969-12-31','0','JOAQUIN N','VICTORIA M','DOMICILIO No. 005','LA HUERTA','JAL','40005',NULL,NULL,NULL,NULL,NULL,'correox@email.com.mx','012345678910111213',NULL,NULL,NULL,NULL,'2019-11-21 11:28:52','2019-11-21 11:28:52',NULL);
+INSERT INTO `works` VALUES (6,1,2,'807579','2019-11-13',NULL,NULL,'SAMUEL','SAMUEL','PLACIDO',11,2,23.42,122.23,121.22,5,5,8,4,18,5,'32234234','32123423423','SCC3WCE4WEC34','REPS890903HVZGLM06',1,'COATZACOALCOS','2019-11-21','2323r23','ascacs','ascacs','REPUBLICA DEL SALVADOR, TIERRA Y LIBERTAD',NULL,'VERACRUZ','96580','232323','we232323','232323','232323','232323','samuel43_7@hotmail.com','2323','2323','2323',6,'23232323','2019-11-11 11:55:09','2019-11-11 11:55:09',NULL);
 /*!40000 ALTER TABLE `works` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -846,4 +938,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-11-21 11:41:39
+-- Dump completed on 2019-11-25 22:49:46
