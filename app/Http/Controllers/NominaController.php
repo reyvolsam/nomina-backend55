@@ -27,7 +27,20 @@ class NominaController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $list = [];
+            $list = Nomina::with('nomina_excel', 'nomina_dispersion')->get();
+            if(count($list) > 0){
+                $this->res['data'] = $list;
+            } else {
+                $this->res['message'] = 'No hay registros de Nomina hasta el momento.';
+            }
+            $this->status_code = 200;
+        } catch(\Exception $e) {
+            $this->res['message'] = 'Error en la Base de Datos.'.$e;
+            $this->status_code = 500;
+        }
+        return response()->json($this->res, $this->status_code);
     }
 
     /**
@@ -74,6 +87,7 @@ class NominaController extends Controller
                             $nomina_excel = new NominaExcel();
                             $nomina_excel->nomina_id = $nomina->id;
                             $nomina_excel->file_url = $final_image_name;
+                            $nomina_excel->name = $vef;
                             $nomina_excel->save();
                         } else {
                             $this->res['message'] = 'No se puedo procesar la solicitud.';            
@@ -96,6 +110,7 @@ class NominaController extends Controller
                             $nomina_dispersion = new NominaDispersion();
                             $nomina_dispersion->nomina_id = $nomina->id;
                             $nomina_dispersion->file_url = $final_image_name;
+                            $nomina_dispersion->name = $vdf;
                             $nomina_dispersion->save();
                         } else {
                             $this->res['message'] = 'No se puedo procesar la solicitud.';            
