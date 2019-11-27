@@ -11,3 +11,6 @@ npm-debug.log
 yarn-error.log
 .env
 /config/database.php
+.DS_Store
+/public/nomina_excel
+/public/dispersion_files

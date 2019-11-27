@@ -32,6 +32,16 @@ class NominaController extends Controller
             $list = Nomina::with('nomina_excel', 'nomina_dispersion')->get();
             if(count($list) > 0){
                 $this->res['data'] = $list;
+
+                foreach ($list as $kl => $vl) {
+                    if(count($vl->nomina_excel) > 0){
+                        foreach ($vl->nomina_excel as $ne => $vne) $vne->file_url = asset('nomina_excel/'.$vne->file_url);    
+                    }
+                    if(count($vl->nomina_dispersion) > 0){
+                        foreach ($vl->nomina_dispersion as $ne => $vne) $vne->file_url = asset('dispersion_files/'.$vne->file_url);    
+                    }
+                }
+
             } else {
                 $this->res['message'] = 'No hay registros de Nomina hasta el momento.';
             }
