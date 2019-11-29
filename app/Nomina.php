@@ -15,10 +15,6 @@ class Nomina extends Model
     protected $guarded = ['id'];
     protected $dates = ['deleted_at'];
 
-    public function nomina_excel(){
-        return $this->hasMany('App\NominaExcel');
-    }//nomina_excel()
-
     public function nomina_dispersion(){
         return $this->hasMany('App\NominaDispersion');
     }//nomina_dispersion()

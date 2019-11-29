@@ -29,17 +29,11 @@ class NominaController extends Controller
     {
         try {
             $list = [];
-            $list = Nomina::with('nomina_excel', 'nomina_dispersion')->get();
+            $list = Nomina::with('nomina_dispersion')->get();
             if(count($list) > 0){
                 $this->res['data'] = $list;
 
                 foreach ($list as $kl => $vl) {
-                    if(count($vl->nomina_excel) > 0){
-                        foreach ($vl->nomina_excel as $ne => $vne){
-                            $vne->file_url = asset('nomina_excel/'.$vne->file_url);
-                            $vne->deleted = false;
-                        }
-                    }
                     if(count($vl->nomina_dispersion) > 0){
                         foreach ($vl->nomina_dispersion as $ne => $vne){
                             $vne->file_url = asset('dispersion_files/'.$vne->file_url);
@@ -100,18 +94,6 @@ class NominaController extends Controller
                     $nomina->save();
                     
                     $this->uploadNominaFiles($nomina->id);
-                    
-                    if(isset($_REQUEST['excel_edit'])){
-                        $excel_edit = $_REQUEST['excel_edit'];
-                        if(count($excel_edit) > 0){
-                            foreach ($excel_edit as $kee => $vee) {
-                                if($vee['deleted'] == 'true'){
-                                    $deleteN = NominaExcel::find($vee['id']);
-                                    if($deleteN) $deleteN->delete();
-                                }
-                            }
-                        }
-                    }
 
                     if(isset($_REQUEST['dispersion_edit'])){
                         $dispersion_edit = $_REQUEST['dispersion_edit'];
@@ -139,31 +121,6 @@ class NominaController extends Controller
     private function uploadNominaFiles($nomina_id)
     {
         if(count($_FILES) > 0 ){
-
-            if(isset($_FILES['excel_files'])){
-                if(count($_FILES['excel_files']['name'])){
-                    foreach ($_FILES['excel_files']['name'] as $kef => $vef) {
-                        $porciones = explode(".", $vef);
-                        $ext = $porciones[count($porciones)-1];
-                        unset($porciones[count($porciones)-1]);
-
-                        list($txt, $ext) = explode(".", $vef);
-
-                        $rand = rand(1, 500);
-                        $final_image_name = $rand."_".time().".".$ext;
-                        if(move_uploaded_file($_FILES['excel_files']['tmp_name'][$kef], 'nomina_excel/'.basename($final_image_name))){
-                            $nomina_excel = new NominaExcel();
-                            $nomina_excel->nomina_id = $nomina_id;
-                            $nomina_excel->file_url = $final_image_name;
-                            $nomina_excel->name = $vef;
-                            $nomina_excel->save();
-                        } else {
-                            $this->res['message'] = 'No se puedo procesar la solicitud.';            
-                            $this->status_code = 202;
-                        }
-                    }
-                }
-            }
 
             if(isset($_FILES['dispersion_files'])){
                 if(count($_FILES['dispersion_files']['name'])){
@@ -224,22 +181,6 @@ class NominaController extends Controller
      */
     public function update($id)
     {
-        try {
-            $this->res['data'] = $_FILES;
-            $this->res['input'] = $_REQUEST;
-            $this->res['OK'] = 'si es tes';
-
-            /*if(count($_FILES) > 0 ){
-
-
-                
-            }*/
-            $this->status_code = 200;
-        } catch(\Exception $e) {
-            $this->res['message'] = 'Error en la Base de Datos.'.$e;
-            $this->status_code = 500;
-        }
-        return response()->json($this->res, $this->status_code);
     }
 
     /**
@@ -255,14 +196,7 @@ class NominaController extends Controller
                 $nomina = Nomina::find($id);
                 if($nomina){
                     $nomina->delete();
-                    $nomina_excel = NominaExcel::where('nomina_id', $id)->get();
-                    if(count($nomina_excel) > 0){
-                        foreach ($nomina_excel as $kne => $vne) {
-                            $nw = NominaExcel::find($vne->id);
-                            if($nw) $nw->delete();    
-                        }
-                    }
-
+                    
                     $nomina_dispersion = NominaDispersion::where('nomina_id', $id)->get();
                     if(count($nomina_dispersion) > 0){
                         foreach ($nomina_dispersion as $knd => $vnd) {
