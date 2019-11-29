@@ -201,9 +201,54 @@ class WorkController extends Controller
     {
         try {
             $this->res['data'] = $_FILES;
+            $this->res['request'] = $_REQUEST;
             $employee_id = $_REQUEST['employee_id'];
             //$employee_id = 6;
+
+            if(isset($_REQUEST['ine_file_url_deleted'])){
+                if($_REQUEST['ine_file_url_deleted'] == 'true'){
+                    $work_file = Work::find($employee_id);
+                    if($work_file){
+                        unlink(asset('employeeDocs/'.$work_file->ine_file_url));
+                        $work_file->ine_file_url = null;
+                        $work_file->save();
+                    }
+                }
+            }
             
+            if(isset($_REQUEST['curp_file_url_deleted'])){
+                if($_REQUEST['curp_file_url_deleted'] == 'true'){
+                    $work_file = Work::find($employee_id);
+                    if($work_file){
+                        unlink(asset('employeeDocs/'.$work_file->curp_file_url));
+                        $work_file->curp_file_url = null;
+                        $work_file->save();
+                    }
+                }
+            }
+
+            if(isset($_REQUEST['address_file_url_deleted'])){
+                if($_REQUEST['address_file_url_deleted'] == 'true'){
+                    $work_file = Work::find($employee_id);
+                    if($work_file){
+                        unlink(asset('employeeDocs/'.$work_file->address_file_url));
+                        $work_file->address_file_url = null;
+                        $work_file->save();
+                    }
+                }
+            }
+
+            if(isset($_REQUEST['contract_file_url_deleted'])){
+                if($_REQUEST['contract_file_url_deleted'] == 'true'){
+                    $work_file = Work::find($employee_id);
+                    if($work_file){
+                        unlink(asset('employeeDocs/'.$work_file->contract_file_url));
+                        $work_file->contract_file_url = null;
+                        $work_file->save();
+                    }
+                }
+            }
+
             $work = Work::find($employee_id);
             if($work){
                 if(isset($_FILES['ine_file'])){
@@ -420,7 +465,9 @@ class WorkController extends Controller
                 if(!$validator->fails()) {
                     $work_exist = Work::find($id);
                     if($work_exist){
-                        Work::updateOrCreate(['id' => $id], $this->request->all());
+                        $work_id = Work::updateOrCreate(['id' => $id], $this->request->all())->id;
+                        
+                        $this->res['employee_id'] = $work_id;
                         $this->res['message'] = 'Trabajador actualizado correctamente.';
                         $this->status_code = 200;
                     } else {
