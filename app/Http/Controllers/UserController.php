@@ -294,6 +294,24 @@ class UserController extends Controller
                             $user->active               = $data['active'];
                             $user->save();
 
+                            //SI EL USUARIO A CREAR ES ROOT NO SE COMPANY USER
+                            if($data['group_id'] != 4){
+                                $CompanyUser_exist = CompanyUser::withTrashed()
+                                                            //->where('company_id', '=', $data['company_id'])
+                                                            ->where('user_id', '=', $user->id)
+                                                            ->get();
+                                $CompanyUser_exist->forceDelete();
+
+                                if(count($CompanyUser_exist) > 0){
+                                    foreach ($data['assigned_companies'] as $kac => $vav) {
+                                        $CompanyUser = new CompanyUser();
+                                        $CompanyUser->user_id = $user->id;
+                                        $CompanyUser->company_id = $vav->id;
+                                        $CompanyUser->save();   
+                                    }
+                                }
+                            }
+
                             $this->res['message'] = 'Usuario actualizado correctamente.';
                             $this->status_code = 201;
                         } else {
