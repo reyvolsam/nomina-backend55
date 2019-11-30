@@ -67,9 +67,8 @@ class LoginController extends Controller
             ], $messages);
 
             $usr = User::with(['Company' =>
-                        function ($query){
-                            $query->select('user_id', 'id');
-                        }])
+                        function ($query){ $query->select('user_id', 'id');}
+                        , 'Group'])
                         ->where('email', 'LIKE', $this->request->input('email'))->first();
 
             if($usr){
@@ -78,6 +77,7 @@ class LoginController extends Controller
                         if(Auth::attempt(['email' => $this->request->input('email'), 'password' =>  $this->request->input('password')])) {
                             //$this->res['companies'] = $usr->Company;
                             $this->res['profile_id'] = $this->request->user()->group_id;
+                            $this->res['profile'] = $this->request->user()->group->name;
                             $this->res['name'] = $this->request->user()->name;
                             $this->res['email'] = $this->request->user()->email;
                             $this->res['avatar'] = $this->request->user()->avatar;

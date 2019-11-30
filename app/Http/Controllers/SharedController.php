@@ -52,6 +52,7 @@ class SharedController extends Controller
             $resCatalog = $this->getCompanyCatalog($user);
             if($resCatalog['status']){
                 $res['data'] = $resCatalog['companies'];
+                $res['message'] = $resCatalog['message'];
                 $res['status'] = true;
                 $res['status_code'] = 200;
             } else {
@@ -78,11 +79,10 @@ class SharedController extends Controller
             //ROOT
             if($user->group_id == 4){
                 $companies = Company::all();
-                $res['status'] = true;
-            }
 
-            //ADMINISTRATOR
-            if($user->group_id == 1){
+                if(count($companies) == 0) $res['message'] = 'No hay empresa hasta el momento.';
+                $res['status'] = true;
+            } else {
                 $user = User::find($this->request->user()->id);
                 $companies = $user->CompanyUser()->get();
                 if(count($companies) > 0){
@@ -212,79 +212,91 @@ class SharedController extends Controller
 
             array_push($menu, $add);
 
-            //ROOT O ADMINISTRADOR
-            if($this->request->user()->group_id == 4 || $this->request->user()->group_id == 1){
-                $add = [
-                    "name" => 'Usuarios',
-                    "icon" => 'how_to_reg',
-                    "active" => false,
-                    "url" => '/user',
-                    "submenu" => []
-                ];
+            $add = [
+                "name" => 'Usuarios',
+                "icon" => 'how_to_reg',
+                "active" => false,
+                "url" => '/user',
+                "submenu" => []
+            ];
+            array_push($menu, $add);
 
-                array_push($menu, $add);
-
+            if($this->request->user()->group_id != 3){
                 $add =  [
                     "name" => 'Catalogos',
                     "url" => null,
                     "icon" => 'list',
                     "active" => false,
-                    "submenu" => [
-                        [
-                            "name"  => 'Empresas',
-                            "url"   => '/catalog/company',
-                            "icon"  => 'list'
-                        ],
-                        [
+                    "submenu" => []
+                ];
+
+                array_push($menu, $add);
+
+                if($this->request->user()->group_id == 1 || $this->request->user()->group_id == 4){
+                    $add = [
+                        "name"  => 'Empresas',
+                        "url"   => '/catalog/company',
+                        "icon"  => 'list'
+                    ];
+                    array_push($menu[2]['submenu'], $add);
+                }
+
+                $item = [
                             "name"  => 'Departamentos',
                             "url"   => '/catalog/departments',
                             "icon"  => 'list'
-                        ],
-                        [
+                ];
+                array_push($menu[2]['submenu'], $item);
+                $item = [
                             "name"  => 'Puestos',
                             "url"   => '/catalog/jobs',
                             "icon"  => 'list'
-                        ],
-                        [
+                ];
+                array_push($menu[2]['submenu'], $item);
+                $item = [
                             "name"  => 'Tipos de Contrato',
                             "url"   => '/catalog/contractTypes',
                             "icon"  => 'list'
-                        ],
-                        [
+                ];
+                array_push($menu[2]['submenu'], $item);
+                $item = [
                             "name"  => "Base de Cotizacón",
                             "url"   => "/catalog/contributionBases", 
                             "icon"  => "list"
-                        ],
-                        [
+                ];
+                array_push($menu[2]['submenu'], $item);
+                $item = [
                             "name"  => "Tipos de Empleado",
                             "url"   => "/catalog/employeeTypes", 
                             "icon"  => "list"
-                        ],
-                        [
+                ];
+                array_push($menu[2]['submenu'], $item);
+                $item = [
                             "name"  => "Turno de Trabajo",
                             "url"   => "/catalog/workShifts", 
                             "icon"  => "list"
-                        ],
-                        [
+                ];
+                array_push($menu[2]['submenu'], $item);
+                $item = [
                             "name"  => "Metodo de Pago",
                             "url"   => "/catalog/paymentMethods", 
                             "icon"  => "list"
-                        ],
-                        [
+                ];
+                array_push($menu[2]['submenu'], $item);
+                $item = [
                             "name"  => "Tipos de Descuento",
                             "url"   => "/catalog/discountTypes", 
                             "icon"  => "list"
-                        ],
-                        [
+                ];
+                array_push($menu[2]['submenu'], $item);
+                $item = [
                             "name"  => "Tipos de Periodo",
                             "url"   => "/catalog/periodTypes", 
                             "icon"  => "list"
-                        ]
-                    ]
                 ];
+                array_push($menu[2]['submenu'], $item);
             }
 
-            array_push($menu, $add);
 
             $add = [
                 "name"      => "Empleados",

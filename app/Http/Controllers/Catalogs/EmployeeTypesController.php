@@ -35,18 +35,15 @@ class EmployeeTypesController extends Controller
         try{
             $employee_types_list = [];
 
-            //ADMINISTRADOR
-            if($this->request->user()->group_id == 1){
-
-                $user = User::find($this->request->user()->id);
-                $companies = $user->CompanyUser()->get();
-
-                $employee_types_list = EmployeeTypes::with('Company')->whereIn('company_id', $companies)->get();
-            }
-
             //ROOT
             if($this->request->user()->group_id == 4){
                 $employee_types_list = EmployeeTypes::with('Company')->get();
+            } else {
+                $user = User::find($this->request->user()->id);
+                $companies = $user->CompanyUser()->get();
+                $ids = [];
+                foreach ($companies as $kc => $vc) array_push($ids, $vc['id']);
+                $employee_types_list = EmployeeTypes::with('Company')->whereIn('company_id', $ids)->get();
             }
             
             if(count($employee_types_list) > 0){

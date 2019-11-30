@@ -34,21 +34,17 @@ class PeriodTypesController extends Controller
         try{
             $period_types_list = [];
 
-            //ADMINISTRADOR
-            if($this->request->user()->group_id == 1){
-
-                $user = User::find($this->request->user()->id);
-                $companies = $user->CompanyUser()->get();
-
-                $period_types_list = PeriodTypes::with('Company')->whereIn('company_id', $companies)->get();
-
-            }
-
             //ROOT
             if($this->request->user()->group_id == 4){
                 $period_types_list = PeriodTypes::with('Company')->get();
+            } else {
+                $user = User::find($this->request->user()->id);
+                $companies = $user->CompanyUser()->get();
+                $ids = [];
+                foreach ($companies as $kc => $vc) array_push($ids, $vc['id']);
+                $period_types_list = PeriodTypes::with('Company')->whereIn('company_id', $ids)->get();
+
             }
-            
 
             if(count($period_types_list) > 0){
                 foreach ($period_types_list as $kc => $vc) $vc->loader = false;

@@ -34,18 +34,15 @@ class DiscountTypesController extends Controller
         try{
             $discount_types_list = [];
 
-            //ADMINISTRADOR
-            if($this->request->user()->group_id == 1){
-
-                $user = User::find($this->request->user()->id);
-                $companies = $user->CompanyUser()->get();
-
-                $discount_types_list = DiscountTypes::with('Company')->whereIn('company_id', $companies)->get();
-            }
-
             //ROOT
             if($this->request->user()->group_id == 4){
                 $discount_types_list = DiscountTypes::with('Company')->get();
+            } else {
+                $user = User::find($this->request->user()->id);
+                $companies = $user->CompanyUser()->get();
+                $ids = [];
+                foreach ($companies as $kc => $vc) array_push($ids, $vc['id']);
+                $discount_types_list = DiscountTypes::with('Company')->whereIn('company_id', $ids)->get();
             }
 
             if(count($discount_types_list) > 0){

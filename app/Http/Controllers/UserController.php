@@ -35,7 +35,26 @@ class UserController extends Controller
         try{
             $user_list = [];
 
-            $user_list = User::with('Group', 'assigned_companies')->select('id', 'name', 'email', 'group_id', 'default_company_id', 'active')->jsonPaginate();
+            $user_list = User::with('Group', 'assigned_companies')->select('id', 'name', 'email', 'group_id', 'default_company_id', 'active');
+
+            //ROOT 
+            if($this->request->user()->group_id == 4){}
+
+            //ADMINISTRADOR
+            if($this->request->user()->group_id == 1){
+                $user_list = $user_list->where('group_id', '!=', 4);
+            }
+            //PATRON
+            if($this->request->user()->group_id == 2){
+                $user_list = $user_list->where('group_id', 2);
+            }
+
+            //EJECUTIVO
+            if($this->request->user()->group_id == 3){
+                $user_list = $user_list->where('group_id', 3);
+            }
+
+            $user_list = $user_list->jsonPaginate();
 
             if(count($user_list) > 0){
 
@@ -54,9 +73,10 @@ class UserController extends Controller
         return response()->json($this->res, $this->status_code);
     }
 
-    public function searchCompanies($company)
+    public function searchCompanies()
     {
         try{
+            $company = $this->request->input('company');
             $companies_list = [];
             
             //ROOT
@@ -68,7 +88,13 @@ class UserController extends Controller
                 $user = User::find($this->request->user()->id);
                 $companies_list = $user->CompanyUser()->where('name', 'LIKE', '%'.$company.'%')->get();
             }
-            
+
+            //PATRON
+            if($this->request->user()->group_id == 2 || $this->request->user()->group_id == 3){
+                $user = User::find($this->request->user()->id);
+                $companies_list = $user->CompanyUser()->get();
+            }
+
             if(count($companies_list) > 0){
                 $this->res['data'] = $companies_list;
                 $this->status_code = 200;
@@ -76,7 +102,6 @@ class UserController extends Controller
                 $this->status_code = 201;
                 $this->res['message'] = 'No hay empresas con el criterio de busqueda indicado.';
             }
-
         } catch(\Exception $e) {
             $this->res['message'] = 'Error en la Base de Datos.'.$e;
             $this->status_code = 500;

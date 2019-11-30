@@ -80,7 +80,13 @@ class WorkController extends Controller
             $work_list = $work_list->jsonPaginate();
 
             if(count($work_list) > 0){
-                foreach ($work_list as $kul => $vul) $vul->loader = false;
+                foreach ($work_list as $kul => $vul){
+                    $vul->loader = false;
+                    if($vul->ine_file_url != null) $vul->ine_file_url = asset('employeeDocs/'.$vul->ine_file_url);
+                    if($vul->curp_file_url != null) $vul->curp_file_url = asset('employeeDocs/'.$vul->curp_file_url);
+                    if($vul->address_file_url != null) $vul->address_file_url = asset('employeeDocs/'.$vul->address_file_url);
+                    if($vul->contract_file_url != null) $vul->contract_file_url = asset('employeeDocs/'.$vul->contract_file_url);
+                }
                 $this->res['data'] = $work_list;
             } else {
                 if($work_status_id == 1) $this->res['message'] = 'No hay Trabajadores en Proceso de Alta hasta el momento.';

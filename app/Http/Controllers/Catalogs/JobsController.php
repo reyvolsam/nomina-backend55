@@ -37,17 +37,15 @@ class JobsController extends Controller
         try{
             $job_list = [];
 
-            //ADMINISTRADOR
-            if($this->request->user()->group_id == 1){
-                $user = User::find($this->request->user()->id);
-                $companies = $user->CompanyUser()->get();
-                
-                $job_list = Job::with('Department', 'Company')->whereIn('company_id', $companies)->get();
-            }
-
             //ROOT
             if($this->request->user()->group_id == 4){
                 $job_list = Job::with('Department', 'Company')->get();
+            } else {
+                $user = User::find($this->request->user()->id);
+                $companies = $user->CompanyUser()->get();
+                $ids = [];
+                foreach ($companies as $kc => $vc) array_push($ids, $vc['id']);
+                $job_list = Job::with('Department', 'Company')->whereIn('company_id', $ids)->get();
             }
 
             if(count($job_list) > 0){

@@ -44,6 +44,10 @@ class GroupController extends Controller
                 $groups_list = Group::where('id', 3)->get();
             }
 
+            //PATRON
+            if($this->request->user()->group_id == 3){
+                $groups_list = Group::where('id', 3)->get();
+            }
             if(count($groups_list) > 0){
 
                 foreach ($groups_list as $kul => $vul) $vul->loader = false;

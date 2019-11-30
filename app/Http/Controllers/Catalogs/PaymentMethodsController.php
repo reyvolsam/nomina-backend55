@@ -35,20 +35,16 @@ class PaymentMethodsController extends Controller
         try{
             $payment_methods_list = [];
 
-            //ADMINISTRADOR
-            if($this->request->user()->group_id == 1){
-
-                $user = User::find($this->request->user()->id);
-                $companies = $user->CompanyUser()->get();
-
-                $payment_methods_list = PaymentMethods::with('Company')->whereIn('company_id', $companies)->get();
-            }
-
             //ROOT
             if($this->request->user()->group_id == 4){
                 $payment_methods_list = PaymentMethods::with('Company')->get();
+            } else {
+                $user = User::find($this->request->user()->id);
+                $companies = $user->CompanyUser()->get();
+                $ids = [];
+                foreach ($companies as $kc => $vc) array_push($ids, $vc['id']);
+                $payment_methods_list = PaymentMethods::with('Company')->whereIn('company_id', $ids)->get();
             }
-            
 
             if(count($payment_methods_list) > 0){
                 foreach ($payment_methods_list as $kc => $vc) $vc->loader = false;
