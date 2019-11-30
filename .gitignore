@@ -12,5 +12,5 @@ yarn-error.log
 .env
 /config/database.php
 .DS_Store
-/public/nomina_excel
+/public/employeeDocs
 /public/dispersion_files
