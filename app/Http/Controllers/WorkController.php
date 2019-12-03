@@ -89,6 +89,7 @@ class WorkController extends Controller
                 }
                 $this->res['data'] = $work_list;
             } else {
+                if($work_status_id == null) $this->res['message'] = 'No hay Trabajadores hasta el momento.';
                 if($work_status_id == 1) $this->res['message'] = 'No hay Trabajadores en Proceso de Alta hasta el momento.';
                 if($work_status_id == 2) $this->res['message'] = 'No hay Trabajadores en Proceso de Reingreso hasta el momento.';
                 if($work_status_id == 3) $this->res['message'] = 'No hay Trabajadores Activos hasta el momento.';
@@ -255,6 +256,29 @@ class WorkController extends Controller
                 }
             }
 
+            if(isset($_REQUEST['imss_file_url_deleted'])){
+                if($_REQUEST['imss_file_url_deleted'] == 'true'){
+                    $work_file = Work::find($employee_id);
+                    if($work_file){
+                        unlink(asset('employeeDocs/'.$work_file->imss_file_url));
+                        $work_file->imss_file_url = null;
+                        $work_file->save();
+                    }
+                }
+            }
+
+            if(isset($_REQUEST['baja_imss_file_url_deleted'])){
+                if($_REQUEST['baja_imss_file_url_deleted'] == 'true'){
+                    $work_file = Work::find($employee_id);
+                    if($work_file){
+                        unlink(asset('employeeDocs/'.$work_file->baja_imss_file_url));
+                        $work_file->baja_imss_file_url = null;
+                        $work_file->save();
+                    }
+                }
+            }
+
+
             $work = Work::find($employee_id);
             if($work){
                 if(isset($_FILES['ine_file'])){
@@ -328,6 +352,43 @@ class WorkController extends Controller
                         }
                     }
                 }
+
+                if(isset($_FILES['imss_files'])){
+                    if(isset($_FILES['imss_files']['name'])){
+                        $file = $_FILES['imss_files']; 
+
+                        $porciones = explode(".", $file['name']);
+                        $ext = $porciones[count($porciones)-1];
+                        unset($porciones[count($porciones)-1]);
+
+                        list($txt, $ext) = explode(".", $file['name']);
+
+                        $rand = rand(1, 500);
+                        $final_image_name = $rand."_".time().".".$ext;
+                        if(move_uploaded_file($file['tmp_name'], 'employeeDocs/'.basename($final_image_name))){
+                            $work->imss_file_url = $final_image_name;
+                        }
+                    }
+                }
+
+                if(isset($_FILES['baja_imss_files'])){
+                    if(isset($_FILES['baja_imss_files']['name'])){
+                        $file = $_FILES['baja_imss_files']; 
+
+                        $porciones = explode(".", $file['name']);
+                        $ext = $porciones[count($porciones)-1];
+                        unset($porciones[count($porciones)-1]);
+
+                        list($txt, $ext) = explode(".", $file['name']);
+
+                        $rand = rand(1, 500);
+                        $final_image_name = $rand."_".time().".".$ext;
+                        if(move_uploaded_file($file['tmp_name'], 'employeeDocs/'.basename($final_image_name))){
+                            $work->baja_imss_file_url = $final_image_name;
+                        }
+                    }
+                }
+
                 $work->save();
             }
 
@@ -393,6 +454,15 @@ class WorkController extends Controller
 
             $work_data->contract_file_url = asset('employeeDocs/'.$work_data->contract_file_url);
             $work_data->contract_file_url_deleted = false;
+
+            $work_data->imss_file_url = asset('employeeDocs/'.$work_data->imss_file_url);
+            $work_data->imss_file_url_deleted = false;
+
+            if($work_data->baja_imss_file_url != null){
+                $work_data->baja_imss_file_url = asset('employeeDocs/'.$work_data->baja_imss_file_url);
+                
+            }
+            $work_data->baja_imss_file_url_deleted = false;
 
             $companies_catalog          = $this->sharedController->getCompanyCatalog($user);
             $contract_type_catalog      = ContractTypes::where('company_id', $work_data->company_id)->get();
