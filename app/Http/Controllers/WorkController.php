@@ -11,13 +11,14 @@ use Illuminate\Http\Request;
 
 use App\WorkDocumentations;
 use App\Work;
-use Validator;
 use App\Http\Controllers\SharedController as sharedController;
 use App\Job;
 use App\PaymentMethods;
 use App\PeriodTypes;
 use App\Sex;
 use App\WorkShifts;
+
+use Validator;
 
 class WorkController extends Controller
 {

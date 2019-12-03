@@ -350,7 +350,7 @@ class SharedController extends Controller
             array_push($menu, $add);
 
             $add = [
-                "name" => 'Importar Nomina',
+                "name" => 'Archivos de Pago de Nomina',
                 "icon" => 'how_to_reg',
                 "active" => false,
                 "url" => '/nomina',
