@@ -278,6 +278,17 @@ class WorkController extends Controller
                 }
             }
 
+            if(isset($_REQUEST['finiquito_file_url_deleted'])){
+                if($_REQUEST['finiquito_file_url_deleted'] == 'true'){
+                    $work_file = Work::find($employee_id);
+                    if($work_file){
+                        unlink(asset('employeeDocs/'.$work_file->finiquito_file_url));
+                        $work_file->finiquito_file_url = null;
+                        $work_file->save();
+                    }
+                }
+            }
+
 
             $work = Work::find($employee_id);
             if($work){
@@ -389,6 +400,24 @@ class WorkController extends Controller
                     }
                 }
 
+                if(isset($_FILES['finiquito_files'])){
+                    if(isset($_FILES['finiquito_files']['name'])){
+                        $file = $_FILES['finiquito_files']; 
+
+                        $porciones = explode(".", $file['name']);
+                        $ext = $porciones[count($porciones)-1];
+                        unset($porciones[count($porciones)-1]);
+
+                        list($txt, $ext) = explode(".", $file['name']);
+
+                        $rand = rand(1, 500);
+                        $final_image_name = $rand."_".time().".".$ext;
+                        if(move_uploaded_file($file['tmp_name'], 'employeeDocs/'.basename($final_image_name))){
+                            $work->finiquito_file_url = $final_image_name;
+                        }
+                    }
+                }
+
                 $work->save();
             }
 
@@ -443,19 +472,29 @@ class WorkController extends Controller
 
             $work_data = Work::find($work_id);
 
-            $work_data->ine_file_url = asset('employeeDocs/'.$work_data->ine_file_url);
+            if($work_data->ine_file_url != null){
+                $work_data->ine_file_url = asset('employeeDocs/'.$work_data->ine_file_url);
+            }
             $work_data->ine_file_url_deleted = false;
 
-            $work_data->address_file_url = asset('employeeDocs/'.$work_data->address_file_url);
+            if($work_data->address_file_url != null){
+                $work_data->address_file_url = asset('employeeDocs/'.$work_data->address_file_url);
+            }
             $work_data->address_file_url_deleted = false;
 
-            $work_data->curp_file_url = asset('employeeDocs/'.$work_data->curp_file_url);
+            if($work_data->curp_file_url != null){
+                $work_data->curp_file_url = asset('employeeDocs/'.$work_data->curp_file_url);
+            }
             $work_data->curp_file_url_deleted = false;
 
-            $work_data->contract_file_url = asset('employeeDocs/'.$work_data->contract_file_url);
+            if($work_data->contract_file_url != null){
+                $work_data->contract_file_url = asset('employeeDocs/'.$work_data->contract_file_url);
+            }
             $work_data->contract_file_url_deleted = false;
 
-            $work_data->imss_file_url = asset('employeeDocs/'.$work_data->imss_file_url);
+            if($work_data->imss_file_url != null){
+                $work_data->imss_file_url = asset('employeeDocs/'.$work_data->imss_file_url);
+            }
             $work_data->imss_file_url_deleted = false;
 
             if($work_data->baja_imss_file_url != null){
@@ -463,6 +502,12 @@ class WorkController extends Controller
                 
             }
             $work_data->baja_imss_file_url_deleted = false;
+
+            if($work_data->finiquito_file_url != null){
+                $work_data->finiquito_file_url = asset('employeeDocs/'.$work_data->finiquito_file_url);
+                
+            }
+            $work_data->finiquito_file_url_deleted = false;
 
             $companies_catalog          = $this->sharedController->getCompanyCatalog($user);
             $contract_type_catalog      = ContractTypes::where('company_id', $work_data->company_id)->get();
