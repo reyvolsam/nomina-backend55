@@ -145,7 +145,7 @@ class WorkController extends Controller
                 'rfc'                       => 'required|max:13',
                 'curp'                      => 'required|max:22',
                 'sex_id'                    => 'required',
-                'birth_city'                => 'required|max:100',
+                'birth_city'                => 'max:100',
                 'birth_date'                => 'required',
             ]);
 
