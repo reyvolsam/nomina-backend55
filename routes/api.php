@@ -26,6 +26,9 @@ Route::group(['middleware' => ['cors', 'auth:api']], function (){
     Route::post('user/searchCompany', 'UserController@searchCompanies');
     Route::resource('user', 'UserController');
     
+    Route::resource('imss', 'ImssController');
+    Route::resource('receipts', 'ReceiptsController');
+
     Route::resource('company', 'Catalogs\CompanyController');
     Route::resource('contractTypes', 'Catalogs\ContractTypesController');
     Route::resource('contributionBases', 'Catalogs\ContributionBasesController');

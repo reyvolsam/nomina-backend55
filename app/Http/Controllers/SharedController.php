@@ -361,9 +361,19 @@ class SharedController extends Controller
 
             $add = [
                 "name" => 'Recibos Pago de Nomina',
-                "icon" => 'how_to_reg',
+                "icon" => 'money',
                 "active" => false,
                 "url" => '/payment_receipt',
+                "submenu" => []
+            ];
+
+            array_push($menu, $add);
+
+            $add = [
+                "name" => 'Recibos IMSS',
+                "icon" => 'assignment_ind',
+                "active" => false,
+                "url" => '/imss',
                 "submenu" => []
             ];
 
