@@ -17,6 +17,7 @@ use App\PaymentMethods;
 use App\PeriodTypes;
 use App\Sex;
 use App\WorkShifts;
+use App\Unionized;
 
 use Validator;
 
@@ -127,7 +128,6 @@ class WorkController extends Controller
             $validator = Validator::make($this->request->all(), [
                 'company_id'                => 'required',
                 'code'                      => 'required|max:45',
-                'discharge_date'            => 'required|max:45',
                 'name'                      => 'required|max:100',
                 'first_name'                => 'required|max:100',
                 'last_name'                 => 'required|max:100',
@@ -140,12 +140,10 @@ class WorkController extends Controller
                 'employee_type_id'          => 'required',
                 'payment_method_id'         => 'required',
                 'work_shift_id'             => 'required',
-                'number_afore'              => 'max:100',
                 'social_security_number'    => 'required|max:100',
                 'rfc'                       => 'required|max:13',
                 'curp'                      => 'required|max:22',
                 'sex_id'                    => 'required',
-                'birth_city'                => 'max:100',
                 'birth_date'                => 'required',
             ]);
 
@@ -521,6 +519,7 @@ class WorkController extends Controller
             $work_shift_catalog         = WorkShifts::where('company_id', $work_data->company_id)->get();
             $sex_catalog                = Sex::all();
             $discount_type_catalog      = DiscountTypes::where('company_id', $work_data->company_id)->get();
+            $unionized_list             = Unionized::all();
 
             $this->res = [
                 'data'      => $work_data,
@@ -535,7 +534,8 @@ class WorkController extends Controller
                     'payment_method_catalog'    => $payment_method_catalog,
                     'work_shift_catalog'    => $work_shift_catalog,
                     'sex_catalog'           => $sex_catalog,
-                    'discount_type_catalog' => $discount_type_catalog
+                    'discount_type_catalog' => $discount_type_catalog,
+                    'unionized_list'         => $unionized_list
                 ]
                 
             ];
@@ -562,7 +562,6 @@ class WorkController extends Controller
                 $validator = Validator::make($this->request->all(), [
                     'company_id'                => 'required',
                     'code'                      => 'required|max:45',
-                    'discharge_date'            => 'required|max:45',
                     'name'                      => 'required|max:100',
                     'first_name'                => 'required|max:100',
                     'last_name'                 => 'required|max:100',
@@ -575,12 +574,10 @@ class WorkController extends Controller
                     'employee_type_id'          => 'required',
                     'payment_method_id'         => 'required',
                     'work_shift_id'             => 'required',
-                    'number_afore'              => 'required|max:100',
                     'social_security_number'    => 'required|max:100',
                     'rfc'                       => 'required|max:13',
                     'curp'                      => 'required|max:22',
                     'sex_id'                    => 'required',
-                    'birth_city'                => 'required|max:100',
                     'birth_date'                => 'required',
                 ]);
 

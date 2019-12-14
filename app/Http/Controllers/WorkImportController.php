@@ -15,6 +15,7 @@ use App\PaymentMethods;
 use App\WorkShifts;
 use App\Sex;
 use App\Job;
+use App\Unionized;
 
 class WorkImportController extends Controller
 {
@@ -77,7 +78,7 @@ class WorkImportController extends Controller
                                                         ->first();
                                 $WorkDemo->period_type_id = ($period_type != null) ? $period_type->id : null;
 
-                                $WorkDemo->contribution_base_salary = $v[9];
+                                $WorkDemo->imss_daily_salary = $v[9];
 
                                 $contribution_bases = ContributionBases::where('name', $v[11])
                                                         ->where('company_id', $company_id)
@@ -92,6 +93,10 @@ class WorkImportController extends Controller
                                                                 ->where('company_id', $company_id)
                                                                 ->first();
                                 $WorkDemo->department_id = ($departments != null) ? $departments->id : null;
+
+                                $unionized = Unionized::where('name', $v[14])
+                                                            ->first();
+                                $WorkDemo->unionized_id = ($unionized != null) ? $unionized->id : null;
 
                                 $payment_method = PaymentMethods::where('name', $v[16])
                                                             ->where('company_id', $company_id)
