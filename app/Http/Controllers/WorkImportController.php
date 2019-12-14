@@ -60,9 +60,9 @@ class WorkImportController extends Controller
                                 $WorkDemo = new Work();
                                 $WorkDemo->company_id = $company_id;
                                 $WorkDemo->code = $v[0];
-                                $WorkDemo->discharge_date = date('Y-m-d', strtotime($v[1]));
-                                $WorkDemo->termination_date = date('Y-m-d', strtotime($v[2]));
-                                $WorkDemo->reentry_date = date('Y-m-d', strtotime($v[3]));
+                                $WorkDemo->discharge_date = $this->convertDate($v[1]);
+                                $WorkDemo->termination_date = $this->convertDate($v[2]);
+                                $WorkDemo->reentry_date = $this->convertDate($v[3]);
 
                                 $contract_type = ContractTypes::where('name', $v[4])
                                                         ->where('company_id', $company_id)
@@ -117,7 +117,7 @@ class WorkImportController extends Controller
                                 $WorkDemo->sex_id = ($sex != null) ? $sex->id : null;
 
                                 $WorkDemo->birth_city = $v[28];
-                                $WorkDemo->birth_date = date('Y-m-d', strtotime($v[29]));
+                                $WorkDemo->birth_date = $this->convertDate($v[29]);
                                 $WorkDemo->umf = $v[30];
                                 $WorkDemo->fathers_name = $v[31];
                                 $WorkDemo->mothers_name = $v[32];
@@ -153,5 +153,16 @@ class WorkImportController extends Controller
 
         return response()->json($this->res, $this->status_code);
     }//import()
+
+    public function convertDate($date)
+    {
+        $result = null;
+        if( !empty($date) ){
+            $result_date = explode('/', $date);
+
+            $result = $result_date[2].'-'.$result_date[1].'-'.$result_date[0];
+        }
+        return $result;
+    }//convertDate()
 
 }
