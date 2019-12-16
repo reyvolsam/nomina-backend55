@@ -132,6 +132,13 @@ class WorkImportController extends Controller
                                 $WorkDemo->current_state = $v[36];
                                 $WorkDemo->cp = $v[37];
                                 $WorkDemo->telephone = $v[39];
+
+                                //BANCO PARA PAGO ELECTRONICO 54
+                                //Numero de cuenta para pago electrónico 55
+                                //Salario base de cotización 
+                                //salario diario real - Campo extra numérico 58
+
+
                                 $WorkDemo->fonacot_number = $v[66];
                                 $WorkDemo->email = $v[67];
                                 $WorkDemo->key_account = $v[69];
