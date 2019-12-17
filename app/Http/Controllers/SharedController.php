@@ -111,7 +111,7 @@ class SharedController extends Controller
             $company_id = $this->request->input('company_id');
             $data = [];
             $contract_types_list = [];
-            
+            $this->res['com'] = $company_id;
             if($company_id != null){
                 $contract_types_list = ContractTypes::where('company_id', $company_id)->get();
                 $data['contract_types_list'] = $contract_types_list;

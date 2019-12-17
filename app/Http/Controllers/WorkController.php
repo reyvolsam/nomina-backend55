@@ -535,7 +535,7 @@ class WorkController extends Controller
                     'work_shift_catalog'    => $work_shift_catalog,
                     'sex_catalog'           => $sex_catalog,
                     'discount_type_catalog' => $discount_type_catalog,
-                    'unionized_list'         => $unionized_list
+                    'unionized_list'        => $unionized_list
                 ]
                 
             ];
@@ -622,11 +622,43 @@ class WorkController extends Controller
             if(is_numeric($id)){
                 $work = Work::find($id);
                 if($work){
-                    $work->delete();
-                    $work_doc = WorkDocumentations::where('work_id',$id)->first();
-                    if($work_doc){
-                        $work_doc->delete();
+                    if($work->ine_file_url != null){
+                        if( file_exists('employeeDocs/'.$work->ine_file_url) ){
+                            unlink('employeeDocs/'.$work->ine_file_url);
+                        }
                     }
+                    if($work->address_file_url != null){
+                        if( file_exists('employeeDocs/'.$work->address_file_url) ){
+                            unlink('employeeDocs/'.$work->address_file_url);
+                        }
+                    }
+                    if($work->curp_file_url != null){
+                        if( file_exists('employeeDocs/'.$work->curp_file_url) ){
+                            unlink('employeeDocs/'.$work->curp_file_url);
+                        }
+                    }
+                    if($work->contract_file_url != null){
+                        if( file_exists('employeeDocs/'.$work->contract_file_url) ){
+                            unlink('employeeDocs/'.$work->contract_file_url);
+                        }
+                    }
+                    if($work->imss_file_url != null){
+                        if( file_exists('employeeDocs/'.$work->imss_file_url) ){
+                            unlink('employeeDocs/'.$work->imss_file_url);
+                        }
+                    }
+                    if($work->baja_imss_file_url != null){
+                        if( file_exists('employeeDocs/'.$work->baja_imss_file_url) ){
+                            unlink('employeeDocs/'.$work->baja_imss_file_url);
+                        }
+                    }
+                    if($work->finiquito_file_url != null){
+                        if( file_exists('employeeDocs/'.$work->finiquito_file_url) ){
+                            unlink('employeeDocs/'.$work->finiquito_file_url);
+                        }
+                    }
+                    $work->forceDelete();
+
                     $this->res['message'] = 'Trabajador eliminado correctamente.';
                     $this->status_code = 200;
                 } else {
