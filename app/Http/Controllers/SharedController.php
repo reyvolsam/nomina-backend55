@@ -384,7 +384,7 @@ class SharedController extends Controller
             array_push($menu, $add);
 
             $this->res['data'] = $menu;
-            $this->res['user'] = $this->request;
+            $this->res['user'] = $this->request->user();
             
             if(count($menu) == 0) $this->res['message'] = "No se pudo identificar al usuario.";
 
