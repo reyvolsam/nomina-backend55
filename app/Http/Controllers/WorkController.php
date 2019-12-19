@@ -215,7 +215,7 @@ class WorkController extends Controller
                 if($_REQUEST['ine_file_url_deleted'] == 'true'){
                     $work_file = Work::find($employee_id);
                     if($work_file){
-                        unlink(asset('employeeDocs/'.$work_file->ine_file_url));
+                        unlink('employeeDocs/'.$work_file->ine_file_url);
                         $work_file->ine_file_url = null;
                         $work_file->save();
                     }
@@ -226,7 +226,7 @@ class WorkController extends Controller
                 if($_REQUEST['curp_file_url_deleted'] == 'true'){
                     $work_file = Work::find($employee_id);
                     if($work_file){
-                        unlink(asset('employeeDocs/'.$work_file->curp_file_url));
+                        unlink('employeeDocs/'.$work_file->curp_file_url);
                         $work_file->curp_file_url = null;
                         $work_file->save();
                     }
@@ -237,7 +237,7 @@ class WorkController extends Controller
                 if($_REQUEST['address_file_url_deleted'] == 'true'){
                     $work_file = Work::find($employee_id);
                     if($work_file){
-                        unlink(asset('employeeDocs/'.$work_file->address_file_url));
+                        unlink('employeeDocs/'.$work_file->address_file_url);
                         $work_file->address_file_url = null;
                         $work_file->save();
                     }
@@ -248,7 +248,7 @@ class WorkController extends Controller
                 if($_REQUEST['contract_file_url_deleted'] == 'true'){
                     $work_file = Work::find($employee_id);
                     if($work_file){
-                        unlink(asset('employeeDocs/'.$work_file->contract_file_url));
+                        unlink('employeeDocs/'.$work_file->contract_file_url);
                         $work_file->contract_file_url = null;
                         $work_file->save();
                     }
@@ -259,7 +259,7 @@ class WorkController extends Controller
                 if($_REQUEST['imss_file_url_deleted'] == 'true'){
                     $work_file = Work::find($employee_id);
                     if($work_file){
-                        unlink(asset('employeeDocs/'.$work_file->imss_file_url));
+                        unlink('employeeDocs/'.$work_file->imss_file_url);
                         $work_file->imss_file_url = null;
                         $work_file->save();
                     }
@@ -270,7 +270,7 @@ class WorkController extends Controller
                 if($_REQUEST['baja_imss_file_url_deleted'] == 'true'){
                     $work_file = Work::find($employee_id);
                     if($work_file){
-                        unlink(asset('employeeDocs/'.$work_file->baja_imss_file_url));
+                        unlink('employeeDocs/'.$work_file->baja_imss_file_url);
                         $work_file->baja_imss_file_url = null;
                         $work_file->save();
                     }
@@ -281,7 +281,7 @@ class WorkController extends Controller
                 if($_REQUEST['finiquito_file_url_deleted'] == 'true'){
                     $work_file = Work::find($employee_id);
                     if($work_file){
-                        unlink(asset('employeeDocs/'.$work_file->finiquito_file_url));
+                        unlink('employeeDocs/'.$work_file->finiquito_file_url);
                         $work_file->finiquito_file_url = null;
                         $work_file->save();
                     }
