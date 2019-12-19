@@ -78,8 +78,7 @@ class UserController extends Controller
         try{
             $company = $this->request->input('company');
             $companies_list = [];
-            $this->res['data'] = "cosa";
-            /*
+            
             //ROOT
             if($this->request->user()->group_id == 4){
                 $companies_list = Company::where('name', 'LIKE', '%'.$company.'%')->get();
@@ -98,11 +97,11 @@ class UserController extends Controller
 
             if(count($companies_list) > 0){
                 $this->res['data'] = $companies_list;
-                $this->status_code = 200;
             } else {
                 $this->status_code = 201;
                 $this->res['message'] = 'No hay empresas con el criterio de busqueda indicado.';
-            }*/
+            }
+            $this->status_code = 200;
         } catch(\Exception $e) {
             $this->res['message'] = 'Error en la Base de Datos.'.$e;
             $this->status_code = 500;
