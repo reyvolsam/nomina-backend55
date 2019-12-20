@@ -15,7 +15,6 @@ use App\EmployeeTypes;
 use App\PaymentMethods;
 use App\WorkShifts;
 use App\DiscountTypes;
-use App\Unionized;
 
 class SharedController extends Controller
 {
@@ -136,9 +135,6 @@ class SharedController extends Controller
                 
                 $discount_types_list = DiscountTypes::where('company_id', $company_id)->get();
                 $data['discount_types_list'] = $discount_types_list;
-
-                $unionized_list = Unionized::all();
-                $data['unionized_list'] = $unionized_list;
             }
 
             $this->res['data'] = $data;
