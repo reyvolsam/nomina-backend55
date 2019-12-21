@@ -15,7 +15,7 @@ use App\PaymentMethods;
 use App\WorkShifts;
 use App\Sex;
 use App\Job;
-use App\Unionized;
+use App\EmployeeTypes;
 
 class WorkImportController extends Controller
 {
@@ -95,9 +95,9 @@ class WorkImportController extends Controller
                                                                     ->first();
                                     $WorkDemo->department_id = ($departments != null) ? $departments->id : null;
 
-                                    $unionized = Unionized::where('name', $v[14])
+                                    $employee_type = EmployeeTypes::where('name', $v[14])
                                                                 ->first();
-                                    $WorkDemo->unionized_id = ($unionized != null) ? $unionized->id : null;
+                                    $WorkDemo->employee_type_id = ($employee_type != null) ? $employee_type->id : null;
 
                                     $payment_method = PaymentMethods::where('name', $v[16])
                                                                 ->where('company_id', $company_id)

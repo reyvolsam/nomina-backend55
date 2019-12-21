@@ -17,7 +17,6 @@ use App\PaymentMethods;
 use App\PeriodTypes;
 use App\Sex;
 use App\WorkShifts;
-use App\Unionized;
 
 use Validator;
 
@@ -215,7 +214,7 @@ class WorkController extends Controller
                 if($_REQUEST['ine_file_url_deleted'] == 'true'){
                     $work_file = Work::find($employee_id);
                     if($work_file){
-                        unlink(asset('employeeDocs/'.$work_file->ine_file_url));
+                        unlink('employeeDocs/'.$work_file->ine_file_url);
                         $work_file->ine_file_url = null;
                         $work_file->save();
                     }
@@ -226,7 +225,7 @@ class WorkController extends Controller
                 if($_REQUEST['curp_file_url_deleted'] == 'true'){
                     $work_file = Work::find($employee_id);
                     if($work_file){
-                        unlink(asset('employeeDocs/'.$work_file->curp_file_url));
+                        unlink('employeeDocs/'.$work_file->curp_file_url);
                         $work_file->curp_file_url = null;
                         $work_file->save();
                     }
@@ -237,7 +236,7 @@ class WorkController extends Controller
                 if($_REQUEST['address_file_url_deleted'] == 'true'){
                     $work_file = Work::find($employee_id);
                     if($work_file){
-                        unlink(asset('employeeDocs/'.$work_file->address_file_url));
+                        unlink('employeeDocs/'.$work_file->address_file_url);
                         $work_file->address_file_url = null;
                         $work_file->save();
                     }
@@ -248,7 +247,7 @@ class WorkController extends Controller
                 if($_REQUEST['contract_file_url_deleted'] == 'true'){
                     $work_file = Work::find($employee_id);
                     if($work_file){
-                        unlink(asset('employeeDocs/'.$work_file->contract_file_url));
+                        unlink('employeeDocs/'.$work_file->contract_file_url);
                         $work_file->contract_file_url = null;
                         $work_file->save();
                     }
@@ -259,7 +258,7 @@ class WorkController extends Controller
                 if($_REQUEST['imss_file_url_deleted'] == 'true'){
                     $work_file = Work::find($employee_id);
                     if($work_file){
-                        unlink(asset('employeeDocs/'.$work_file->imss_file_url));
+                        unlink('employeeDocs/'.$work_file->imss_file_url);
                         $work_file->imss_file_url = null;
                         $work_file->save();
                     }
@@ -270,7 +269,7 @@ class WorkController extends Controller
                 if($_REQUEST['baja_imss_file_url_deleted'] == 'true'){
                     $work_file = Work::find($employee_id);
                     if($work_file){
-                        unlink(asset('employeeDocs/'.$work_file->baja_imss_file_url));
+                        unlink('employeeDocs/'.$work_file->baja_imss_file_url);
                         $work_file->baja_imss_file_url = null;
                         $work_file->save();
                     }
@@ -281,7 +280,7 @@ class WorkController extends Controller
                 if($_REQUEST['finiquito_file_url_deleted'] == 'true'){
                     $work_file = Work::find($employee_id);
                     if($work_file){
-                        unlink(asset('employeeDocs/'.$work_file->finiquito_file_url));
+                        unlink('employeeDocs/'.$work_file->finiquito_file_url);
                         $work_file->finiquito_file_url = null;
                         $work_file->save();
                     }
@@ -519,7 +518,6 @@ class WorkController extends Controller
             $work_shift_catalog         = WorkShifts::where('company_id', $work_data->company_id)->get();
             $sex_catalog                = Sex::all();
             $discount_type_catalog      = DiscountTypes::where('company_id', $work_data->company_id)->get();
-            $unionized_list             = Unionized::all();
 
             $this->res = [
                 'data'      => $work_data,
@@ -534,8 +532,7 @@ class WorkController extends Controller
                     'payment_method_catalog'    => $payment_method_catalog,
                     'work_shift_catalog'    => $work_shift_catalog,
                     'sex_catalog'           => $sex_catalog,
-                    'discount_type_catalog' => $discount_type_catalog,
-                    'unionized_list'        => $unionized_list
+                    'discount_type_catalog' => $discount_type_catalog
                 ]
                 
             ];
