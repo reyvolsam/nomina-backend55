@@ -17,6 +17,7 @@ use App\PaymentMethods;
 use App\PeriodTypes;
 use App\Sex;
 use App\WorkShifts;
+use App\Unionized;
 
 use Validator;
 
@@ -518,6 +519,7 @@ class WorkController extends Controller
             $work_shift_catalog         = WorkShifts::where('company_id', $work_data->company_id)->get();
             $sex_catalog                = Sex::all();
             $discount_type_catalog      = DiscountTypes::where('company_id', $work_data->company_id)->get();
+            $unionized_list             = Unionized::all();
 
             $this->res = [
                 'data'      => $work_data,
@@ -532,7 +534,8 @@ class WorkController extends Controller
                     'payment_method_catalog'    => $payment_method_catalog,
                     'work_shift_catalog'    => $work_shift_catalog,
                     'sex_catalog'           => $sex_catalog,
-                    'discount_type_catalog' => $discount_type_catalog
+                    'discount_type_catalog' => $discount_type_catalog,
+                    'unionized_list'        => $unionized_list
                 ]
                 
             ];
