@@ -107,7 +107,7 @@ class PaymentMethodsController extends Controller
                         $payment_methods->updateOrCreate(['id' => $payment_methods->id], $this->request->all());
 
                         $this->res['message'] = 'Metodo de Pago restaurado correctamente.';
-                        $this->status_code = 422;
+                        $this->status_code = 200;
                     }
                 } else {
                     $this->res['message'] = 'El Metodo de Pago ya existe.';
