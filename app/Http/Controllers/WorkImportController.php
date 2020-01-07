@@ -109,6 +109,11 @@ class WorkImportController extends Controller
                                                                 ->first();
                                     $WorkDemo->work_shift_id = ($work_shift != null) ? $work_shift->id : null;
 
+                                    $employee_type = EmployeeTypes::where('name', $v[71])
+                                                                ->where('company_id', $company_id)
+                                                                ->first();
+                                    $WorkDemo->employee_type_id = ($employee_type != null) ? $employee_type->id : null;
+
                                     $WorkDemo->number_afore = $v[22];
                                     $WorkDemo->social_security_number = $v[24];
                                     $WorkDemo->rfc = $v[25];
