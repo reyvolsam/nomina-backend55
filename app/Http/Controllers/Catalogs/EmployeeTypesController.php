@@ -48,11 +48,11 @@ class EmployeeTypesController extends Controller
             
             if(count($employee_types_list) > 0){
                 foreach ($employee_types_list as $kc => $vc) $vc->loader = false;
-                $this->res['message'] = 'Lista de Tipos de Empleados obtenida correctamente.';
+                $this->res['message'] = 'Lista de Tipos de Prestación obtenida correctamente.';
                 $this->res['data'] = $employee_types_list;
                 $this->status_code = 200;
             } else {
-                $this->res['message'] = 'No hay Tipos de Empleados registrados hasta el momento.';
+                $this->res['message'] = 'No hay Tipos de Prestación registrados hasta el momento.';
                 $this->status_code = 201;
             }
         } catch(\Exception $e){
@@ -97,7 +97,7 @@ class EmployeeTypesController extends Controller
                         $employee_types = new EmployeeTypes;
                         $employee_types->create($this->request->all());
 
-                        $this->res['message'] = 'Tipo de Empleado creado correctamente.';
+                        $this->res['message'] = 'Tipo de Prestación creado correctamente.';
                         $this->status_code = 200;
                     } else {
                         EmployeeTypes::withTrashed()->where('name', $name)->restore();
@@ -106,11 +106,11 @@ class EmployeeTypesController extends Controller
 
                         $employee_types->updateOrCreate(['id' => $employee_types->id], $this->request->all());
 
-                        $this->res['message'] = 'Tipo de Empleado restaurado correctamente.';
+                        $this->res['message'] = 'Tipo de Prestación restaurado correctamente.';
                         $this->status_code = 422;
                     }
                 } else {
-                    $this->res['message'] = 'El Tipo de Empleado ya existe.';
+                    $this->res['message'] = 'El Tipo de Prestación ya existe.';
                     $this->status_code = 423;
                 }
             } else {
@@ -167,10 +167,10 @@ class EmployeeTypesController extends Controller
                     $employee_types_exist = EmployeeTypes::find($id);
                     if($employee_types_exist){
                         EmployeeTypes::updateOrCreate(['id' => $id], $this->request->all());
-                        $this->res['message'] = 'Tipo de Empleado actualizado correctamente.';
+                        $this->res['message'] = 'Tipo de Prestación actualizado correctamente.';
                         $this->status_code = 200;
                     } else {
-                        $this->res['message'] = 'El Tipo de Empleo no existe.';
+                        $this->res['message'] = 'El Tipo de Prestación no existe.';
                         $this->status_code = 422;
                     }
                 } else {
@@ -204,10 +204,10 @@ class EmployeeTypesController extends Controller
                 if($exist_worker == 0){
                     $employee_types = EmployeeTypes::find($id);
                     $employee_types->delete();
-                    $this->res['message'] = 'Tipo de Empleo eliminado correctamente.';
+                    $this->res['message'] = 'Tipo de Prestación eliminado correctamente.';
                     $this->status_code = 200;
                 } else {
-                    $this->res['message'] = 'Existe un Trabajador utilizando este Tipo de Empleo.';
+                    $this->res['message'] = 'Existe un Trabajador utilizando este Tipo de Prestación.';
                     $this->status_code = 422;
                 }
             } else {

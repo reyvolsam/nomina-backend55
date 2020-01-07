@@ -270,7 +270,7 @@ class SharedController extends Controller
                 ];
                 array_push($menu[2]['submenu'], $item);
                 $item = [
-                            "name"  => "Tipos de Empleado",
+                            "name"  => "Tipos de Prestación",
                             "url"   => "/catalog/employeeTypes", 
                             "icon"  => "list"
                 ];
