@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Catalogs;
 use App\ContributionBases;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Worker;
+use App\Work;
 use App\User;
 use Validator;
 
@@ -199,7 +199,7 @@ class ContributionBasesController extends Controller
     {
         try{
             if(is_numeric($id)){
-                $exist_worker = Worker::where('contribution_bases_id', $id)->count();
+                $exist_worker = Work::where('contribution_bases_id', $id)->count();
 
                 if($exist_worker == 0){
                     $contribution_bases = ContributionBases::find($id);

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\ContractTypes;
-use App\Worker;
+use App\Work;
 use App\User;
 
 use Validator;
@@ -200,7 +200,7 @@ class ContractTypesController extends Controller
     {
         try{
             if(is_numeric($id)){
-                $exist_worker = Worker::where('contract_type_id', $id)->count();
+                $exist_worker = Work::where('contract_type_id', $id)->count();
 
                 if($exist_worker == 0){
                     $ContractTypes = ContractTypes::find($id);

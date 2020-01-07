@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Catalogs;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\PeriodTypes;
-use App\Worker;
+use App\Work;
 use App\User;
 use Validator;
 
@@ -199,7 +199,7 @@ class PeriodTypesController extends Controller
     {
         try{
             if(is_numeric($id)){
-                $exist_worker = Worker::where('period_type_id', $id)->count();
+                $exist_worker = Work::where('period_type_id', $id)->count();
 
                 if($exist_worker == 0){
                     $period_types = PeriodTypes::find($id);

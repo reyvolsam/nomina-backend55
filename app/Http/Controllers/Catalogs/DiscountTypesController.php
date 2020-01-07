@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Catalogs;
 use App\DiscountTypes;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Worker;
+use App\Work;
 use App\User;
 use Validator;
 
@@ -198,7 +198,7 @@ class DiscountTypesController extends Controller
     {
         try{
             if(is_numeric($id)){
-                $exist_worker = Worker::where('discount_type_id', $id)->count();
+                $exist_worker = Work::where('discount_type_id', $id)->count();
 
                 if($exist_worker == 0){
                     $discount_types = DiscountTypes::find($id);
