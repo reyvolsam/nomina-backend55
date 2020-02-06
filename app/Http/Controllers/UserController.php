@@ -177,13 +177,19 @@ class UserController extends Controller
                                                             //->where('company_id', '=', $data['company_id'])
                                                             ->where('user_id', '=', $user->id)
                                                             ->get();
-                                $CompanyUser_exist->forceDelete();
-
                                 if(count($CompanyUser_exist) > 0){
+                                    foreach ($CompanyUser_exist as $kcu => $vcu) {
+                                        $company_force_delete = CompanyUser::withTrashed()->where('id', $vcu->id)->first();
+                                        $company_force_delete->forceDelete();
+                                        
+                                    }
+                                }
+
+                                if(count($data['assigned_companies']) > 0){
                                     foreach ($data['assigned_companies'] as $kac => $vav) {
                                         $CompanyUser = new CompanyUser();
                                         $CompanyUser->user_id = $user->id;
-                                        $CompanyUser->company_id = $vav->id;
+                                        $CompanyUser->company_id = $vav['id'];
                                         $CompanyUser->save();   
                                     }
                                 }
