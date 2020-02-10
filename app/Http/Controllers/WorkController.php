@@ -288,6 +288,17 @@ class WorkController extends Controller
                 }
             }
 
+            //SE ELIMINA IMAGEN DE PERFIL DEL EMPLEADO
+            if(isset($_REQUEST['employee_photo_deleted'])){
+                if($_REQUEST['employee_photo_deleted'] == 'true'){
+                    $work_file = Work::find($employee_id);
+                    if($work_file){
+                        unlink('employee_photos/'.$work_file->employee_photo);
+                        $work_file->employee_photo = null;
+                        $work_file->save();
+                    }
+                }
+            }
 
             $work = Work::find($employee_id);
             if($work){
@@ -417,6 +428,24 @@ class WorkController extends Controller
                     }
                 }
 
+                if(isset($_FILES['employee_photo'])){
+                    if(isset($_FILES['employee_photo']['name'])){
+                        $file = $_FILES['employee_photo']; 
+
+                        $porciones = explode(".", $file['name']);
+                        $ext = $porciones[count($porciones)-1];
+                        unset($porciones[count($porciones)-1]);
+
+                        list($txt, $ext) = explode(".", $file['name']);
+
+                        $rand = rand(1, 500);
+                        $final_image_name = $rand."_".time().".".$ext;
+                        if(move_uploaded_file($file['tmp_name'], 'employee_photos/'.basename($final_image_name))){
+                            $work->employee_photo = $final_image_name;
+                        }
+                    }
+                }
+
                 $work->save();
             }
 
@@ -470,6 +499,13 @@ class WorkController extends Controller
             $discount_type_catalog = [];
 
             $work_data = Work::find($work_id);
+
+            if($work_data->employee_photo != null){
+                $work_data->employee_photo = asset('employee_photos/'.$work_data->employee_photo);
+            } else {
+                
+                $work_data->employee_photo = 'assets/images/avatar.png';
+            }
 
             if($work_data->ine_file_url != null){
                 $work_data->ine_file_url = asset('employeeDocs/'.$work_data->ine_file_url);
@@ -655,6 +691,12 @@ class WorkController extends Controller
                     if($work->finiquito_file_url != null){
                         if( file_exists('employeeDocs/'.$work->finiquito_file_url) ){
                             unlink('employeeDocs/'.$work->finiquito_file_url);
+                        }
+                    }
+
+                    if($work->employee_photo != null){
+                        if( file_exists('employee_photos/'.$work->employee_photo) ){
+                            unlink('employee_photos/'.$work->employee_photo);
                         }
                     }
                     $work->forceDelete();
