@@ -18,8 +18,9 @@ use App\PeriodTypes;
 use App\Sex;
 use App\WorkShifts;
 use App\Unionized;
-
 use Validator;
+use Excel;
+use App\Http\Controllers\WorkRequestExport;
 
 class WorkController extends Controller
 {
@@ -202,6 +203,13 @@ class WorkController extends Controller
         }
         return response()->json($this->res, $this->status_code);
     }
+
+    public function registrationRequestExport()
+    {
+        return view('workRequest');
+        //return Excel::download(new WorkRequestExport, 'invoices.xlsx');
+
+    }//registrationRequestExport()
 
     public function uploadDoc()
     {
