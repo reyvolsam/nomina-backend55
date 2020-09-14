@@ -286,6 +286,7 @@ class UserController extends Controller
                 $data['group_id']       = $this->request->input('group_id');
                 $data['default_company_id'] = $this->request->input('default_company_id');
                 $data['active']         = $this->request->input('active');
+                $data['assigned_companies'] = $this->request->input('assigned_companies');
 
                 if(!$validator->fails()) {
                     $user_exist = User::where('email', '=', $data['email'])->where('id', '!=', $id)->count();
@@ -306,13 +307,17 @@ class UserController extends Controller
                                                             //->where('company_id', '=', $data['company_id'])
                                                             ->where('user_id', '=', $user->id)
                                                             ->get();
-                                $CompanyUser_exist->forceDelete();
-
                                 if(count($CompanyUser_exist) > 0){
+                                    foreach ($CompanyUser_exist as $kce => $vce) {
+                                        $vce->forceDelete();
+                                    }
+                                }
+
+                                if(count($data['assigned_companies']) > 0){
                                     foreach ($data['assigned_companies'] as $kac => $vav) {
                                         $CompanyUser = new CompanyUser();
                                         $CompanyUser->user_id = $user->id;
-                                        $CompanyUser->company_id = $vav->id;
+                                        $CompanyUser->company_id = $vav['id'];
                                         $CompanyUser->save();   
                                     }
                                 }
