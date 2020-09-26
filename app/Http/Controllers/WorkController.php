@@ -72,14 +72,41 @@ class WorkController extends Controller
     {
         try{
             $work_status_id = $this->request->input('work_status_id');
+            $code = $this->request->input('code');
+            $name = $this->request->input('name');
+            $first_name = $this->request->input('first_name');
+            $last_name = $this->request->input('last_name');
+            $email = $this->request->input('email');
+
             $work_list = [];
 
             $work_list = Work::with('Company', 'ContractType', 'PeriodType', 'ContributionBase', 'Department', 'EmployeeType', 'PaymentMethod', 'WorkShift', 'Sex', 'DiscountType');
+
+            if ($code != null) {
+                $work_list = $work_list->where('code', $code);
+            }
+
+            if (!empty($name)) {
+                $work_list = $work_list->where('name', 'LIKE' , '%' . $name. '%');
+            }
+
+            if (!empty($first_name)) {
+                $work_list = $work_list->where('first_name', 'LIKE', '%' . $first_name . '%');
+            }
+
+            if (!empty($last_name)) {
+                $work_list = $work_list->where('last_name', 'LIKE', '%' . $last_name. '%');
+            }
+
+            if (!empty($email)) {
+                $work_list = $work_list->where('email', 'LIKE', '%' . $email . '%');
+            }
 
             if($work_status_id != null){
                 $work_list = $work_list->where('work_status_id', $work_status_id);
             }
 
+            $work_list = $work_list->orderBy('code', 'ASC');
             $work_list = $work_list->jsonPaginate();
 
             if(count($work_list) > 0){
