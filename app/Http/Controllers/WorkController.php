@@ -592,8 +592,12 @@ class WorkController extends Controller
             $discount_type_catalog      = DiscountTypes::where('company_id', $work_data->company_id)->get();
             $unionized_list             = Unionized::all();
 
+            $last_code = Work::select('code')->get()->last();
+            // $this->res['last_code'] = $last_code->code;
+
             $this->res = [
                 'data'      => $work_data,
+                'last_code' => $last_code->code,
                 'catalogs'  => [
                     'companies_catalog'     => $companies_catalog['companies'],
                     'contract_type_catalog' => $contract_type_catalog,

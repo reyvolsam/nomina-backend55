@@ -16,6 +16,7 @@ use App\PaymentMethods;
 use App\WorkShifts;
 use App\DiscountTypes;
 use App\Unionized;
+use App\Work;
 
 class SharedController extends Controller
 {
@@ -36,6 +37,8 @@ class SharedController extends Controller
     public function getCompanyCatalogFromUser(){
 
         $this->res = $this->getCompanyCatalogFromUserMethod();
+        $last_code = Work::select('code')->get()->last();
+        $this->res['last_code'] = $last_code->code;
         $this->status_code = $this->res['status_code'];
         return response()->json($this->res, $this->status_code);
     }//
@@ -46,6 +49,7 @@ class SharedController extends Controller
         $res['status_code'] = 204;
         $res['message'] = '';
         $res['data'] = [];
+        
 
         try{
             $user = $this->request->user();
