@@ -1,0 +1,280 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\BackupSUA;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
+use Validator;
+
+class BackupSUAController extends Controller
+{
+    private $res = [];
+    private $request;
+
+    function __construct(Request $request)
+    {
+        $this->request = $request;
+        $this->res['message'] = '';
+        $this->res['test'] = '';
+        $this->res['data'] = [];
+        $this->status_code = 200;
+    }//__construct()
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        //
+         //
+         try {
+
+            $suaList = BackupSUA::all();
+            $suaListFiles = [];
+
+            if (count($suaList) > 0) {
+
+                foreach ($suaList as $key => $value) {
+                    $value['file_backup_route'] = null;
+                    $value['file_amount_route'] = null;
+                    if ($value['file_backup'] != null) {
+                        $value['file_backup_route'] = asset('storage/backupSUA/' . $value['id'] . '/' . $value['file_backup']);# code...
+                    }
+
+                    if ($value['file_amount'] != null) {
+                        $value['file_amount_route'] = asset('storage/backupSUA/' . $value['id'] . '/' . $value['file_amount']);# code...
+                    }
+
+                    array_push($suaListFiles, $value);
+                }
+
+                $this->res['data'] = $suaListFiles;
+                $this->status_code = 200;
+            } else {
+                $this->res['message'] = 'No hay respaldos SUA registrados hasta el momento.';
+                $this->status_code = 200;
+            }
+
+            // $this->res['message'] = 'Test success';
+            
+            
+        } catch (\Exception $e) {
+            $this->res['message'] = 'Error en la Base de Datos.' . $e;
+            $this->status_code = 500;
+        }
+        return response()->json($this->res, $this->status_code);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store()
+    {
+        //
+        try {
+            $validator = Validator::make($this->request->all(), [
+                'date'              => 'required',
+                'period'             => 'required',
+            ]);
+    
+            if (!$validator->fails()) {
+                $data = $this->request->all();
+
+                $fileNameBackup = $data['file_name_backup'] != null ? str_replace(' ', '_',$data['file_name_backup']): null;
+                $fileNameAmount = $data['file_name_amount'] != null ? str_replace(' ', '_',$data['file_name_amount']): null;
+
+                $sua = new BackupSUA();
+                $sua->date = $data['date'];
+                $sua->period = $data['period'];
+                $sua->file_backup = $fileNameBackup;
+                $sua->file_amount = $fileNameAmount;
+                $sua->save();
+                
+
+                if ($data['file_backup']) {
+                    // $fileNameBackup = str_replace(' ', '_',$data['file_name_pdf']);
+                    $this->res['message'] = $sua->id;
+                    Storage::put('public/backupSUA/' . $sua->id . '/' . $fileNameBackup, base64_decode($data['file_backup']));
+                    # code...
+                }
+
+                if ($data['file_amount']) {
+                    $this->res['message'] = $sua->id;
+                    Storage::put('public/backupSUA/' . $sua->id . '/' . $fileNameAmount, base64_decode($data['file_amount']));
+                    # code...
+                }
+
+
+    
+               $this->res['message'] = 'Respaldo SUA guardado correctamente.';
+               $this->status_code = 200;
+                
+            } else {
+                $this->res['message'] = 'Por favor complete los campos.';
+                $this->status_code = 422;
+            }
+        } catch (\Exception $e) {
+            $this->res['message'] = 'Error en el sistema.' . $e;
+            $this->status_code = 500;
+        }
+        return response()->json($this->res, $this->status_code);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update($id)
+    {
+        //
+        try {
+            $validator = Validator::make($this->request->all(), [
+                'date'              => 'required',
+                'period'             => 'required',
+            ]);
+
+            
+    
+            if (!$validator->fails()) {
+                $data = $this->request->all();
+                $fileNameBackup = str_replace(' ', '_',$data['file_name_backup']);
+                $fileNameAmount = str_replace(' ', '_',$data['file_name_amount']);
+
+                $sua_exists = BackupSUA::find($id);
+
+                if ($sua_exists != null) {
+
+
+                    $sua = new BackupSUA;
+                    $sua->date = $data['date'];
+                    $sua->period = $data['period'];
+
+                    if ($sua_exists->file_backup == null && $data['file_backup'] != null) {
+                        $this->res['test'] = 'se va a crear';
+                        $sua->file_backup = $fileNameBackup;
+                    // $sua->file_amount = $data['file_name_amount'];
+                        Storage::put('public/backupSUA/' . $id . '/' . $fileNameBackup, base64_decode($data['file_backup']));
+                        
+                        # code...
+                    } else if($sua_exists->file_backup != null && $data['file_backup'] == null){
+                        $sua->file_backup = null;
+                        $this->res['test'] = 'se quitara';
+                    }else if($sua_exists->file_backup != $data['file_backup']){
+                        $this->res['test'] = 'se actualizara';
+                        $sua->file_backup = $fileNameBackup;
+                        Storage::put('public/backupSUA/' . $id . '/' . $fileNameBackup, base64_decode($data['file_backup']));
+                    }
+
+                    if ($sua_exists->file_amount == null && $data['file_amount'] != null) {
+                        $this->res['test'] = 'se va a crear';
+                        $sua->file_amount = $fileNameAmount;
+                    // $sua->file_amount = $data['file_name_amount'];
+                        Storage::put('public/backupSUA/' . $id . '/' . $fileNameAmount, base64_decode($data['file_amount']));
+                        
+                        # code...
+                    } else if($sua_exists->file_amount != null && $data['file_amount'] == null){
+                        $sua->file_amount = null;
+                        $this->res['test'] = 'se quitara';
+                    }else if($sua_exists->file_amount != $data['file_amount']){
+                        $this->res['test'] = 'se actualizara';
+                        $sua->file_amount = $fileNameAmount;
+                        Storage::put('public/backupSUA/' . $id . '/' . $fileNameAmount, base64_decode($data['file_amount']));
+                    }
+
+                    $id_doc = BackupSUA::updateOrCreate(['id' => $id], $sua->toArray())->id;
+
+
+
+                    $this->res['message'] = 'Respaldo SUA actualizado correctamente.';
+                    $this->status_code = 200;
+                    # code...
+                }else {
+                    $this->res['message'] = 'No existe un Respaldo SUA con ese id.';
+                    $this->status_code = 404;
+                }
+                
+            } else {
+                $this->res['message'] = 'Por favor complete los campos.';
+                $this->status_code = 422;
+            }
+        } catch (\Exception $e) {
+            $this->res['message'] = 'Error en el sistema.' . $e;
+            $this->status_code = 500;
+        }
+        return response()->json($this->res, $this->status_code);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+        try {
+            if (is_numeric($id)) {
+                $sua_exist = BackupSUA::find($id);
+
+                if ($sua_exist) {
+                    $sua_exist->delete();
+                    $this->res['message'] = 'Respaldo SUA eliminado correctamente.';
+                    $this->status_code = 200;
+                } else {
+                    $this->res['message'] = 'Respaldo SUA no existe.';
+                    $this->status_code = 422;
+                }
+            } else {
+                $this->res['message'] = 'Id incorrecto.';
+                $this->status_code = 422;
+            }
+        } catch (\Exception $e) {
+            $this->res['message'] = 'Error en el sistema.' . $e;
+            $this->status_code = 422;
+        }
+
+        return response()->json($this->res, $this->status_code);
+    }
+}
