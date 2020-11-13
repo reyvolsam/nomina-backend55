@@ -70,7 +70,7 @@ class ImssController extends Controller
                     }
                 }
             } else {
-                $this->res['message'] = 'No hay registros de Recibos del IMSS hasta el momento.';
+                $this->res['message'] = 'No hay registros de Emisiones hasta el momento.';
             }
             $this->status_code = 200;
         } catch(\Exception $e) {
@@ -181,7 +181,7 @@ class ImssController extends Controller
                     }
 
                 } else {
-                    $this->res['message'] = 'Este registro de nomina no existe.';        
+                    $this->res['message'] = 'Este registro de emision no existe.';        
                 }
             }
             $this->status_code = 200;
@@ -412,10 +412,10 @@ class ImssController extends Controller
                         }
                     }
 
-                    $this->res['message'] = 'Recibo Imss eliminada correctamente.';
+                    $this->res['message'] = 'Emision eliminada correctamente.';
                     $this->status_code = 200;
                 } else {
-                    $this->res['message'] = 'El registro de recibo de Imss no existe.';
+                    $this->res['message'] = 'El registro de emision no existe.';
                     $this->status_code = 422;
                 }
             } else {

@@ -43,7 +43,7 @@ class NominaController extends Controller
                 }
 
             } else {
-                $this->res['message'] = 'No hay registros de Nomina hasta el momento.';
+                $this->res['message'] = 'No hay registros de lista para pago hasta el momento.';
             }
             $this->status_code = 200;
         } catch(\Exception $e) {
@@ -107,7 +107,7 @@ class NominaController extends Controller
                         }
                     }
                 } else {
-                    $this->res['message'] = 'Este registro de nomina no existe.';        
+                    $this->res['message'] = 'Lista para pago no existe.';        
                 }
             }
             $this->status_code = 200;
@@ -205,7 +205,7 @@ class NominaController extends Controller
                         }
                     }
 
-                    $this->res['message'] = 'Nomina eliminada correctamente.';
+                    $this->res['message'] = 'Lista para pago eliminada correctamente.';
                     $this->status_code = 200;
                 } else {
                     $this->res['message'] = 'El registro de Nomina no existe.';

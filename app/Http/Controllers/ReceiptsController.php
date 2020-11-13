@@ -60,7 +60,7 @@ class ReceiptsController extends Controller
                 }
 
             } else {
-                $this->res['message'] = 'No hay Recibos hasta el momento.';
+                $this->res['message'] = 'No hay Transferencias de Pago hasta el momento.';
             }
             $this->status_code = 200;
         } catch(\Exception $e) {
@@ -146,7 +146,7 @@ class ReceiptsController extends Controller
                         }
                     }
                 } else {
-                    $this->res['message'] = 'Este registro de nomina no existe.';        
+                    $this->res['message'] = 'Esta Transferencia de Pago no existe.';        
                 }
             }
             $this->status_code = 200;
@@ -312,7 +312,7 @@ class ReceiptsController extends Controller
                         }
                     }
                 } else {
-                    $this->res['message'] = 'El recibo de no existe.';
+                    $this->res['message'] = 'Transferencia de Pago existe.';
                     $this->status_code = 422;
                 }
             } else {
