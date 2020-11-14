@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\BackupSUA;
+use App\BackupSua;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\MonthlyIsuue;
 use Illuminate\Support\Facades\Storage;
 use Validator;
 
@@ -32,8 +33,9 @@ class BackupSUAController extends Controller
          //
          try {
 
-            $suaList = BackupSUA::all();
+            $suaList = BackupSua::with('monthly_files_current')->get();
             $suaListFiles = [];
+
 
             if (count($suaList) > 0) {
 
@@ -47,6 +49,18 @@ class BackupSUAController extends Controller
                     if ($value['file_amount'] != null) {
                         $value['file_amount_route'] = asset('storage/backupSUA/' . $value['id'] . '/' . $value['file_amount']);# code...
                     }
+
+                    if (count($value->monthly_files_current) > 0) {
+                        foreach ($value->monthly_files_current as $key => $m) {
+                            $m->delete_file = false;
+                            $m->file_route = asset('storage/monthlyIsuue/' . $value['id'] . '/' . $m->file_name);
+                        }
+                    }
+
+                    $value['file_name_backup'] = null;
+                    $value['file_name_amount'] = null;
+
+                    $value['monthly_files_new'] = [];
 
                     array_push($suaListFiles, $value);
                 }
@@ -92,14 +106,18 @@ class BackupSUAController extends Controller
                 'date'              => 'required',
                 'period'             => 'required',
             ]);
+
+            // $this->res['test'] = 
     
             if (!$validator->fails()) {
                 $data = $this->request->all();
 
+                // $this->res['test'] = $data['monthly_isuue'];
+
                 $fileNameBackup = $data['file_name_backup'] != null ? str_replace(' ', '_',$data['file_name_backup']): null;
                 $fileNameAmount = $data['file_name_amount'] != null ? str_replace(' ', '_',$data['file_name_amount']): null;
 
-                $sua = new BackupSUA();
+                $sua = new BackupSua();
                 $sua->date = $data['date'];
                 $sua->period = $data['period'];
                 $sua->file_backup = $fileNameBackup;
@@ -118,6 +136,19 @@ class BackupSUAController extends Controller
                     $this->res['message'] = $sua->id;
                     Storage::put('public/backupSUA/' . $sua->id . '/' . $fileNameAmount, base64_decode($data['file_amount']));
                     # code...
+                }
+
+                if (count($data['monthly_files_new']) > 0) {
+                    # code...
+                    foreach ($data['monthly_files_new'] as $key => $value) {
+                        $monthly = new MonthlyIsuue();
+                        $monthly->backup_sua_id = $sua->id;
+                        $monthly->file_name = $value['file_name'];
+                        $monthly->save();
+
+                        Storage::put('public/monthlyIsuue/' . $sua->id . '/' . $value['file_name'], base64_decode($value['file_base']));
+                        # code...
+                    }
                 }
 
 
@@ -181,12 +212,12 @@ class BackupSUAController extends Controller
                 $fileNameBackup = str_replace(' ', '_',$data['file_name_backup']);
                 $fileNameAmount = str_replace(' ', '_',$data['file_name_amount']);
 
-                $sua_exists = BackupSUA::find($id);
+                $sua_exists = BackupSua::find($id);
 
                 if ($sua_exists != null) {
 
 
-                    $sua = new BackupSUA;
+                    $sua = new BackupSua;
                     $sua->date = $data['date'];
                     $sua->period = $data['period'];
 
@@ -222,7 +253,33 @@ class BackupSUAController extends Controller
                         Storage::put('public/backupSUA/' . $id . '/' . $fileNameAmount, base64_decode($data['file_amount']));
                     }
 
-                    $id_doc = BackupSUA::updateOrCreate(['id' => $id], $sua->toArray())->id;
+
+                    if (count($data['monthly_files_new']) > 0) {
+                        $this->res['test'] = 'hay nuevos archivos para guardar';
+                        foreach ($data['monthly_files_new'] as $key => $editFile) {
+                            $monthly = new MonthlyIsuue();
+                            $monthly->backup_sua_id = $id;
+                            $monthly->file_name = $editFile['file_name'];
+                            $monthly->save();
+    
+                            Storage::put('public/monthlyIsuue/' . $id . '/' . $editFile['file_name'], base64_decode($editFile['file_base']));
+                        }
+
+                    }
+
+                    if (count($data['monthly_files_current']) > 0) {
+                        $this->res['test'] = 'hay nuevos archivos para editar';
+                        foreach ($data['monthly_files_current'] as $key => $editFile) {
+                            # code...
+                            if ($editFile['delete_file']) {
+                                $delFile = MonthlyIsuue::find($editFile['id']);
+                                if($delFile) $delFile->delete();
+                            }
+                        }
+                        
+                    }
+
+                    $id_doc = BackupSua::updateOrCreate(['id' => $id], $sua->toArray())->id;
 
 
 
@@ -256,7 +313,7 @@ class BackupSUAController extends Controller
         //
         try {
             if (is_numeric($id)) {
-                $sua_exist = BackupSUA::find($id);
+                $sua_exist = BackupSua::find($id);
 
                 if ($sua_exist) {
                     $sua_exist->delete();
