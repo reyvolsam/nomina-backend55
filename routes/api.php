@@ -58,6 +58,7 @@ Route::group(['middleware' => ['cors', 'auth:api']], function (){
 
     Route::resource('nomina', 'NominaController');
     Route::resource('cfdiNomina', 'CfdiNominaController');
+    Route::post('cfdiNomina/search', 'CfdiNominaController@searchCfdiNomina');
     Route::resource('backupSua', 'BackupSUAController');
     Route::post('backupSua/search', 'BackupSUAController@searchBackupSua');
 

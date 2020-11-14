@@ -38,21 +38,8 @@ class CfdiNominaController extends Controller
 
             if (count($cfdi) > 0) {
 
-                foreach ($cfdi as $key => $value) {
-                    $value['file_pdf_route'] = null;
-                    $value['file_xml_route'] = null;
-                    if ($value['file_pdf'] != null) {
-                        $value['file_pdf_route'] = asset('storage/cfdiNomina/' . $value['id'] . '/' . $value['file_pdf']);# code...
-                    }
-
-                    if ($value['file_xml'] != null) {
-                        $value['file_xml_route'] = asset('storage/cfdiNomina/' . $value['id'] . '/' . $value['file_xml']);# code...
-                    }
-
-                    array_push($cfdi_files, $value);
-                }
-
-                $this->res['data'] = $cfdi_files;
+                
+                $this->res['data'] = $this->getAllData($cfdi);
                 $this->status_code = 200;
             } else {
                 $this->res['message'] = 'No hay CFDI registrados hasta el momento.';
@@ -288,5 +275,60 @@ class CfdiNominaController extends Controller
         }
 
         return response()->json($this->res, $this->status_code);
+    }
+
+    public function searchCfdiNomina(){
+        try {
+            $data = $this->request->all();
+
+        $listCFDI = CfdiNomina::select();
+
+        if ($data['date']) {
+            $listCFDI = $listCFDI->where('date', 'LIKE' , '%' . $data['date'] . '%');
+        }
+
+        if ($data['period']) {
+            $listCFDI = $listCFDI->where('period', 'LIKE' , '%' . $data['period'] . '%');
+        }
+
+        $listFilter = $listCFDI->get();
+
+        if (count($listFilter) > 0) {
+
+            $this->res['data'] = $this->getAllData($listFilter);
+            $this->res['message'] = '';
+        } else {
+            $this->res['message'] = 'No se encontraron resultados con esos datos de busqueda';
+        }
+        $this->status_code = 200;
+
+    } catch (\Exception $e) {
+        $this->res['message'] = 'Error en el Sistema.' . $e;
+        $this->status_code = 500;
+    }
+    
+        return response()->json($this->res, $this->status_code);
+    }
+
+    public function getAllData($list){
+
+        $listFiles = [];
+
+        foreach ($list as $key => $value) {
+            $value['file_pdf_route'] = null;
+            $value['file_xml_route'] = null;
+            if ($value['file_pdf'] != null) {
+                $value['file_pdf_route'] = asset('storage/cfdiNomina/' . $value['id'] . '/' . $value['file_pdf']);# code...
+            }
+
+            if ($value['file_xml'] != null) {
+                $value['file_xml_route'] = asset('storage/cfdiNomina/' . $value['id'] . '/' . $value['file_xml']);# code...
+            }
+
+            array_push($listFiles, $value);
+        }
+
+        return $listFiles;
+
     }
 }
