@@ -34,38 +34,11 @@ class BackupSUAController extends Controller
          try {
 
             $suaList = BackupSua::with('monthly_files_current')->get();
-            $suaListFiles = [];
 
 
             if (count($suaList) > 0) {
 
-                foreach ($suaList as $key => $value) {
-                    $value['file_backup_route'] = null;
-                    $value['file_amount_route'] = null;
-                    if ($value['file_backup'] != null) {
-                        $value['file_backup_route'] = asset('storage/backupSUA/' . $value['id'] . '/' . $value['file_backup']);# code...
-                    }
-
-                    if ($value['file_amount'] != null) {
-                        $value['file_amount_route'] = asset('storage/backupSUA/' . $value['id'] . '/' . $value['file_amount']);# code...
-                    }
-
-                    if (count($value->monthly_files_current) > 0) {
-                        foreach ($value->monthly_files_current as $key => $m) {
-                            $m->delete_file = false;
-                            $m->file_route = asset('storage/monthlyIsuue/' . $value['id'] . '/' . $m->file_name);
-                        }
-                    }
-
-                    $value['file_name_backup'] = null;
-                    $value['file_name_amount'] = null;
-
-                    $value['monthly_files_new'] = [];
-
-                    array_push($suaListFiles, $value);
-                }
-
-                $this->res['data'] = $suaListFiles;
+                $this->res['data'] = $this->getAllData($suaList);
                 $this->status_code = 200;
             } else {
                 $this->res['message'] = 'No hay respaldos SUA registrados hasta el momento.';
@@ -333,5 +306,70 @@ class BackupSUAController extends Controller
         }
 
         return response()->json($this->res, $this->status_code);
+    }
+
+    public function searchBackupSua(){
+        try {
+            $data = $this->request->all();
+
+        $listSua = BackupSua::with('monthly_files_current');
+        $listFilterFiles = [];
+
+        if ($data['date']) {
+            $listSua = $listSua->where('date', 'LIKE' , '%' . $data['date'] . '%');
+        }
+
+        if ($data['period']) {
+            $listSua = $listSua->where('period', 'LIKE' , '%' . $data['period'] . '%');
+        }
+
+        $listFilter = $listSua->get();
+
+        if (count($listFilter) > 0) {
+
+            $this->res['data'] = $this->getAllData($listFilter);
+            $this->res['message'] = '';
+        } else {
+            $this->res['message'] = 'No se encontraron resultados con esos datos de busqueda';
+        }
+        $this->status_code = 200;
+
+    } catch (\Exception $e) {
+        $this->res['message'] = 'Error en el Sistema.' . $e;
+        $this->status_code = 500;
+    }
+    
+        return response()->json($this->res, $this->status_code);
+    }
+
+    public function getAllData($listFilter){
+        $listFilterFiles = [];
+        foreach ($listFilter as $key => $value) {
+            $value['file_backup_route'] = null;
+            $value['file_amount_route'] = null;
+            if ($value['file_backup'] != null) {
+                $value['file_backup_route'] = asset('storage/backupSUA/' . $value['id'] . '/' . $value['file_backup']);# code...
+            }
+
+            if ($value['file_amount'] != null) {
+                $value['file_amount_route'] = asset('storage/backupSUA/' . $value['id'] . '/' . $value['file_amount']);# code...
+            }
+
+            if (count($value->monthly_files_current) > 0) {
+                foreach ($value->monthly_files_current as $key => $m) {
+                    $m->delete_file = false;
+                    $m->file_route = asset('storage/monthlyIsuue/' . $value['id'] . '/' . $m->file_name);
+                }
+            }
+
+            $value['file_name_backup'] = null;
+            $value['file_name_amount'] = null;
+
+            $value['monthly_files_new'] = [];
+
+            array_push($listFilterFiles, $value);
+        }
+
+        return $listFilterFiles;
     }
 }
