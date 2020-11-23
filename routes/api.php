@@ -46,6 +46,7 @@ Route::group(['middleware' => ['cors', 'auth:api']], function (){
     Route::post('work/loadData', 'WorkController@loadWorkData');
     Route::post('work/import', 'WorkImportController@import');
     Route::post('work/uploadDoc', 'WorkController@uploadDoc');
+    Route::post('work/uploadFileIncidents', 'WorkController@uploadFilesIncidents');
 
 
     Route::post('workByStatus', 'WorkController@workByStatus');
