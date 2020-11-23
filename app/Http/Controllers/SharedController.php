@@ -358,7 +358,7 @@ class SharedController extends Controller
             array_push($menu, $add);
 
             $add = [
-                "name" => 'Archivos de Pago de Nomina',
+                "name" => 'Archivo de lista para pago',
                 "icon" => 'how_to_reg',
                 "active" => false,
                 "url" => '/nomina',
@@ -368,7 +368,7 @@ class SharedController extends Controller
             array_push($menu, $add);
 
             $add = [
-                "name" => 'Recibos Pago de Nomina',
+                "name" => 'Transferencia de pago',
                 "icon" => 'money',
                 "active" => false,
                 "url" => '/payment_receipt',
@@ -378,10 +378,30 @@ class SharedController extends Controller
             array_push($menu, $add);
 
             $add = [
-                "name" => 'Recibos IMSS',
+                "name" => 'Costo Social Pagados',
                 "icon" => 'assignment_ind',
                 "active" => false,
                 "url" => '/imss',
+                "submenu" => []
+            ];
+
+            array_push($menu, $add);
+
+            $add = [
+                "name" => 'CFDI de Nominas',
+                "icon" => 'insert_drive_file',
+                "active" => false,
+                "url" => '/cfdi-nomina',
+                "submenu" => []
+            ];
+
+            array_push($menu, $add);
+
+            $add = [
+                "name" => 'Respaldos SUA',
+                "icon" => 'monetization_on',
+                "active" => false,
+                "url" => '/respaldos-sua',
                 "submenu" => []
             ];
 

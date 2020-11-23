@@ -70,7 +70,7 @@ class ImssController extends Controller
                     }
                 }
             } else {
-                $this->res['message'] = 'No hay registros de Recibos del IMSS hasta el momento.';
+                $this->res['message'] = 'No hay registros de Emisiones hasta el momento.';
             }
             $this->status_code = 200;
         } catch(\Exception $e) {
@@ -181,7 +181,7 @@ class ImssController extends Controller
                     }
 
                 } else {
-                    $this->res['message'] = 'Este registro de nomina no existe.';        
+                    $this->res['message'] = 'Este registro de emision no existe.';        
                 }
             }
             $this->status_code = 200;
@@ -412,10 +412,10 @@ class ImssController extends Controller
                         }
                     }
 
-                    $this->res['message'] = 'Recibo Imss eliminada correctamente.';
+                    $this->res['message'] = 'Emision eliminada correctamente.';
                     $this->status_code = 200;
                 } else {
-                    $this->res['message'] = 'El registro de recibo de Imss no existe.';
+                    $this->res['message'] = 'El registro de emision no existe.';
                     $this->status_code = 422;
                 }
             } else {
@@ -426,6 +426,77 @@ class ImssController extends Controller
             $this->res['message'] = 'Error en el sistema.'.$e;
             $this->status_code = 422;
         }
+        return response()->json($this->res, $this->status_code);
+    }
+
+
+    public function searchImss(){
+        try {
+            $data = $this->request->all();
+
+            $list = Imss::with('imss', 'impuesto', 'infonavit', 'pago_imss', 'pago_impuesto');
+
+        if ($data['date']) {
+            $listNomina = $list->where('date', 'LIKE' , '%' . $data['date'] . '%');
+        }
+
+        if ($data['period']) {
+            $list = $list->where('period', 'LIKE' , '%' . $data['period'] . '%');
+        }
+
+
+        $listFilter = $list->get();
+
+        
+
+        if (count($listFilter) > 0) {
+
+            foreach ($listFilter as $kl => $vl) {
+                $vl->loader = false;
+                if(count($vl->imss) > 0){
+                    foreach ($vl->imss as $ne => $vne){
+                        $vne->file_url = asset('imss/'.$vne->file_url);
+                        $vne->deleted = false;
+                    }
+                }
+                if(count($vl->impuesto) > 0){
+                    foreach ($vl->impuesto as $ne => $vne){
+                        $vne->file_url = asset('imss/'.$vne->file_url);
+                        $vne->deleted = false;
+                    }
+                }
+                if(count($vl->infonavit) > 0){
+                    foreach ($vl->infonavit as $ne => $vne){
+                        $vne->file_url = asset('imss/'.$vne->file_url);
+                        $vne->deleted = false;
+                    }
+                }
+                if(count($vl->pago_imss) > 0){
+                    foreach ($vl->pago_imss as $ne => $vne){
+                        $vne->file_url = asset('imss/'.$vne->file_url);
+                        $vne->deleted = false;
+                    }
+                }
+                if(count($vl->pago_impuesto) > 0){
+                    foreach ($vl->pago_impuesto as $ne => $vne){
+                        $vne->file_url = asset('imss/'.$vne->file_url);
+                        $vne->deleted = false;
+                    }
+                }
+            }
+
+            $this->res['data'] = $listFilter;
+            $this->res['message'] = '';
+        } else {
+            $this->res['message'] = 'No se encontraron resultados con esos datos de busqueda';
+        }
+        $this->status_code = 200;
+
+    } catch (\Exception $e) {
+        $this->res['message'] = 'Error en el Sistema.' . $e;
+        $this->status_code = 500;
+    }
+    
         return response()->json($this->res, $this->status_code);
     }
 }
