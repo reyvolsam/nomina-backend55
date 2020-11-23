@@ -58,6 +58,8 @@ Route::group(['middleware' => ['cors', 'auth:api']], function (){
     Route::get('catalogCompaniesDepartments', 'SharedController@getCompanyCatalogFromUserDepartments');
 
     Route::resource('nomina', 'NominaController');
+    //ruta para busqueda de nomina
+    Route::post('nomina/search', 'NominaController@searchNomina');
     Route::resource('cfdiNomina', 'CfdiNominaController');
     Route::post('cfdiNomina/search', 'CfdiNominaController@searchCfdiNomina');
     Route::resource('backupSua', 'BackupSUAController');

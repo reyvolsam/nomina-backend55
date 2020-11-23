@@ -221,4 +221,52 @@ class NominaController extends Controller
         }
         return response()->json($this->res, $this->status_code);
     }
+
+    public function searchNomina(){
+        try {
+            $data = $this->request->all();
+
+        $listNomina = Nomina::select();
+
+        if ($data['date']) {
+            $listNomina = $listNomina->where('date', 'LIKE' , '%' . $data['date'] . '%');
+        }
+
+        if ($data['period']) {
+            $listNomina = $listNomina->where('period', 'LIKE' , '%' . $data['period'] . '%');
+        }
+
+        if ($data['obra']) {
+            $listNomina = $listNomina->where('obra', 'LIKE' , '%' . $data['obra'] . '%');
+        }
+
+        $listFilter = $listNomina->get();
+
+        
+
+        if (count($listFilter) > 0) {
+
+            foreach ($listFilter as $kl => $vl) {
+                if(count($vl->nomina_dispersion) > 0){
+                    foreach ($vl->nomina_dispersion as $ne => $vne){
+                        $vne->file_url = asset('dispersion_files/'.$vne->file_url);
+                        $vne->deleted = false;
+                    }
+                }
+            }
+
+            $this->res['data'] = $listFilter;
+            $this->res['message'] = '';
+        } else {
+            $this->res['message'] = 'No se encontraron resultados con esos datos de busqueda';
+        }
+        $this->status_code = 200;
+
+    } catch (\Exception $e) {
+        $this->res['message'] = 'Error en el Sistema.' . $e;
+        $this->status_code = 500;
+    }
+    
+        return response()->json($this->res, $this->status_code);
+    }
 }
