@@ -87,8 +87,11 @@ class BackupSUAController extends Controller
 
                 // $this->res['test'] = $data['monthly_isuue'];
 
-                $fileNameBackup = $data['file_name_backup'] != null ? str_replace(' ', '_',$data['file_name_backup']): null;
-                $fileNameAmount = $data['file_name_amount'] != null ? str_replace(' ', '_',$data['file_name_amount']): null;
+                // $fileNameBackup = $data['file_name_backup'] != null ? str_replace(' ', '_',$data['file_name_backup']): null;
+                // $fileNameAmount = $data['file_name_amount'] != null ? str_replace(' ', '_',$data['file_name_amount']): null;
+
+                $fileNameBackup = $data['file_name_backup'];
+                $fileNameAmount = $data['file_name_amount'];
 
                 $sua = new BackupSua();
                 $sua->date = $data['date'];
@@ -184,6 +187,9 @@ class BackupSUAController extends Controller
                 $data = $this->request->all();
                 $fileNameBackup = str_replace(' ', '_',$data['file_name_backup']);
                 $fileNameAmount = str_replace(' ', '_',$data['file_name_amount']);
+
+                $fileNameBackup = $data['file_name_backup'];
+                $fileNameAmount = $data['file_name_amount'];
 
                 $sua_exists = BackupSua::find($id);
 

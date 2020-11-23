@@ -84,8 +84,12 @@ class CfdiNominaController extends Controller
             if (!$validator->fails()) {
                 $data = $this->request->all();
 
-                $fileNamePdf = $data['file_name_pdf'] != null ? str_replace(' ', '_',$data['file_name_pdf']): null;
-                $fileNameXML = $data['file_name_xml'] != null ? str_replace(' ', '_',$data['file_name_xml']): null;
+                // $fileNamePdf = $data['file_name_pdf'] != null ? str_replace(' ', '_',$data['file_name_pdf']): null;
+                // $fileNameXML = $data['file_name_xml'] != null ? str_replace(' ', '_',$data['file_name_xml']): null;
+
+                $fileNamePdf = $data['file_name_pdf'];
+                $fileNameXML = $data['file_name_xml'];
+
 
                 $cfdi = new CfdiNomina;
                 $cfdi->date = $data['date'];
@@ -167,8 +171,11 @@ class CfdiNominaController extends Controller
     
             if (!$validator->fails()) {
                 $data = $this->request->all();
-                $fileNamePdf = str_replace(' ', '_',$data['file_name_pdf']);
-                $fileNameXML = str_replace(' ', '_',$data['file_name_xml']);
+                // $fileNamePdf = str_replace(' ', '_',$data['file_name_pdf']);
+                // $fileNameXML = str_replace(' ', '_',$data['file_name_xml']);
+
+                $fileNamePdf = $data['file_name_pdf'];
+                $fileNameXML = $data['file_name_xml'];
 
                 $cfdi_exists = CfdiNomina::find($id);
 
