@@ -544,12 +544,14 @@ class WorkController extends Controller
             
 
             if($work_data->employee_photo != null){
-                $work_data->employee_photo = asset('employee_photos/'.$work_data->employee_photo);
+                // $work_data->employee_photo = asset('employee_photos/'.$work_data->employee_photo);
+                $work_data['employee_photo_url'] = asset('employee_photos/'.$work_data->employee_photo);
             } 
-            // else {
+            else {
                 
-            //     $work_data->employee_photo = 'assets/images/avatar.png';
-            // }
+                // $work_data->employee_photo = 'assets/images/avatar.png';
+                $work_data['employee_photo_url'] = 'nomina/assets/images/avatar.png';
+            }
 
             if($work_data->ine_file_url != null){
                 $work_data->ine_file_url = asset('employeeDocs/'.$work_data->ine_file_url);
