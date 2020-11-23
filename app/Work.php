@@ -78,4 +78,8 @@ class Work extends Model
         return $this->hasMany('App\AdministrativeRecords');
     }
 
+    public function disabilities_files_current(){
+        return $this->hasMany('App\Disabilities');
+    }
+
 }
