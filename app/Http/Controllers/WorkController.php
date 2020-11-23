@@ -550,7 +550,7 @@ class WorkController extends Controller
             else {
                 
                 // $work_data->employee_photo = 'assets/images/avatar.png';
-                $work_data['employee_photo_url'] = 'nomina/assets/images/avatar.png';
+                $work_data['employee_photo_url'] = 'assets/images/avatar.png';
             }
 
             if($work_data->ine_file_url != null){
