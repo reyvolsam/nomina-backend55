@@ -226,7 +226,7 @@ class NominaController extends Controller
         try {
             $data = $this->request->all();
 
-        $listNomina = Nomina::select();
+        $listNomina = Nomina::with('nomina_dispersion');
 
         if ($data['date']) {
             $listNomina = $listNomina->where('date', 'LIKE' , '%' . $data['date'] . '%');

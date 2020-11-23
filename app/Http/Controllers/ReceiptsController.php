@@ -325,4 +325,64 @@ class ReceiptsController extends Controller
         }
         return response()->json($this->res, $this->status_code);
     }
+
+    public function searchReceipt(){
+        try {
+            $data = $this->request->all();
+
+        $list = Receipts::with('xml_payment', 'payment_transference_1', 'payment_transference_2');
+
+        if ($data['date']) {
+            $listNomina = $list->where('date', 'LIKE' , '%' . $data['date'] . '%');
+        }
+
+        if ($data['period']) {
+            $list = $list->where('period', 'LIKE' , '%' . $data['period'] . '%');
+        }
+
+
+        $listFilter = $list->get();
+
+        
+
+        if (count($listFilter) > 0) {
+
+            foreach ($listFilter as $kl => $vl) {
+                $vl->loader = false;
+                if(count($vl->xml_payment) > 0){
+                    foreach ($vl->xml_payment as $ne => $vne){
+                        $vne->file_url = asset('receipts/'.$vne->file_url);
+                        $vne->deleted = false;
+                    }
+                }
+
+                if(count($vl->payment_transference_1) > 0){
+                    foreach ($vl->payment_transference_1 as $ne => $vne){
+                        $vne->file_url = asset('receipts/'.$vne->file_url);
+                        $vne->deleted = false;
+                    }
+                }
+
+                if(count($vl->payment_transference_2) > 0){
+                    foreach ($vl->payment_transference_2 as $ne => $vne){
+                        $vne->file_url = asset('receipts/'.$vne->file_url);
+                        $vne->deleted = false;
+                    }
+                }
+            }
+
+            $this->res['data'] = $listFilter;
+            $this->res['message'] = '';
+        } else {
+            $this->res['message'] = 'No se encontraron resultados con esos datos de busqueda';
+        }
+        $this->status_code = 200;
+
+    } catch (\Exception $e) {
+        $this->res['message'] = 'Error en el Sistema.' . $e;
+        $this->status_code = 500;
+    }
+    
+        return response()->json($this->res, $this->status_code);
+    }
 }
