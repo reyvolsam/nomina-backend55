@@ -27,6 +27,9 @@ Route::group(['middleware' => ['cors', 'auth:api']], function (){
     Route::resource('user', 'UserController');
     
     Route::resource('imss', 'ImssController');
+    //servicio busqueda imss
+    Route::post('imss/search', 'ImssController@searchImss');
+
     Route::resource('receipts', 'ReceiptsController');
 
     //servicio de busqueda
