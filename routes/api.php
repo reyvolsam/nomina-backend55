@@ -27,7 +27,13 @@ Route::group(['middleware' => ['cors', 'auth:api']], function (){
     Route::resource('user', 'UserController');
     
     Route::resource('imss', 'ImssController');
+    //servicio busqueda imss
+    Route::post('imss/search', 'ImssController@searchImss');
+
     Route::resource('receipts', 'ReceiptsController');
+
+    //servicio de busqueda
+    Route::post('receipts/search', 'ReceiptsController@searchReceipt');
 
     Route::resource('company', 'Catalogs\CompanyController');
     Route::resource('contractTypes', 'Catalogs\ContractTypesController');
@@ -46,6 +52,7 @@ Route::group(['middleware' => ['cors', 'auth:api']], function (){
     Route::post('work/loadData', 'WorkController@loadWorkData');
     Route::post('work/import', 'WorkImportController@import');
     Route::post('work/uploadDoc', 'WorkController@uploadDoc');
+    Route::post('work/uploadFileIncidents', 'WorkController@uploadFilesIncidents');
 
 
     Route::post('workByStatus', 'WorkController@workByStatus');
@@ -57,4 +64,11 @@ Route::group(['middleware' => ['cors', 'auth:api']], function (){
     Route::get('catalogCompaniesDepartments', 'SharedController@getCompanyCatalogFromUserDepartments');
 
     Route::resource('nomina', 'NominaController');
+    //ruta para busqueda de nomina
+    Route::post('nomina/search', 'NominaController@searchNomina');
+    Route::resource('cfdiNomina', 'CfdiNominaController');
+    Route::post('cfdiNomina/search', 'CfdiNominaController@searchCfdiNomina');
+    Route::resource('backupSua', 'BackupSUAController');
+    Route::post('backupSua/search', 'BackupSUAController@searchBackupSua');
+
 });

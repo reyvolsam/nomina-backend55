@@ -16,6 +16,7 @@ use App\PaymentMethods;
 use App\WorkShifts;
 use App\DiscountTypes;
 use App\Unionized;
+use App\Work;
 
 class SharedController extends Controller
 {
@@ -36,6 +37,8 @@ class SharedController extends Controller
     public function getCompanyCatalogFromUser(){
 
         $this->res = $this->getCompanyCatalogFromUserMethod();
+        $last_code = Work::select('code')->get()->last();
+        $this->res['last_code'] = $last_code->code;
         $this->status_code = $this->res['status_code'];
         return response()->json($this->res, $this->status_code);
     }//
@@ -46,6 +49,7 @@ class SharedController extends Controller
         $res['status_code'] = 204;
         $res['message'] = '';
         $res['data'] = [];
+        
 
         try{
             $user = $this->request->user();
@@ -354,7 +358,7 @@ class SharedController extends Controller
             array_push($menu, $add);
 
             $add = [
-                "name" => 'Archivos de Pago de Nomina',
+                "name" => 'Archivo de lista para pago',
                 "icon" => 'how_to_reg',
                 "active" => false,
                 "url" => '/nomina',
@@ -364,7 +368,7 @@ class SharedController extends Controller
             array_push($menu, $add);
 
             $add = [
-                "name" => 'Recibos Pago de Nomina',
+                "name" => 'Transferencia de pago',
                 "icon" => 'money',
                 "active" => false,
                 "url" => '/payment_receipt',
@@ -374,10 +378,30 @@ class SharedController extends Controller
             array_push($menu, $add);
 
             $add = [
-                "name" => 'Recibos IMSS',
+                "name" => 'Costo Social Pagados',
                 "icon" => 'assignment_ind',
                 "active" => false,
                 "url" => '/imss',
+                "submenu" => []
+            ];
+
+            array_push($menu, $add);
+
+            $add = [
+                "name" => 'CFDI de Nominas',
+                "icon" => 'insert_drive_file',
+                "active" => false,
+                "url" => '/cfdi-nomina',
+                "submenu" => []
+            ];
+
+            array_push($menu, $add);
+
+            $add = [
+                "name" => 'Respaldos SUA',
+                "icon" => 'monetization_on',
+                "active" => false,
+                "url" => '/respaldos-sua',
                 "submenu" => []
             ];
 

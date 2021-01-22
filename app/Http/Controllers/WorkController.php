@@ -21,6 +21,10 @@ use App\Unionized;
 use Validator;
 use Excel;
 use App\Http\Controllers\WorkRequestExport;
+use App\AdministrativeRecords;
+use App\Demands;
+use App\Disabilities;
+use Illuminate\Support\Facades\Storage;
 
 class WorkController extends Controller
 {
@@ -72,14 +76,41 @@ class WorkController extends Controller
     {
         try{
             $work_status_id = $this->request->input('work_status_id');
+            $code = $this->request->input('code');
+            $name = $this->request->input('name');
+            $first_name = $this->request->input('first_name');
+            $last_name = $this->request->input('last_name');
+            $email = $this->request->input('email');
+
             $work_list = [];
 
-            $work_list = Work::with('Company', 'ContractType', 'PeriodType', 'ContributionBase', 'Department', 'EmployeeType', 'PaymentMethod', 'WorkShift', 'Sex', 'DiscountType');
+            $work_list = Work::with('Company', 'ContractType', 'PeriodType', 'ContributionBase', 'Department', 'EmployeeType', 'PaymentMethod', 'WorkShift', 'Sex', 'DiscountType', 'administrative_files_current');
+
+            if ($code != null) {
+                $work_list = $work_list->where('code', $code);
+            }
+
+            if (!empty($name)) {
+                $work_list = $work_list->where('name', 'LIKE' , '%' . $name. '%');
+            }
+
+            if (!empty($first_name)) {
+                $work_list = $work_list->where('first_name', 'LIKE', '%' . $first_name . '%');
+            }
+
+            if (!empty($last_name)) {
+                $work_list = $work_list->where('last_name', 'LIKE', '%' . $last_name. '%');
+            }
+
+            if (!empty($email)) {
+                $work_list = $work_list->where('email', 'LIKE', '%' . $email . '%');
+            }
 
             if($work_status_id != null){
                 $work_list = $work_list->where('work_status_id', $work_status_id);
             }
 
+            $work_list = $work_list->orderBy('code', 'ASC');
             $work_list = $work_list->jsonPaginate();
 
             if(count($work_list) > 0){
@@ -90,6 +121,7 @@ class WorkController extends Controller
                     if($vul->address_file_url != null) $vul->address_file_url = asset('employeeDocs/'.$vul->address_file_url);
                     if($vul->contract_file_url != null) $vul->contract_file_url = asset('employeeDocs/'.$vul->contract_file_url);
                 }
+
                 $this->res['data'] = $work_list;
             } else {
                 if($work_status_id == null) $this->res['message'] = 'No hay Trabajadores hasta el momento.';
@@ -508,11 +540,17 @@ class WorkController extends Controller
 
             $work_data = Work::find($work_id);
 
+            
+            
+
             if($work_data->employee_photo != null){
-                $work_data->employee_photo = asset('employee_photos/'.$work_data->employee_photo);
-            } else {
+                // $work_data->employee_photo = asset('employee_photos/'.$work_data->employee_photo);
+                $work_data['employee_photo_url'] = asset('employee_photos/'.$work_data->employee_photo);
+            } 
+            else {
                 
-                $work_data->employee_photo = 'assets/images/avatar.png';
+                // $work_data->employee_photo = 'assets/images/avatar.png';
+                $work_data['employee_photo_url'] = 'assets/images/avatar.png';
             }
 
             if($work_data->ine_file_url != null){
@@ -565,8 +603,44 @@ class WorkController extends Controller
             $discount_type_catalog      = DiscountTypes::where('company_id', $work_data->company_id)->get();
             $unionized_list             = Unionized::all();
 
+            $last_code = Work::select('code')->get()->last();
+            // $this->res['last_code'] = $last_code->code;
+
+
+            $administrative = AdministrativeRecords::select()->where('work_id', $work_id)->get();
+            if (count($administrative) > 0) {
+                foreach ($administrative as $key => $adm) {
+                    $adm['file_url'] = asset('storage/employeeIncidents/administrativeRecords/' . $work_id . '/' . $adm['file_name']);
+                    $adm->delete_file = false;
+                }
+            }
+
+            $disabilities = Disabilities::select()->where('work_id', $work_id)->get();
+            if (count($disabilities) > 0) {
+                foreach ($disabilities as $key => $adm) {
+                    $adm['file_url'] = asset('storage/employeeIncidents/disabilities/' . $work_id . '/' . $adm['file_name']);
+                    $adm->delete_file = false;
+                }
+            }
+
+            $demands = Demands::select()->where('work_id', $work_id)->get();
+            if (count($demands) > 0) {
+                foreach ($demands as $key => $adm) {
+                    $adm['file_url'] = asset('storage/employeeIncidents/demands/' . $work_id . '/' . $adm['file_name']);
+                    $adm->delete_file = false;
+                }
+            }
+
             $this->res = [
                 'data'      => $work_data,
+                'incidents' => [
+                    'administrative_files_current' => $administrative,
+                    'disabilitie_files_current' => $disabilities,
+                    'demand_files_current' => $demands
+
+                    
+                ],
+                'last_code' => $last_code->code,
                 'catalogs'  => [
                     'companies_catalog'     => $companies_catalog['companies'],
                     'contract_type_catalog' => $contract_type_catalog,
@@ -579,7 +653,7 @@ class WorkController extends Controller
                     'work_shift_catalog'    => $work_shift_catalog,
                     'sex_catalog'           => $sex_catalog,
                     'discount_type_catalog' => $discount_type_catalog,
-                    'unionized_list'        => $unionized_list
+                    'unionized_list'        => $unionized_list,
                 ]
                 
             ];
@@ -726,4 +800,108 @@ class WorkController extends Controller
 
         return response()->json($this->res, $this->status_code);
     }
+
+    public function uploadFilesIncidents(){
+        try {
+            $validator = Validator::make($this->request->all(), [
+                'employee_id'              => 'required',
+                // 'administrative_files_new'             => 'required',
+            ]);
+
+            // $this->res['test'] = 
+    
+            if (!$validator->fails()) {
+                $data = $this->request->all();
+
+                if (count($data['administrative_files_new']) > 0) {
+                    # code...
+                    foreach ($data['administrative_files_new'] as $key => $value) {
+                        $administrative = new AdministrativeRecords();
+                        $administrative->work_id = $data['employee_id'];
+                        $administrative->file_name = $value['file_name'];
+                        $administrative->save();
+
+                        Storage::put('public/employeeIncidents/administrativeRecords/' . $data['employee_id'] . '/' . $value['file_name'], base64_decode($value['file_base']));
+                        # code...
+                    }
+                }
+
+                if (count($data['administrative_files_current']) > 0) {
+                    $this->res['test'] = 'hay nuevos archivos para editar';
+                    foreach ($data['administrative_files_current'] as $key => $editFile) {
+                        # code...
+                        if ($editFile['delete_file']) {
+                            $delFile = AdministrativeRecords::find($editFile['id']);
+                            if($delFile) $delFile->delete();
+                        }
+                    }
+                    
+                }
+
+                if (count($data['disabilitie_files_new']) > 0) {
+                    # code...
+                    foreach ($data['disabilitie_files_new'] as $key => $value) {
+                        $administrative = new Disabilities();
+                        $administrative->work_id = $data['employee_id'];
+                        $administrative->file_name = $value['file_name'];
+                        $administrative->save();
+
+                        Storage::put('public/employeeIncidents/disabilities/' . $data['employee_id'] . '/' . $value['file_name'], base64_decode($value['file_base']));
+                        # code...
+                    }
+                }
+
+                if (count($data['disabilitie_files_current']) > 0) {
+                    $this->res['test'] = 'hay nuevos archivos para editar';
+                    foreach ($data['disabilitie_files_current'] as $key => $editFile) {
+                        # code...
+                        if ($editFile['delete_file']) {
+                            $delFile = Disabilities::find($editFile['id']);
+                            if($delFile) $delFile->delete();
+                        }
+                    }
+                    
+                }
+
+                if (count($data['demand_files_new']) > 0) {
+                    # code...
+                    foreach ($data['demand_files_new'] as $key => $value) {
+                        $administrative = new Demands();
+                        $administrative->work_id = $data['employee_id'];
+                        $administrative->file_name = $value['file_name'];
+                        $administrative->save();
+
+                        Storage::put('public/employeeIncidents/demands/' . $data['employee_id'] . '/' . $value['file_name'], base64_decode($value['file_base']));
+                        # code...
+                    }
+                }
+
+                if (count($data['demand_files_current']) > 0) {
+                    $this->res['test'] = 'hay nuevos archivos para editar';
+                    foreach ($data['demand_files_current'] as $key => $editFile) {
+                        # code...
+                        if ($editFile['delete_file']) {
+                            $delFile = Demands::find($editFile['id']);
+                            if($delFile) $delFile->delete();
+                        }
+                    }
+                    
+                }
+
+    
+               $this->res['message'] = 'Archivo Incidencias guardado/actualizado correctamente.';
+               $this->status_code = 200;
+                
+            } else {
+                $this->res['message'] = 'Por favor complete los campos.';
+                $this->status_code = 422;
+            }
+        } catch (\Exception $e) {
+            $this->res['message'] = 'Error en el sistema.' . $e;
+            $this->status_code = 500;
+        }
+        return response()->json($this->res, $this->status_code);
+    }
+
+    // public function deleteFileIncidents(){}
 }

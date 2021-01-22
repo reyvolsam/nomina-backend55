@@ -60,7 +60,7 @@ class ReceiptsController extends Controller
                 }
 
             } else {
-                $this->res['message'] = 'No hay Recibos hasta el momento.';
+                $this->res['message'] = 'No hay Transferencias de Pago hasta el momento.';
             }
             $this->status_code = 200;
         } catch(\Exception $e) {
@@ -146,7 +146,7 @@ class ReceiptsController extends Controller
                         }
                     }
                 } else {
-                    $this->res['message'] = 'Este registro de nomina no existe.';        
+                    $this->res['message'] = 'Esta Transferencia de Pago no existe.';        
                 }
             }
             $this->status_code = 200;
@@ -312,7 +312,7 @@ class ReceiptsController extends Controller
                         }
                     }
                 } else {
-                    $this->res['message'] = 'El recibo de no existe.';
+                    $this->res['message'] = 'Transferencia de Pago existe.';
                     $this->status_code = 422;
                 }
             } else {
@@ -323,6 +323,66 @@ class ReceiptsController extends Controller
             $this->res['message'] = 'Error en el sistema.'.$e;
             $this->status_code = 422;
         }
+        return response()->json($this->res, $this->status_code);
+    }
+
+    public function searchReceipt(){
+        try {
+            $data = $this->request->all();
+
+        $list = Receipts::with('xml_payment', 'payment_transference_1', 'payment_transference_2');
+
+        if ($data['date']) {
+            $listNomina = $list->where('date', 'LIKE' , '%' . $data['date'] . '%');
+        }
+
+        if ($data['period']) {
+            $list = $list->where('period', 'LIKE' , '%' . $data['period'] . '%');
+        }
+
+
+        $listFilter = $list->get();
+
+        
+
+        if (count($listFilter) > 0) {
+
+            foreach ($listFilter as $kl => $vl) {
+                $vl->loader = false;
+                if(count($vl->xml_payment) > 0){
+                    foreach ($vl->xml_payment as $ne => $vne){
+                        $vne->file_url = asset('receipts/'.$vne->file_url);
+                        $vne->deleted = false;
+                    }
+                }
+
+                if(count($vl->payment_transference_1) > 0){
+                    foreach ($vl->payment_transference_1 as $ne => $vne){
+                        $vne->file_url = asset('receipts/'.$vne->file_url);
+                        $vne->deleted = false;
+                    }
+                }
+
+                if(count($vl->payment_transference_2) > 0){
+                    foreach ($vl->payment_transference_2 as $ne => $vne){
+                        $vne->file_url = asset('receipts/'.$vne->file_url);
+                        $vne->deleted = false;
+                    }
+                }
+            }
+
+            $this->res['data'] = $listFilter;
+            $this->res['message'] = '';
+        } else {
+            $this->res['message'] = 'No se encontraron resultados con esos datos de busqueda';
+        }
+        $this->status_code = 200;
+
+    } catch (\Exception $e) {
+        $this->res['message'] = 'Error en el Sistema.' . $e;
+        $this->status_code = 500;
+    }
+    
         return response()->json($this->res, $this->status_code);
     }
 }

@@ -74,4 +74,12 @@ class Work extends Model
         return $this->belongsTo('App\DiscountTypes');
     }//DiscountType
 
+    public function administrative_files_current(){
+        return $this->hasMany('App\AdministrativeRecords');
+    }
+
+    public function disabilities_files_current(){
+        return $this->hasMany('App\Disabilities');
+    }
+
 }
