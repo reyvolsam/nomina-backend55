@@ -89,10 +89,15 @@ class ContractTypesController extends Controller
 
             if(!$validator->fails()) {
                 $name = $this->request->input('name');
+                $company_id = $this->request->input('company_id');
 
-                $contract_types_repeated = ContractTypes::where('name', $name)->count();
+                $contract_types_repeated = ContractTypes::where('name', $name)
+                                                            ->where('company_id', $company_id)
+                                                            ->count();
                 if($contract_types_repeated == 0){
-                    $contract_types_trash = ContractTypes::withTrashed()->where('name', $name)->count();
+                    $contract_types_trash = ContractTypes::withTrashed()->where('name', $name)
+                                                            ->where('company_id', $company_id)
+                                                            ->count();
 
                     if($contract_types_trash == 0){
                         $contract_types = new ContractTypes;
@@ -101,9 +106,13 @@ class ContractTypesController extends Controller
                         $this->res['message'] = 'Tipo de Contrado creado correctamente.';
                         $this->status_code = 200;
                     } else {
-                        ContractTypes::withTrashed()->where('name', $name)->restore();
+                        ContractTypes::withTrashed()->where('name', $name)
+                                        ->where('company_id', $company_id)
+                                        ->restore();
 
-                        $contract_types = ContractTypes::where('name', $name)->first();
+                        $contract_types = ContractTypes::where('name', $name)
+                                                    ->where('company_id', $company_id)
+                                                    ->first();
 
                         $contract_types->updateOrCreate(['id' => $contract_types->id], $this->request->all());
 
