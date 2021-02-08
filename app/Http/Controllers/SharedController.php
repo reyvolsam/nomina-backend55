@@ -120,7 +120,7 @@ class SharedController extends Controller
                 $contract_types_list = ContractTypes::all();
                 $data['contract_types_list'] = $contract_types_list;
 
-                $period_types_list = PeriodTypes::al();
+                $period_types_list = PeriodTypes::all();
                 $data['period_types_list'] = $period_types_list;
 
                 $conribution_bases_list = ContributionBases::all();
