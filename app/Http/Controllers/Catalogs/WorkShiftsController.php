@@ -37,13 +37,9 @@ class WorkShiftsController extends Controller
 
             //ROOT
             if($this->request->user()->group_id == 4){
-                $work_shifts_list = WorkShifts::with('Company')->get();
+                $work_shifts_list = WorkShifts::all();
             } else {
-                $user = User::find($this->request->user()->id);
-                $companies = $user->CompanyUser()->get();
-                $ids = [];
-                foreach ($companies as $kc => $vc) array_push($ids, $vc['id']);
-                $work_shifts_list = WorkShifts::with('Company')->whereIn('company_id', $ids)->get();
+                $work_shifts_list = WorkShifts::all();
             }
 
             if(count($work_shifts_list) > 0){
@@ -82,8 +78,7 @@ class WorkShiftsController extends Controller
     {
         try{
             $validator = Validator::make($this->request->all(), [
-                'name'          => 'required|max:255',
-                'company_id'    => 'required'
+                'name'          => 'required|max:255'
             ]);
 
             if(!$validator->fails()) {
@@ -159,8 +154,7 @@ class WorkShiftsController extends Controller
         try{
             if(is_numeric($id)){
                 $validator = Validator::make($this->request->all(), [
-                    'name'          => 'required|max:255',
-                    'company_id'    => 'required'
+                    'name'          => 'required|max:255'
                 ]);
 
                 if(!$validator->fails()) {

@@ -37,13 +37,9 @@ class PaymentMethodsController extends Controller
 
             //ROOT
             if($this->request->user()->group_id == 4){
-                $payment_methods_list = PaymentMethods::with('Company')->get();
+                $payment_methods_list = PaymentMethods::all();
             } else {
-                $user = User::find($this->request->user()->id);
-                $companies = $user->CompanyUser()->get();
-                $ids = [];
-                foreach ($companies as $kc => $vc) array_push($ids, $vc['id']);
-                $payment_methods_list = PaymentMethods::with('Company')->whereIn('company_id', $ids)->get();
+                $payment_methods_list = PaymentMethods::all();
             }
 
             if(count($payment_methods_list) > 0){
@@ -82,8 +78,7 @@ class PaymentMethodsController extends Controller
     {
         try{
             $validator = Validator::make($this->request->all(), [
-                'name'          => 'required|max:255',
-                'company_id'    => 'required',
+                'name'          => 'required|max:255'
             ]);
 
             if(!$validator->fails()) {
@@ -159,8 +154,7 @@ class PaymentMethodsController extends Controller
         try{
             if(is_numeric($id)){
                 $validator = Validator::make($this->request->all(), [
-                    'name'          => 'required|max:255',
-                    'company_id'    => 'required',
+                    'name'          => 'required|max:255'
                 ]);
 
                 if(!$validator->fails()) {

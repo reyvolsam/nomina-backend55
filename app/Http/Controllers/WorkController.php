@@ -591,7 +591,7 @@ class WorkController extends Controller
             $work_data->finiquito_file_url_deleted = false;
 
             $companies_catalog          = $this->sharedController->getCompanyCatalog($user);
-            $contract_type_catalog      = ContractTypes::where('company_id', $work_data->company_id)->get();
+            $contract_type_catalog      = ContractTypes::all();
             $period_type_catalog        = PeriodTypes::where('company_id', $work_data->company_id)->get();
             $contribution_base_catalog  = ContributionBases::where('company_id', $work_data->company_id)->get();
             $department_catalog         = Department::where('company_id', $work_data->company_id)->get();
