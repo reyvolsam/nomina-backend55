@@ -117,28 +117,28 @@ class SharedController extends Controller
             $contract_types_list = [];
             $this->res['com'] = $company_id;
             if($company_id != null){
-                $contract_types_list = ContractTypes::where('company_id', $company_id)->get();
+                $contract_types_list = ContractTypes::all();
                 $data['contract_types_list'] = $contract_types_list;
 
-                $period_types_list = PeriodTypes::where('company_id', $company_id)->get();
+                $period_types_list = PeriodTypes::al();
                 $data['period_types_list'] = $period_types_list;
 
-                $conribution_bases_list = ContributionBases::where('company_id', $company_id)->get();
+                $conribution_bases_list = ContributionBases::all();
                 $data['conribution_bases_list'] = $conribution_bases_list;
 
                 $departments_list = Department::where('company_id', $company_id)->get();
                 $data['departments_list'] = $departments_list;
 
-                $employee_types_list = EmployeeTypes::where('company_id', $company_id)->get();
+                $employee_types_list = EmployeeTypes::all();
                 $data['employee_types_list'] = $employee_types_list;
 
-                $payment_methods_list = PaymentMethods::where('company_id', $company_id)->get();
+                $payment_methods_list = PaymentMethods::all();
                 $data['payment_methods_list'] = $payment_methods_list;
 
-                $work_shifts_list = WorkShifts::where('company_id', $company_id)->get();
+                $work_shifts_list = WorkShifts::all();
                 $data['work_shifts_list'] = $work_shifts_list;
                 
-                $discount_types_list = DiscountTypes::where('company_id', $company_id)->get();
+                $discount_types_list = DiscountTypes::all();
                 $data['discount_types_list'] = $discount_types_list;
 
                 $unionized_list = Unionized::all();

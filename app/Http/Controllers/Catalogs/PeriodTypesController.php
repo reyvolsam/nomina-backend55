@@ -36,13 +36,9 @@ class PeriodTypesController extends Controller
 
             //ROOT
             if($this->request->user()->group_id == 4){
-                $period_types_list = PeriodTypes::with('Company')->get();
+                $period_types_list = PeriodTypes::all();
             } else {
-                $user = User::find($this->request->user()->id);
-                $companies = $user->CompanyUser()->get();
-                $ids = [];
-                foreach ($companies as $kc => $vc) array_push($ids, $vc['id']);
-                $period_types_list = PeriodTypes::with('Company')->whereIn('company_id', $ids)->get();
+                $period_types_list = PeriodTypes::all();
 
             }
 
@@ -82,8 +78,7 @@ class PeriodTypesController extends Controller
     {
         try{
             $validator = Validator::make($this->request->all(), [
-                'name'          => 'required|max:255',
-                'company_id'    => 'required',
+                'name'          => 'required|max:255'
             ]);
 
             if(!$validator->fails()) {
@@ -159,8 +154,7 @@ class PeriodTypesController extends Controller
         try{
             if(is_numeric($id)){
                 $validator = Validator::make($this->request->all(), [
-                    'name'          => 'required|max:255',
-                    'company_id'    => 'required',
+                    'name'          => 'required|max:255'
                 ]);
 
                 if(!$validator->fails()) {

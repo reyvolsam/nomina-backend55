@@ -38,13 +38,11 @@ class ContractTypesController extends Controller
 
             //ROOT
             if($this->request->user()->group_id == 4){
-                $contract_type_list = ContractTypes::with('Company')->get();
+                $contract_type_list = ContractTypes::all();
             } else {
                 $user = User::find($this->request->user()->id);
-                $companies = $user->CompanyUser()->get();
                 $ids = [];
-                foreach ($companies as $kc => $vc) array_push($ids, $vc['id']);
-                $contract_type_list = ContractTypes::with('Company')->whereIn('company_id', $ids)->get();
+                $contract_type_list = ContractTypes::all();
             }
 
             if(count($contract_type_list) > 0){
@@ -83,20 +81,16 @@ class ContractTypesController extends Controller
     {
         try{
             $validator = Validator::make($this->request->all(), [
-                'name'          => 'required|max:255',
-                'company_id'    => 'required'
+                'name'          => 'required|max:255'
             ]);
 
             if(!$validator->fails()) {
                 $name = $this->request->input('name');
-                $company_id = $this->request->input('company_id');
 
                 $contract_types_repeated = ContractTypes::where('name', $name)
-                                                            ->where('company_id', $company_id)
                                                             ->count();
                 if($contract_types_repeated == 0){
                     $contract_types_trash = ContractTypes::withTrashed()->where('name', $name)
-                                                            ->where('company_id', $company_id)
                                                             ->count();
 
                     if($contract_types_trash == 0){
@@ -107,11 +101,9 @@ class ContractTypesController extends Controller
                         $this->status_code = 200;
                     } else {
                         ContractTypes::withTrashed()->where('name', $name)
-                                        ->where('company_id', $company_id)
                                         ->restore();
 
                         $contract_types = ContractTypes::where('name', $name)
-                                                    ->where('company_id', $company_id)
                                                     ->first();
 
                         $contract_types->updateOrCreate(['id' => $contract_types->id], $this->request->all());
@@ -169,8 +161,7 @@ class ContractTypesController extends Controller
         try{
             if(is_numeric($id)){
                 $validator = Validator::make($this->request->all(), [
-                    'name'          => 'required|max:255',
-                    'company_id'    => 'required'
+                    'name'          => 'required|max:255'
                 ]);
 
                 if(!$validator->fails()) {
