@@ -592,15 +592,15 @@ class WorkController extends Controller
 
             $companies_catalog          = $this->sharedController->getCompanyCatalog($user);
             $contract_type_catalog      = ContractTypes::all();
-            $period_type_catalog        = PeriodTypes::where('company_id', $work_data->company_id)->get();
-            $contribution_base_catalog  = ContributionBases::where('company_id', $work_data->company_id)->get();
+            $period_type_catalog        = PeriodTypes::all();
+            $contribution_base_catalog  = ContributionBases::all();
             $department_catalog         = Department::where('company_id', $work_data->company_id)->get();
             $job_catalog                = Job::where('company_id', $work_data->company_id)->where('department_id', $work_data->department_id)->get();
-            $employee_type_catalog      = EmployeeTypes::where('company_id', $work_data->company_id)->get();
-            $payment_method_catalog     = PaymentMethods::where('company_id', $work_data->company_id)->get();
-            $work_shift_catalog         = WorkShifts::where('company_id', $work_data->company_id)->get();
+            $employee_type_catalog      = EmployeeTypes::all();
+            $payment_method_catalog     = PaymentMethods::all();
+            $work_shift_catalog         = WorkShifts::all();
             $sex_catalog                = Sex::all();
-            $discount_type_catalog      = DiscountTypes::where('company_id', $work_data->company_id)->get();
+            $discount_type_catalog      = DiscountTypes::all();
             $unionized_list             = Unionized::all();
 
             $last_code = Work::select('code')->get()->last();
