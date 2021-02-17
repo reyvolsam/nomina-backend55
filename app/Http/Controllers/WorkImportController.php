@@ -67,7 +67,6 @@ class WorkImportController extends Controller
                                     $WorkDemo->reentry_date = $this->convertDate($v[3]);
 
                                     $contract_type = ContractTypes::where('name', $v[4])
-                                                            ->where('company_id', $company_id)
                                                             ->first();
                                     $WorkDemo->contract_type_id = ($contract_type != null) ? $contract_type->id : null;
 
@@ -76,14 +75,12 @@ class WorkImportController extends Controller
                                     $WorkDemo->name = $v[7];
 
                                     $period_type = PeriodTypes::where('name', $v[8])
-                                                            ->where('company_id', $company_id)
                                                             ->first();
                                     $WorkDemo->period_type_id = ($period_type != null) ? $period_type->id : null;
 
                                     $WorkDemo->imss_daily_salary = $v[9];
 
                                     $contribution_bases = ContributionBases::where('name', $v[11])
-                                                            ->where('company_id', $company_id)
                                                             ->first();
                                     $WorkDemo->contribution_base_id = ($contribution_bases != null) ? $contribution_bases->id : null;
 
@@ -100,17 +97,14 @@ class WorkImportController extends Controller
                                     $WorkDemo->unionized_id = ($unionized != null) ? $unionized->id : null;
 
                                     $payment_method = PaymentMethods::where('name', $v[16])
-                                                                ->where('company_id', $company_id)
                                                                 ->first();
                                     $WorkDemo->payment_method_id = ($payment_method != null) ? $payment_method->id : null;
 
                                     $work_shift = WorkShifts::where('name', $v[17])
-                                                                ->where('company_id', $company_id)
                                                                 ->first();
                                     $WorkDemo->work_shift_id = ($work_shift != null) ? $work_shift->id : null;
 
                                     $employee_type = EmployeeTypes::where('name', $v[71])
-                                                                ->where('company_id', $company_id)
                                                                 ->first();
                                     $WorkDemo->employee_type_id = ($employee_type != null) ? $employee_type->id : null;
 
