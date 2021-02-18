@@ -120,6 +120,9 @@ class WorkController extends Controller
                     if($vul->curp_file_url != null) $vul->curp_file_url = asset('employeeDocs/'.$vul->curp_file_url);
                     if($vul->address_file_url != null) $vul->address_file_url = asset('employeeDocs/'.$vul->address_file_url);
                     if($vul->contract_file_url != null) $vul->contract_file_url = asset('employeeDocs/'.$vul->contract_file_url);
+                    if($vul->imss_file_url != null) $vul->imss_file_url = asset('employeeDocs/'.$vul->imss_file_url);
+                    
+                    
                 }
 
                 $this->res['data'] = $work_list;
