@@ -11,8 +11,14 @@ class CfdiNomina extends Model
 
     protected $table = 'cfdi_nomina';
 
-    protected $fillable = ['date', 'period', 'file_pdf', 'file_xml', 'created_at', 'updated_at'];
+    protected $fillable = ['date', 'company_id', 'period', 'obra', 'file_pdf', 'file_xml', 'created_at', 'updated_at'];
     protected $guarded = ['id'];
     protected $dates = ['deleted_at'];
+
+    public function company(){
+        return $this->belongsTo('App\Company');
+    }
+
+
 
 }

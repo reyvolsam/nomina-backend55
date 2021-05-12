@@ -110,6 +110,8 @@ class WorkController extends Controller
                 $work_list = $work_list->where('work_status_id', $work_status_id);
             }
 
+            // $work_list = $work_list->where('company_id', 6);
+
             $work_list = $work_list->orderBy('code', 'ASC');
             $work_list = $work_list->jsonPaginate();
 
