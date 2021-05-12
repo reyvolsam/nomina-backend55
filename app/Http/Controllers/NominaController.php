@@ -17,6 +17,7 @@ class NominaController extends Controller
         $this->request = $request;
         $this->res['message'] = '';
         $this->res['data'] = [];
+        $this->res['test'] = [];
         $this->status_code = 204;
     }//__construct()
 
@@ -29,7 +30,7 @@ class NominaController extends Controller
     {
         try {
             $list = [];
-            $list = Nomina::with('nomina_dispersion')->get();
+            $list = Nomina::with('nomina_dispersion', 'company')->get();
             if(count($list) > 0){
                 $this->res['data'] = $list;
 
@@ -74,12 +75,12 @@ class NominaController extends Controller
         try {
             $this->res['data'] = $_FILES;
             $this->res['input'] = $_REQUEST;
-
             $id   = $_REQUEST['id'];
 
             if($id == 'null'){
                 $nomina = new Nomina();
                 $nomina->date   = $_REQUEST['date'];
+                $nomina->company_id   = $_REQUEST['company_id'];
                 $nomina->period = $_REQUEST['period'];
                 $nomina->obra   = $_REQUEST['obra'];
                 $nomina->save();
@@ -89,6 +90,7 @@ class NominaController extends Controller
                 $nomina = Nomina::find($id);
                 if($nomina){
                     $nomina->date   = $_REQUEST['date'];
+                    $nomina->company_id   = $_REQUEST['company_id'];
                     $nomina->period = $_REQUEST['period'];
                     $nomina->obra   = $_REQUEST['obra'];
                     $nomina->save();
@@ -113,6 +115,8 @@ class NominaController extends Controller
             $this->status_code = 200;
         } catch(\Exception $e) {
             $this->res['message'] = 'Error en la Base de Datos.'.$e;
+        $this->res['test'] = $_REQUEST;
+
             $this->status_code = 500;
         }
         return response()->json($this->res, $this->status_code);
