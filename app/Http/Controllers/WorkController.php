@@ -333,12 +333,46 @@ class WorkController extends Controller
                 }
             }
 
+            // etapa3 
             if(isset($_REQUEST['retencion_infonavit_url_deleted'])){
                 if($_REQUEST['retencion_infonavit_url_deleted'] == 'true'){
                     $work_file = Work::find($employee_id);
                     if($work_file){
                         unlink('employeeDocs/'.$work_file->retencion_infonavit_url);
                         $work_file->retencion_infonavit_url = null;
+                        $work_file->save();
+                    }
+                }
+            }
+
+            if(isset($_REQUEST['rfc_url_deleted'])){
+                if($_REQUEST['rfc_url_deleted'] == 'true'){
+                    $work_file = Work::find($employee_id);
+                    if($work_file){
+                        unlink('employeeDocs/'.$work_file->rfc_url);
+                        $work_file->rfc_url = null;
+                        $work_file->save();
+                    }
+                }
+            }
+
+            if(isset($_REQUEST['birth_certificate_url_deleted'])){
+                if($_REQUEST['birth_certificate_url_deleted'] == 'true'){
+                    $work_file = Work::find($employee_id);
+                    if($work_file){
+                        unlink('employeeDocs/'.$work_file->birth_certificate_url);
+                        $work_file->birth_certificate_url = null;
+                        $work_file->save();
+                    }
+                }
+            }
+
+            if(isset($_REQUEST['number_imss_url_deleted'])){
+                if($_REQUEST['number_imss_url_deleted'] == 'true'){
+                    $work_file = Work::find($employee_id);
+                    if($work_file){
+                        unlink('employeeDocs/'.$work_file->number_imss_url);
+                        $work_file->number_imss_url = null;
                         $work_file->save();
                     }
                 }
@@ -484,6 +518,8 @@ class WorkController extends Controller
                     }
                 }
 
+
+                // etapa3 
                 if(isset($_FILES['retencion_infonavit_file'])){
                     if(isset($_FILES['retencion_infonavit_file']['name'])){
                         $file = $_FILES['retencion_infonavit_file']; 
@@ -498,6 +534,60 @@ class WorkController extends Controller
                         $final_image_name = $rand . '_' . $file['name'];
                         if(move_uploaded_file($file['tmp_name'], 'employeeDocs/'.basename($final_image_name))){
                             $work->retencion_infonavit_url = $final_image_name;
+                        }
+                    }
+                }
+
+                if(isset($_FILES['rfc_file'])){
+                    if(isset($_FILES['rfc_file']['name'])){
+                        $file = $_FILES['rfc_file']; 
+
+                        $porciones = explode(".", $file['name']);
+                        $ext = $porciones[count($porciones)-1];
+                        unset($porciones[count($porciones)-1]);
+
+                        list($txt, $ext) = explode(".", $file['name']);
+
+                        $rand = rand(1, 500);
+                        $final_image_name = $rand . '_' . $file['name'];
+                        if(move_uploaded_file($file['tmp_name'], 'employeeDocs/'.basename($final_image_name))){
+                            $work->rfc_url = $final_image_name;
+                        }
+                    }
+                }
+
+                if(isset($_FILES['birth_certificate_file'])){
+                    if(isset($_FILES['birth_certificate_file']['name'])){
+                        $file = $_FILES['birth_certificate_file']; 
+
+                        $porciones = explode(".", $file['name']);
+                        $ext = $porciones[count($porciones)-1];
+                        unset($porciones[count($porciones)-1]);
+
+                        list($txt, $ext) = explode(".", $file['name']);
+
+                        $rand = rand(1, 500);
+                        $final_image_name = $rand . '_' . $file['name'];
+                        if(move_uploaded_file($file['tmp_name'], 'employeeDocs/'.basename($final_image_name))){
+                            $work->birth_certificate_url = $final_image_name;
+                        }
+                    }
+                }
+
+                if(isset($_FILES['number_imss_file'])){
+                    if(isset($_FILES['number_imss_file']['name'])){
+                        $file = $_FILES['number_imss_file']; 
+
+                        $porciones = explode(".", $file['name']);
+                        $ext = $porciones[count($porciones)-1];
+                        unset($porciones[count($porciones)-1]);
+
+                        list($txt, $ext) = explode(".", $file['name']);
+
+                        $rand = rand(1, 500);
+                        $final_image_name = $rand . '_' . $file['name'];
+                        if(move_uploaded_file($file['tmp_name'], 'employeeDocs/'.basename($final_image_name))){
+                            $work->number_imss_url = $final_image_name;
                         }
                     }
                 }
@@ -624,6 +714,7 @@ class WorkController extends Controller
             }
             $work_data->finiquito_file_url_deleted = false;
             
+            // etapa3 
             //retencion_infonavit
             if($work_data->retencion_infonavit_url != null){
                 $work_data->retencion_infonavit_url = asset('employeeDocs/'.$work_data->retencion_infonavit_url);
@@ -631,6 +722,30 @@ class WorkController extends Controller
             }
             $work_data->retencion_infonavit_url_deleted = false;
             //retencion_infonavit
+
+            //rfc
+            if($work_data->rfc_url != null){
+                $work_data->rfc_url = asset('employeeDocs/'.$work_data->rfc_url);
+                
+            }
+            $work_data->rfc_url_deleted = false;
+            //rfc
+
+            //birth_certificate
+            if($work_data->birth_certificate_url != null){
+                $work_data->birth_certificate_url = asset('employeeDocs/'.$work_data->birth_certificate_url);
+                
+            }
+            $work_data->birth_certificate_url_deleted = false;
+            //birth_certificate
+
+            //number_imss
+            if($work_data->number_imss_url != null){
+                $work_data->number_imss_url = asset('employeeDocs/'.$work_data->number_imss_url);
+                
+            }
+            $work_data->number_imss_url_deleted = false;
+            //number_imss
 
 
             $companies_catalog          = $this->sharedController->getCompanyCatalog($user);
