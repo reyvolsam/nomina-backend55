@@ -333,6 +333,17 @@ class WorkController extends Controller
                 }
             }
 
+            if(isset($_REQUEST['retencion_infonavit_url_deleted'])){
+                if($_REQUEST['retencion_infonavit_url_deleted'] == 'true'){
+                    $work_file = Work::find($employee_id);
+                    if($work_file){
+                        unlink('employeeDocs/'.$work_file->retencion_infonavit_url);
+                        $work_file->retencion_infonavit_url = null;
+                        $work_file->save();
+                    }
+                }
+            }
+
             //SE ELIMINA IMAGEN DE PERFIL DEL EMPLEADO
             if(isset($_REQUEST['employee_photo_deleted'])){
                 if($_REQUEST['employee_photo_deleted'] == 'true'){
@@ -473,6 +484,24 @@ class WorkController extends Controller
                     }
                 }
 
+                if(isset($_FILES['retencion_infonavit_file'])){
+                    if(isset($_FILES['retencion_infonavit_file']['name'])){
+                        $file = $_FILES['retencion_infonavit_file']; 
+
+                        $porciones = explode(".", $file['name']);
+                        $ext = $porciones[count($porciones)-1];
+                        unset($porciones[count($porciones)-1]);
+
+                        list($txt, $ext) = explode(".", $file['name']);
+
+                        $rand = rand(1, 500);
+                        $final_image_name = $rand . '_' . $file['name'];
+                        if(move_uploaded_file($file['tmp_name'], 'employeeDocs/'.basename($final_image_name))){
+                            $work->retencion_infonavit_url = $final_image_name;
+                        }
+                    }
+                }
+
                 if(isset($_FILES['employee_photo'])){
                     if(isset($_FILES['employee_photo']['name'])){
                         $file = $_FILES['employee_photo']; 
@@ -594,6 +623,15 @@ class WorkController extends Controller
                 
             }
             $work_data->finiquito_file_url_deleted = false;
+            
+            //retencion_infonavit
+            if($work_data->retencion_infonavit_url != null){
+                $work_data->retencion_infonavit_url = asset('employeeDocs/'.$work_data->retencion_infonavit_url);
+                
+            }
+            $work_data->retencion_infonavit_url_deleted = false;
+            //retencion_infonavit
+
 
             $companies_catalog          = $this->sharedController->getCompanyCatalog($user);
             $contract_type_catalog      = ContractTypes::all();
