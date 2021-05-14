@@ -75,6 +75,7 @@ class WorkController extends Controller
     public function workByStatus()
     {
         try{
+            $currentUser = $this->request->user();
             $work_status_id = $this->request->input('work_status_id');
             $code = $this->request->input('code');
             $name = $this->request->input('name');
@@ -110,7 +111,7 @@ class WorkController extends Controller
                 $work_list = $work_list->where('work_status_id', $work_status_id);
             }
 
-            // $work_list = $work_list->where('company_id', 6);
+            $work_list = $work_list->where('company_id', $currentUser->default_company_id);
 
             $work_list = $work_list->orderBy('code', 'ASC');
             $work_list = $work_list->jsonPaginate();
