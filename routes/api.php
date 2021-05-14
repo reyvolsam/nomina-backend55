@@ -71,4 +71,5 @@ Route::group(['middleware' => ['cors', 'auth:api']], function (){
     Route::resource('backupSua', 'BackupSUAController');
     Route::post('backupSua/search', 'BackupSUAController@searchBackupSua');
 
+    Route::post('idCompanySession', 'SharedController@updateIdCompanySession');
 });
