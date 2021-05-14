@@ -25,6 +25,7 @@ use App\AdministrativeRecords;
 use App\Demands;
 use App\Disabilities;
 use Illuminate\Support\Facades\Storage;
+use App\Exports\EmployeeExport;
 
 class WorkController extends Controller
 {
@@ -71,6 +72,32 @@ class WorkController extends Controller
         }
         return response()->json($this->res, $this->status_code);
     }//convertEmployee()
+
+    public function export() {
+
+        $work_list = Work::select(['works.code', 'works.discharge_date', 'works.termination_date', 'works.reentry_date', 'contract_types.name as contract_type', 
+                            'works.first_name', 'works.last_name', 'works.name', 'period_types.name as period_type', 'works.real_daily_salary', 'contribution_bases.name as contribution_base',
+                            'work_states.name as work_status', 'departments.name as department', 'payment_methods.name as payment_method', 'work_shifts.name as work_shift',
+                            'works.number_afore', 'works.social_security_number', 'works.rfc', 'works.curp', 'sexs.name as sexo', 'works.birth_city', 'works.birth_date', 'works.umf',
+                            'works.fathers_name', 'works.mothers_name', 'works.current_address', 'jobs.name as job', 'works.current_population', 'works.current_state',
+                            'works.cp', 'works.telephone', 'works.fonacot_number', 'works.email', 'works.key_account', 'employee_types.name as employee_type'])
+                    ->leftjoin('contract_types', 'contract_types.id', '=', 'works.contract_type_id')
+                    ->leftjoin('period_types', 'period_types.id', '=', 'works.period_type_id')
+                    ->leftjoin('contribution_bases', 'contribution_bases.id', '=', 'works.contribution_base_id')
+                    ->leftjoin('work_states', 'work_states.id', '=', 'works.work_status_id')
+                    ->leftjoin('departments', 'departments.id', '=', 'works.department_id')
+                    ->leftjoin('employee_types', 'employee_types.id', '=', 'works.employee_type_id')
+                    ->leftjoin('payment_methods', 'payment_methods.id', '=', 'works.payment_method_id')
+                    ->leftjoin('work_shifts', 'work_shifts.id', '=', 'works.work_shift_id')
+                    ->leftjoin('sexs', 'sexs.id', '=', 'works.sex_id')
+                    ->leftjoin('jobs', 'jobs.id', '=', 'works.job_id')
+                    ->where('works.work_status_id', 1)
+                    ->get();
+        //$this->res['data'] = $work_list;
+        //$this->status_code = 200;
+        //return response()->json($this->res, $this->status_code);
+        return (new EmployeeExport($work_list))->download('empleados.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+    }
 
     public function workByStatus()
     {
