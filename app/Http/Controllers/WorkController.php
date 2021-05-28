@@ -24,6 +24,7 @@ use App\Http\Controllers\WorkRequestExport;
 use App\AdministrativeRecords;
 use App\Demands;
 use App\Disabilities;
+use App\FileHistory;
 use Illuminate\Support\Facades\Storage;
 
 class WorkController extends Controller
@@ -60,6 +61,60 @@ class WorkController extends Controller
 
             if($employee){
                 $employee->work_status_id = $new_work_status_id;
+
+                // Convertir a proceso de reingreso
+                if ($new_work_status_id == 2) {
+                    $employee->baja_imss_date = null;
+                    $employee->causa_baja = null;
+                    $employee->observations_baja = null;
+
+
+                    // Historial de contratos
+                    if ($employee->contract_file_url != null) {
+                        $file_history = new FileHistory();
+                        $file_history->work_id = $employee_id;
+                        $file_history->file_type_id = 1;
+                        $file_history->file_url = $employee->contract_file_url;
+                        $employee->contract_file_url = null;
+
+                        $file_history->save();
+                    }
+
+                    if($employee->imss_file_url){ // Historial de Alta imss
+                        $file_history = new FileHistory();
+                        $file_history->work_id = $employee_id;
+                        $file_history->file_type_id = 2;
+                        $file_history->file_url = $employee->imss_file_url;
+                        $employee->imss_file_url = null;
+
+                        $file_history->save();
+
+                    } 
+
+                    if($employee->baja_imss_file_url){ // Historial de baja imss
+                        $file_history = new FileHistory();
+                        $file_history->work_id = $employee_id;
+                        $file_history->file_type_id = 3;
+                        $file_history->file_url = $employee->baja_imss_file_url;
+                        $employee->baja_imss_file_url = null;
+
+                        $file_history->save();
+
+                    }
+                    
+                    if ($employee->finiquito_file_url) { // Historial de finiquito
+                        $file_history = new FileHistory();
+                        $file_history->work_id = $employee_id;
+                        $file_history->file_type_id = 4;
+                        $file_history->file_url = $employee->finiquito_file_url;
+                        $employee->finiquito_file_url = null;
+
+                        $file_history->save();
+                    }
+                    
+
+                } 
+                
                 $employee->save();
             } else {
                 $this->res['message'] = 'El Empleado no existe.';    
