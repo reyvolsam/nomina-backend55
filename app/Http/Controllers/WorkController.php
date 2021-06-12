@@ -26,6 +26,8 @@ use App\Demands;
 use App\Disabilities;
 use App\FileHistory;
 use Illuminate\Support\Facades\Storage;
+use Mail;
+use App\Mail\SendNotification;
 
 class WorkController extends Controller
 {
@@ -283,6 +285,10 @@ class WorkController extends Controller
                         $this->status_code = 200;
                     }
                 } else {
+                    
+                    $msg = "Este es un ejemplo de notificación";
+
+                    Mail::to('reyvolsam43@gmail.com')->send(new SendNotification($msg));
                     $this->res['message'] = 'El trabajador ya existe.';
                     $this->status_code = 423;
                 }
