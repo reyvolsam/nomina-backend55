@@ -1158,7 +1158,8 @@ class WorkController extends Controller
                     $msg = null;
                     break;
             }
-            if($msg != null) Mail::to(['luis.herrera-g@outlook.com', 'luis.herrera.dev@gmail.com'])->send(new SendNotification($msg));
+            // esther.gonzalez@capitalman.com.mx, miguel.hernandez@capitalman.com.mx  y lupitaortiz.rhigc@gmail.com, capitalman.com.mx
+            if($msg != null) Mail::to(['esther.gonzalez@capitalman.com.mx', 'miguel.hernandez@capitalman.com.mx', 'lupitaortiz.rhigc@gmail.com', 'capitalman.com.mx'])->send(new SendNotification($msg));
         }
 
     }
