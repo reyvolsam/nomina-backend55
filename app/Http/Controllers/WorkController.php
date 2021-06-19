@@ -64,6 +64,8 @@ class WorkController extends Controller
             if($employee){
                 $employee->work_status_id = $new_work_status_id;
 
+                $this->notificationEmail($new_work_status_id, $employee_id);
+
                 // Convertir a proceso de reingreso
                 if ($new_work_status_id == 2) {
                     $employee->baja_imss_date = null;
@@ -267,6 +269,9 @@ class WorkController extends Controller
                         $this->res['employee_id'] = $work_id;
                         $this->res['message'] = 'Trabajador creado correctamente.';
                         $this->status_code = 200;
+                        $msg = "Nuevo empleado creado: " . $name . ' ' . $first_name . ' ' . $last_name;
+                        Mail::to(['luis.herrera-g@outlook.com', 'luis.herrera.dev@gmail.com'])->send(new SendNotification($msg));
+
                     } else {
                         Work::withTrashed()->where('name', $name)
                                         ->where('first_name', $first_name)
@@ -286,9 +291,9 @@ class WorkController extends Controller
                     }
                 } else {
                     
-                    $msg = "Este es un ejemplo de notificación";
+                    // $msg = "Este es un ejemplo de notificación";
 
-                    Mail::to('reyvolsam43@gmail.com')->send(new SendNotification($msg));
+                    // Mail::to(['reyvolsam43@gmail.com', 'luis.herrera.dev@gmail.com'])->send(new SendNotification($msg));
                     $this->res['message'] = 'El trabajador ya existe.';
                     $this->status_code = 423;
                 }
@@ -1124,4 +1129,37 @@ class WorkController extends Controller
     }
 
     // public function deleteFileIncidents(){}
+
+    public function notificationEmail($new_work_status_id, $employee_id){
+        $msg = null;
+
+        $employee_exist = Work::find($employee_id);
+        $employee_full_name = null;
+
+        if ($employee_exist) {
+            $employee_full_name = $employee_exist->name . ' ' . $employee_exist->first_name . ' ' . $employee_exist->last_name;
+            switch ($new_work_status_id) {
+                case 1:
+                    $msg = 'Empleado ' . $employee_full_name . ' ha cambiado estatus a: En proceso de alta.';
+                    break;
+                case 2:
+                    $msg = 'Empleado ' . $employee_full_name . ' ha cambiado estatus a: En proceso de reingreso.';
+                    break;
+                case 3:
+                    $msg = 'Empleado ' . $employee_full_name . ' ha cambiado estatus a: Activo.';
+                    break;
+                case 4:
+                    $msg = 'Empleado ' . $employee_full_name . ' ha cambiado estatus a: En proceso de baja.';
+                    break;
+                case 5:
+                    $msg = 'Empleado ' . $employee_full_name . ' ha cambiado estatus a: Baja.';
+                    break;
+                default:
+                    $msg = null;
+                    break;
+            }
+            if($msg != null) Mail::to(['luis.herrera-g@outlook.com', 'luis.herrera.dev@gmail.com'])->send(new SendNotification($msg));
+        }
+
+    }
 }
