@@ -270,7 +270,7 @@ class WorkController extends Controller
                         $this->res['message'] = 'Trabajador creado correctamente.';
                         $this->status_code = 200;
                         $msg = "Nuevo empleado creado: " . $name . ' ' . $first_name . ' ' . $last_name;
-                        Mail::to(['esther.gonzalez@capitalman.com.mx', 'miguel.hernandez@capitalman.com.mx', 'lupitaortiz.rhigc@gmail.com', 'capitalman.com.mx'])->send(new SendNotification($msg));
+                        Mail::to(['esther.gonzalez@capitalman.com.mx', 'miguel.hernandez@capitalman.com.mx', 'lupitaortiz.rhigc@gmail.com'])->send(new SendNotification($msg));
 
                     } else {
                         Work::withTrashed()->where('name', $name)
@@ -1159,7 +1159,7 @@ class WorkController extends Controller
                     break;
             }
             // esther.gonzalez@capitalman.com.mx, miguel.hernandez@capitalman.com.mx  y lupitaortiz.rhigc@gmail.com, capitalman.com.mx
-            if($msg != null) Mail::to(['esther.gonzalez@capitalman.com.mx', 'miguel.hernandez@capitalman.com.mx', 'lupitaortiz.rhigc@gmail.com', 'capitalman.com.mx'])->send(new SendNotification($msg));
+            if($msg != null) Mail::to(['esther.gonzalez@capitalman.com.mx', 'miguel.hernandez@capitalman.com.mx', 'lupitaortiz.rhigc@gmail.com'])->send(new SendNotification($msg));
         }
 
     }
