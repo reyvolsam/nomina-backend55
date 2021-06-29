@@ -11,12 +11,16 @@ class Nomina extends Model
 
     protected $table = 'nomina';
 
-    protected $fillable = ['date', 'period', 'obra', 'created_at', 'updated_at'];
+    protected $fillable = ['date', 'company_id', 'period', 'obra', 'created_at', 'updated_at'];
     protected $guarded = ['id'];
     protected $dates = ['deleted_at'];
 
     public function nomina_dispersion(){
         return $this->hasMany('App\NominaDispersion');
     }//nomina_dispersion()
+
+    public function company(){
+        return $this->belongsTo('App\Company');
+    }
 
 }////

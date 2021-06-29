@@ -30,7 +30,7 @@ class ReceiptsController extends Controller
     {
         try {
             $list = [];
-            $list = Receipts::with('xml_payment', 'payment_transference_1', 'payment_transference_2')->get();
+            $list = Receipts::with('xml_payment', 'payment_transference_1', 'payment_transference_2', 'company')->get();
 
             if(count($list) > 0){
                 $this->res['data'] = $list;
@@ -97,7 +97,9 @@ class ReceiptsController extends Controller
             if($id == 'null'){
                 $receipt = new Receipts();
                 $receipt->date   = $_REQUEST['date'];
+                $receipt->company_id   = $_REQUEST['company_id'];
                 $receipt->period = $_REQUEST['period'];
+                $receipt->obra = $_REQUEST['obra'];
                 $receipt->save();
 
                 $this->uploadFiles($receipt->id);
@@ -105,7 +107,9 @@ class ReceiptsController extends Controller
                 $receipt = Receipts::find($id);
                 if($receipt){
                     $receipt->date   = $_REQUEST['date'];
+                    $receipt->company_id   = $_REQUEST['company_id'];
                     $receipt->period = $_REQUEST['period'];
+                    $receipt->obra = $_REQUEST['obra'];
                     $receipt->save();
                     
                     $this->uploadFiles($receipt->id);
@@ -338,6 +342,10 @@ class ReceiptsController extends Controller
 
         if ($data['period']) {
             $list = $list->where('period', 'LIKE' , '%' . $data['period'] . '%');
+        }
+
+        if ($data['obra']) {
+            $list = $list->where('obra', 'LIKE' , '%' . $data['obra'] . '%');
         }
 
 

@@ -33,7 +33,7 @@ class CfdiNominaController extends Controller
         //
         try {
 
-            $cfdi = CfdiNomina::all();
+            $cfdi = CfdiNomina::with('Company')->get();
             $cfdi_files = [];
 
             if (count($cfdi) > 0) {
@@ -93,7 +93,9 @@ class CfdiNominaController extends Controller
 
                 $cfdi = new CfdiNomina;
                 $cfdi->date = $data['date'];
+                $cfdi->company_id = $data['company_id'];
                 $cfdi->period = $data['period'];
+                $cfdi->obra = $data['obra'];
                 $cfdi->file_pdf = $fileNamePdf;
                 $cfdi->file_xml = $fileNameXML;
                 $cfdi->save();
@@ -184,7 +186,9 @@ class CfdiNominaController extends Controller
 
                     $cfdi = new CfdiNomina;
                     $cfdi->date = $data['date'];
+                    $cfdi->company_id = $data['company_id'];
                     $cfdi->period = $data['period'];
+                    $cfdi->obra = $data['obra'];
                     // $cfdi->file_pdf = $data['file_name_pdf'];
                     // $cfdi->file_xml = $data['file_name_xml'];
 
@@ -296,6 +300,10 @@ class CfdiNominaController extends Controller
 
         if ($data['period']) {
             $listCFDI = $listCFDI->where('period', 'LIKE' , '%' . $data['period'] . '%');
+        }
+
+        if ($data['obra']) {
+            $listCFDI = $listCFDI->where('obra', 'LIKE' , '%' . $data['obra'] . '%');
         }
 
         $listFilter = $listCFDI->get();

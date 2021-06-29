@@ -11,7 +11,7 @@ class Receipts extends Model
 
     protected $table = 'payment_receipts';
 
-    protected $fillable = ['date', 'period', 'created_at', 'updated_at'];
+    protected $fillable = ['date', 'company_id', 'period', 'obra', 'created_at', 'updated_at'];
     protected $guarded = ['id'];
     protected $dates = ['deleted_at'];
 
@@ -29,4 +29,9 @@ class Receipts extends Model
     {
         return $this->hasMany('App\ReceiptTransference2', 'payment_receipt_id');
     }//xml_payment()
+
+    public function company()
+    {
+        return $this->belongsTo('App\Company');
+    }
 }

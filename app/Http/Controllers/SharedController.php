@@ -17,6 +17,7 @@ use App\WorkShifts;
 use App\DiscountTypes;
 use App\Unionized;
 use App\Work;
+use Validator;
 
 class SharedController extends Controller
 {
@@ -419,6 +420,48 @@ class SharedController extends Controller
 
         return response()->json($this->res, $this->status_code);
     }//BuildSystemMenu()
+
+
+    public function updateIdCompanySession(){
+        try{
+            $user = $this->request->user();
+            $company_id = $this->request->input('company_id');
+            $validator = Validator::make($this->request->all(), [
+                'company_id'                => 'required',
+                
+            ]);
+
+            if(!$validator->fails()) {
+
+                $user_exist = User::find($user->id);
+                $company_exist = Company::find($company_id);
+                if ($user_exist && $company_exist) {
+                    # code...
+                    $user_exist->default_company_id = $company_id;
+                    $user_exist->save();
+                    $this->res['message'] = 'Se actualizo correctamente default_company_id';
+                    $this->status_code = 200;
+                }else{
+        
+                    // $this->res['data'] = $company_exist;
+                    $this->res['message'] = 'El usuario o empresa no existen';
+                    $this->status_code = 400;
+                }
+                
+            } else {
+                $this->res['message'] = 'Por favor llene todos los campos requeridos o revise la longitud de los campos.';
+                $this->status_code = 422;
+            }
+        } catch(\Exception $e) {
+            $this->res['message'] = 'Error en el sistema.'.$e;
+            $this->status_code = 422;
+        }
+
+        // $this->status_code = 200;
+
+        return response()->json($this->res, $this->status_code);
+
+    }
 
 
 }////

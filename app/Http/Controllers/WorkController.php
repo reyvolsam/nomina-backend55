@@ -24,8 +24,10 @@ use App\Http\Controllers\WorkRequestExport;
 use App\AdministrativeRecords;
 use App\Demands;
 use App\Disabilities;
+use App\FileHistory;
 use Illuminate\Support\Facades\Storage;
-use App\Exports\EmployeeExport;
+use Mail;
+use App\Mail\SendNotification;
 
 class WorkController extends Controller
 {
@@ -61,6 +63,62 @@ class WorkController extends Controller
 
             if($employee){
                 $employee->work_status_id = $new_work_status_id;
+
+                $this->notificationEmail($new_work_status_id, $employee_id);
+
+                // Convertir a proceso de reingreso
+                if ($new_work_status_id == 2) {
+                    $employee->baja_imss_date = null;
+                    $employee->causa_baja = null;
+                    $employee->observations_baja = null;
+
+
+                    // Historial de contratos
+                    if ($employee->contract_file_url != null) {
+                        $file_history = new FileHistory();
+                        $file_history->work_id = $employee_id;
+                        $file_history->file_type_id = 1;
+                        $file_history->file_url = $employee->contract_file_url;
+                        $employee->contract_file_url = null;
+
+                        $file_history->save();
+                    }
+
+                    if($employee->imss_file_url){ // Historial de Alta imss
+                        $file_history = new FileHistory();
+                        $file_history->work_id = $employee_id;
+                        $file_history->file_type_id = 2;
+                        $file_history->file_url = $employee->imss_file_url;
+                        $employee->imss_file_url = null;
+
+                        $file_history->save();
+
+                    } 
+
+                    if($employee->baja_imss_file_url){ // Historial de baja imss
+                        $file_history = new FileHistory();
+                        $file_history->work_id = $employee_id;
+                        $file_history->file_type_id = 3;
+                        $file_history->file_url = $employee->baja_imss_file_url;
+                        $employee->baja_imss_file_url = null;
+
+                        $file_history->save();
+
+                    }
+                    
+                    if ($employee->finiquito_file_url) { // Historial de finiquito
+                        $file_history = new FileHistory();
+                        $file_history->work_id = $employee_id;
+                        $file_history->file_type_id = 4;
+                        $file_history->file_url = $employee->finiquito_file_url;
+                        $employee->finiquito_file_url = null;
+
+                        $file_history->save();
+                    }
+                    
+
+                } 
+                
                 $employee->save();
             } else {
                 $this->res['message'] = 'El Empleado no existe.';    
@@ -102,6 +160,7 @@ class WorkController extends Controller
     public function workByStatus()
     {
         try{
+            $currentUser = $this->request->user();
             $work_status_id = $this->request->input('work_status_id');
             $code = $this->request->input('code');
             $name = $this->request->input('name');
@@ -136,6 +195,8 @@ class WorkController extends Controller
             if($work_status_id != null){
                 $work_list = $work_list->where('work_status_id', $work_status_id);
             }
+
+            $work_list = $work_list->where('company_id', $currentUser->default_company_id);
 
             $work_list = $work_list->orderBy('code', 'ASC');
             $work_list = $work_list->jsonPaginate();
@@ -234,6 +295,9 @@ class WorkController extends Controller
                         $this->res['employee_id'] = $work_id;
                         $this->res['message'] = 'Trabajador creado correctamente.';
                         $this->status_code = 200;
+                        $msg = "Nuevo empleado creado: " . $name . ' ' . $first_name . ' ' . $last_name;
+                        Mail::to(['monserrat.rasgado@capitalman.com.mx', 'miguel.hernandez@capitalman.com.mx', 'lupitaortiz.rhigc@gmail.com'])->send(new SendNotification($msg));
+
                     } else {
                         Work::withTrashed()->where('name', $name)
                                         ->where('first_name', $first_name)
@@ -252,6 +316,10 @@ class WorkController extends Controller
                         $this->status_code = 200;
                     }
                 } else {
+                    
+                    // $msg = "Este es un ejemplo de notificación";
+
+                    // Mail::to(['reyvolsam43@gmail.com', 'luis.herrera.dev@gmail.com'])->send(new SendNotification($msg));
                     $this->res['message'] = 'El trabajador ya existe.';
                     $this->status_code = 423;
                 }
@@ -353,6 +421,51 @@ class WorkController extends Controller
                     if($work_file){
                         unlink('employeeDocs/'.$work_file->finiquito_file_url);
                         $work_file->finiquito_file_url = null;
+                        $work_file->save();
+                    }
+                }
+            }
+
+            // etapa3 
+            if(isset($_REQUEST['retencion_infonavit_url_deleted'])){
+                if($_REQUEST['retencion_infonavit_url_deleted'] == 'true'){
+                    $work_file = Work::find($employee_id);
+                    if($work_file){
+                        unlink('employeeDocs/'.$work_file->retencion_infonavit_url);
+                        $work_file->retencion_infonavit_url = null;
+                        $work_file->save();
+                    }
+                }
+            }
+
+            if(isset($_REQUEST['rfc_url_deleted'])){
+                if($_REQUEST['rfc_url_deleted'] == 'true'){
+                    $work_file = Work::find($employee_id);
+                    if($work_file){
+                        unlink('employeeDocs/'.$work_file->rfc_url);
+                        $work_file->rfc_url = null;
+                        $work_file->save();
+                    }
+                }
+            }
+
+            if(isset($_REQUEST['birth_certificate_url_deleted'])){
+                if($_REQUEST['birth_certificate_url_deleted'] == 'true'){
+                    $work_file = Work::find($employee_id);
+                    if($work_file){
+                        unlink('employeeDocs/'.$work_file->birth_certificate_url);
+                        $work_file->birth_certificate_url = null;
+                        $work_file->save();
+                    }
+                }
+            }
+
+            if(isset($_REQUEST['number_imss_url_deleted'])){
+                if($_REQUEST['number_imss_url_deleted'] == 'true'){
+                    $work_file = Work::find($employee_id);
+                    if($work_file){
+                        unlink('employeeDocs/'.$work_file->number_imss_url);
+                        $work_file->number_imss_url = null;
                         $work_file->save();
                     }
                 }
@@ -498,6 +611,80 @@ class WorkController extends Controller
                     }
                 }
 
+
+                // etapa3 
+                if(isset($_FILES['retencion_infonavit_file'])){
+                    if(isset($_FILES['retencion_infonavit_file']['name'])){
+                        $file = $_FILES['retencion_infonavit_file']; 
+
+                        $porciones = explode(".", $file['name']);
+                        $ext = $porciones[count($porciones)-1];
+                        unset($porciones[count($porciones)-1]);
+
+                        list($txt, $ext) = explode(".", $file['name']);
+
+                        $rand = rand(1, 500);
+                        $final_image_name = $rand . '_' . $file['name'];
+                        if(move_uploaded_file($file['tmp_name'], 'employeeDocs/'.basename($final_image_name))){
+                            $work->retencion_infonavit_url = $final_image_name;
+                        }
+                    }
+                }
+
+                if(isset($_FILES['rfc_file'])){
+                    if(isset($_FILES['rfc_file']['name'])){
+                        $file = $_FILES['rfc_file']; 
+
+                        $porciones = explode(".", $file['name']);
+                        $ext = $porciones[count($porciones)-1];
+                        unset($porciones[count($porciones)-1]);
+
+                        list($txt, $ext) = explode(".", $file['name']);
+
+                        $rand = rand(1, 500);
+                        $final_image_name = $rand . '_' . $file['name'];
+                        if(move_uploaded_file($file['tmp_name'], 'employeeDocs/'.basename($final_image_name))){
+                            $work->rfc_url = $final_image_name;
+                        }
+                    }
+                }
+
+                if(isset($_FILES['birth_certificate_file'])){
+                    if(isset($_FILES['birth_certificate_file']['name'])){
+                        $file = $_FILES['birth_certificate_file']; 
+
+                        $porciones = explode(".", $file['name']);
+                        $ext = $porciones[count($porciones)-1];
+                        unset($porciones[count($porciones)-1]);
+
+                        list($txt, $ext) = explode(".", $file['name']);
+
+                        $rand = rand(1, 500);
+                        $final_image_name = $rand . '_' . $file['name'];
+                        if(move_uploaded_file($file['tmp_name'], 'employeeDocs/'.basename($final_image_name))){
+                            $work->birth_certificate_url = $final_image_name;
+                        }
+                    }
+                }
+
+                if(isset($_FILES['number_imss_file'])){
+                    if(isset($_FILES['number_imss_file']['name'])){
+                        $file = $_FILES['number_imss_file']; 
+
+                        $porciones = explode(".", $file['name']);
+                        $ext = $porciones[count($porciones)-1];
+                        unset($porciones[count($porciones)-1]);
+
+                        list($txt, $ext) = explode(".", $file['name']);
+
+                        $rand = rand(1, 500);
+                        $final_image_name = $rand . '_' . $file['name'];
+                        if(move_uploaded_file($file['tmp_name'], 'employeeDocs/'.basename($final_image_name))){
+                            $work->number_imss_url = $final_image_name;
+                        }
+                    }
+                }
+
                 if(isset($_FILES['employee_photo'])){
                     if(isset($_FILES['employee_photo']['name'])){
                         $file = $_FILES['employee_photo']; 
@@ -619,6 +806,40 @@ class WorkController extends Controller
                 
             }
             $work_data->finiquito_file_url_deleted = false;
+            
+            // etapa3 
+            //retencion_infonavit
+            if($work_data->retencion_infonavit_url != null){
+                $work_data->retencion_infonavit_url = asset('employeeDocs/'.$work_data->retencion_infonavit_url);
+                
+            }
+            $work_data->retencion_infonavit_url_deleted = false;
+            //retencion_infonavit
+
+            //rfc
+            if($work_data->rfc_url != null){
+                $work_data->rfc_url = asset('employeeDocs/'.$work_data->rfc_url);
+                
+            }
+            $work_data->rfc_url_deleted = false;
+            //rfc
+
+            //birth_certificate
+            if($work_data->birth_certificate_url != null){
+                $work_data->birth_certificate_url = asset('employeeDocs/'.$work_data->birth_certificate_url);
+                
+            }
+            $work_data->birth_certificate_url_deleted = false;
+            //birth_certificate
+
+            //number_imss
+            if($work_data->number_imss_url != null){
+                $work_data->number_imss_url = asset('employeeDocs/'.$work_data->number_imss_url);
+                
+            }
+            $work_data->number_imss_url_deleted = false;
+            //number_imss
+
 
             $companies_catalog          = $this->sharedController->getCompanyCatalog($user);
             $contract_type_catalog      = ContractTypes::all();
@@ -934,4 +1155,38 @@ class WorkController extends Controller
     }
 
     // public function deleteFileIncidents(){}
+
+    public function notificationEmail($new_work_status_id, $employee_id){
+        $msg = null;
+
+        $employee_exist = Work::find($employee_id);
+        $employee_full_name = null;
+
+        if ($employee_exist) {
+            $employee_full_name = $employee_exist->name . ' ' . $employee_exist->first_name . ' ' . $employee_exist->last_name;
+            switch ($new_work_status_id) {
+                case 1:
+                    $msg = 'Empleado ' . $employee_full_name . ' ha cambiado estatus a: En proceso de alta.';
+                    break;
+                case 2:
+                    $msg = 'Empleado ' . $employee_full_name . ' ha cambiado estatus a: En proceso de reingreso.';
+                    break;
+                case 3:
+                    $msg = 'Empleado ' . $employee_full_name . ' ha cambiado estatus a: Activo.';
+                    break;
+                case 4:
+                    $msg = 'Empleado ' . $employee_full_name . ' ha cambiado estatus a: En proceso de baja.';
+                    break;
+                case 5:
+                    $msg = 'Empleado ' . $employee_full_name . ' ha cambiado estatus a: Baja.';
+                    break;
+                default:
+                    $msg = null;
+                    break;
+            }
+            // esther.gonzalez@capitalman.com.mx, miguel.hernandez@capitalman.com.mx  y lupitaortiz.rhigc@gmail.com, capitalman.com.mx
+            if($msg != null) Mail::to(['monserrat.rasgado@capitalman.com.mx', 'miguel.hernandez@capitalman.com.mx', 'lupitaortiz.rhigc@gmail.com'])->send(new SendNotification($msg));
+        }
+
+    }
 }

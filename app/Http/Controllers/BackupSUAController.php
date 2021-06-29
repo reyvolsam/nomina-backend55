@@ -33,7 +33,7 @@ class BackupSUAController extends Controller
          //
          try {
 
-            $suaList = BackupSua::with('monthly_files_current')->get();
+            $suaList = BackupSua::with('monthly_files_current', 'company')->get();
 
 
             if (count($suaList) > 0) {
@@ -95,7 +95,9 @@ class BackupSUAController extends Controller
 
                 $sua = new BackupSua();
                 $sua->date = $data['date'];
+                $sua->company_id = $data['company_id'];
                 $sua->period = $data['period'];
+                $sua->obra = $data['obra'];
                 $sua->file_backup = $fileNameBackup;
                 $sua->file_amount = $fileNameAmount;
                 $sua->save();
@@ -198,7 +200,9 @@ class BackupSUAController extends Controller
 
                     $sua = new BackupSua;
                     $sua->date = $data['date'];
+                    $sua->company_id = $data['company_id'];
                     $sua->period = $data['period'];
+                    $sua->obra = $data['obra'];
 
                     if ($sua_exists->file_backup == null && $data['file_backup'] != null) {
                         $this->res['test'] = 'se va a crear';
@@ -327,6 +331,10 @@ class BackupSUAController extends Controller
 
         if ($data['period']) {
             $listSua = $listSua->where('period', 'LIKE' , '%' . $data['period'] . '%');
+        }
+
+        if ($data['obra']) {
+            $listSua = $listSua->where('obra', 'LIKE' , '%' . $data['obra'] . '%');
         }
 
         $listFilter = $listSua->get();

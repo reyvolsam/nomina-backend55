@@ -11,12 +11,16 @@ class BackupSua extends Model
 
     protected $table = 'backup_sua';
 
-    protected $fillable = ['date', 'period', 'file_backup', 'file_amount', 'created_at', 'updated_at'];
+    protected $fillable = ['date', 'company_id', 'period', 'obra', 'file_backup', 'file_amount', 'created_at', 'updated_at'];
     protected $guarded = ['id'];
     protected $dates = ['deleted_at'];
 
     public function monthly_files_current(){
         return $this->hasMany('App\MonthlyIsuue');
+    }
+
+    public function company(){
+        return $this->belongsTo('App\Company');
     }
 
 }
