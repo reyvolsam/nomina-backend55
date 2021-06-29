@@ -50,6 +50,7 @@ Route::group(['middleware' => ['cors', 'auth:api']], function (){
     Route::resource('work', 'WorkController');
     Route::post('work/convert', 'WorkController@convert');
     Route::post('work/loadData', 'WorkController@loadWorkData');
+    Route::post('work/export', 'WorkController@export');
     Route::post('work/import', 'WorkImportController@import');
     Route::post('work/uploadDoc', 'WorkController@uploadDoc');
     Route::post('work/uploadFileIncidents', 'WorkController@uploadFilesIncidents');
